@@ -56,11 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void toViewPort(View view) {
         Log.e("ScrollAndScaleView", mKChart.getViewRender().toViewPortString());
-        Log.e("ScrollAndScaleView", mLeftRenderCanvas.toViewPortString());
-        Log.e("ScrollAndScaleView", mTopRenderCanvas.toViewPortString());
-        Log.e("ScrollAndScaleView", mMainRenderCanvas.toViewPortString());
-        Log.e("ScrollAndScaleView", mRightRenderCanvas.toViewPortString());
-        Log.e("ScrollAndScaleView", mBottomRenderCanvas.toViewPortString());
     }
 
     private boolean changeLeftPadding;

@@ -422,12 +422,40 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
         return mHorizontalCanvas[1] != null && mHorizontalCanvas[1].isValid();
     }
 
+    @Override
+    public String toViewPortString() {
+        StringBuilder vps = new StringBuilder(super.toViewPortString());
+        vps.append("\n");
+        if (mHorizontalCanvas[0] != null) {
+            vps.append(mHorizontalCanvas[0].toViewPortString());
+            vps.append("\n");
+        }
+        if (mHorizontalCanvas[1] != null) {
+            vps.append(mHorizontalCanvas[1].toViewPortString());
+            vps.append("\n");
+        }
+        if (mHorizontalCanvas[2] != null) {
+            vps.append(mHorizontalCanvas[2].toViewPortString());
+            vps.append("\n");
+        }
+        if (mVerticalCanvas[0] != null) {
+            vps.append(mVerticalCanvas[0].toViewPortString());
+            vps.append("\n");
+        }
+        if (mVerticalCanvas[2] != null) {
+            vps.append(mVerticalCanvas[2].toViewPortString());
+            vps.append("\n");
+        }
+        return vps.toString();
+    }
+
     /**
      * 设置画板各个角的占位规则
-     * @param leftTopVertical true:左上垂直为主导 false:左上水平为主导
-     * @param rightTopVertical true:右上垂直为主导 false:右上水平为主导
+     *
+     * @param leftTopVertical     true:左上垂直为主导 false:左上水平为主导
+     * @param rightTopVertical    true:右上垂直为主导 false:右上水平为主导
      * @param rightBottomVertical true:右下垂直为主导 false:右下水平为主导
-     * @param leftBottomVertical true:左下垂直为主导 false:左下水平为主导
+     * @param leftBottomVertical  true:左下垂直为主导 false:左下水平为主导
      */
     public void setCornerRule(boolean leftTopVertical, boolean rightTopVertical,
                               boolean rightBottomVertical, boolean leftBottomVertical) {

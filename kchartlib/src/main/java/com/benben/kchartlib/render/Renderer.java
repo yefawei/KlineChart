@@ -71,7 +71,7 @@ public abstract class Renderer implements IRenderer, ICanvasPortLayout, IViewPor
 
     @Override
     public String toViewPortString() {
-        return this.getClass().getSimpleName() +
+        return "ViewPortString\n" + this.getClass().getSimpleName() +
                 "--ViewPort: " +
                 "[width: " + getWidth() + ", height: " + getHeight() + "]" +
                 "[left: " + getLeft() + "]" +

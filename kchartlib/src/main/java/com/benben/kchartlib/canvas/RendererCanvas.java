@@ -372,13 +372,19 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
 
     @Override
     public String toViewPortString() {
-        return this.getClass().getSimpleName() +
+        StringBuilder vps = new StringBuilder("--------" + this.getClass().getSimpleName() +
                 "--ViewPort: " +
                 "[width: " + getWidth() + ", height: " + getHeight() + "]" +
                 "[left: " + getLeft() + "]" +
                 "[top: " + getTop() + "]" +
                 "[right: " + getRight() + "]" +
-                "[bottom: " + getBottom() + "]";
+                "[bottom: " + getBottom() + "]");
+        vps.append("\n");
+        for (Drawing drawing : mDrawings) {
+            vps.append(drawing.toViewPortString());
+            vps.append("\n");
+        }
+        return vps.toString();
     }
 
     @Override

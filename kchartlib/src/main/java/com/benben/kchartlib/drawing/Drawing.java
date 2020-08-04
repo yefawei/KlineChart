@@ -127,7 +127,7 @@ public abstract class Drawing implements IDrawing, IViewPort {
 
     @Override
     public String toViewPortString() {
-        return this.getClass().getSimpleName() +
+        return "----------------"+ this.getClass().getSimpleName() +
                 "--ViewPort: " +
                 "[width: " + getWidth() + ", height: " + getHeight() + "]" +
                 "[left: " + getLeft() + "]" +
