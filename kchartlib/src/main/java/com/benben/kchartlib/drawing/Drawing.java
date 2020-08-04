@@ -3,6 +3,8 @@ package com.benben.kchartlib.drawing;
 import android.graphics.Rect;
 import android.util.Log;
 
+import androidx.annotation.CallSuper;
+
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IDrawingPortLayout;
 import com.benben.kchartlib.impl.IViewPort;
@@ -43,12 +45,14 @@ public abstract class Drawing implements IDrawing, IViewPort {
         return mLayoutParams;
     }
 
+    @CallSuper
     @Override
     public void attachedDrawingPortLayout(IDrawingPortLayout portLayout, IDataProvider dataProvider) {
         mDrawingPortLayout = portLayout;
         mDataProvider = dataProvider;
     }
 
+    @CallSuper
     @Override
     public void detachedDrawingPortLayout() {
         mDrawingPortLayout = null;

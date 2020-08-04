@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
+import androidx.annotation.CallSuper;
+
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.impl.ICanvasPortLayout;
 import com.benben.kchartlib.impl.IDataProvider;
@@ -292,6 +294,7 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
         return i;
     }
 
+    @CallSuper
     @Override
     public void attachedCanvasPortLayout(ICanvasPortLayout portLayout, IDataProvider dataProvider) {
         mCanvasPortLayout = portLayout;
@@ -301,6 +304,7 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
         }
     }
 
+    @CallSuper
     @Override
     public void detachedCanvasPortLayout() {
         mCanvasPortLayout = null;
