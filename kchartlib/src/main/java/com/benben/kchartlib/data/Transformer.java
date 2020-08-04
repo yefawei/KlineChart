@@ -16,12 +16,11 @@ public class Transformer {
 
     private IDataProvider mDataProvider;
 
-    public float mStartPointX;             // 起始绘制点的中心X坐标
-    public int mStartIndex;                // 当前内容的开始坐标
-    public int mStopIndex;                 // 当前内容的结束坐标
+    private float mStartPointX;             // 起始绘制点的中心X坐标
+    private int mStartIndex;                // 当前内容的开始坐标
+    private int mStopIndex;                 // 当前内容的结束坐标
 
-
-    public HashMap<String, Index> mIndexMap = new HashMap<>();
+    private HashMap<String, Index> mIndexMap = new HashMap<>();
 
     public Transformer(IDataProvider dataProvider) {
         mDataProvider = dataProvider;
