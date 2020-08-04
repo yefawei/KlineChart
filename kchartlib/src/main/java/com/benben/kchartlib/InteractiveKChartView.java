@@ -91,9 +91,13 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             return;
         }
         mTransformer.updateBounds(mViewRender.getMainCanvasWidth());
-        mBackgroundRenderer.preCalcDataValue();
+        if (mIsRenderBackground) {
+            mBackgroundRenderer.preCalcDataValue();
+        }
         mViewRender.preCalcDataValue();
-        mForegroundRenderer.preCalcDataValue();
+        if (mIsRenderForeground) {
+            mForegroundRenderer.preCalcDataValue();
+        }
     }
 
     @Override
@@ -178,6 +182,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     public void setRenderBackgroud(boolean render) {
         mIsRenderBackground = render;
+        updateRenderPortLayout();
     }
 
     public BackgroundRenderer getBackgroundRenderer() {
@@ -190,6 +195,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     public void setRenderForeground(boolean render) {
         mIsRenderForeground = render;
+        updateRenderPortLayout();
     }
 
     public ForegroundRenderer getForegroundRenderer() {
