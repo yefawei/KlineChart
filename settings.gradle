@@ -1,0 +1,3 @@
+include ':kchartlib'
+include ':app'
+rootProject.name = "KchartDemo"
