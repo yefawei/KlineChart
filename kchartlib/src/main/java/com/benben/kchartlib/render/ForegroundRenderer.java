@@ -25,14 +25,13 @@ public class ForegroundRenderer extends Renderer {
             mRenderCanvas.setWidth(0);
             mRenderCanvas.setHeight(0);
             mRenderCanvas.updateViewPort(0, 0, 0, 0);
-            setInUpdateCanvasPortLayout(false);
         } else {
             mRenderCanvas.setWidth(mViewPort.width());
             mRenderCanvas.setHeight(mViewPort.height());
             mRenderCanvas.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
-            setInUpdateCanvasPortLayout(false);
-            mRenderCanvas.updatePortLayout();
         }
+        setInUpdateCanvasPortLayout(false);
+        mRenderCanvas.updatePortLayout();
     }
 
     @Override

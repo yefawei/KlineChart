@@ -65,13 +65,18 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
                 renderCanvas.setHeight(0);
                 renderCanvas.updateViewPort(0, 0, 0, 0);
             }
-            for (RendererCanvas renderCanvas : mVerticalCanvas) {
-                if (renderCanvas == null) continue;
-                renderCanvas.setWidth(0);
-                renderCanvas.setHeight(0);
-                renderCanvas.updateViewPort(0, 0, 0, 0);
+            if (mVerticalCanvas[0] != null) {
+                mVerticalCanvas[0].setWidth(0);
+                mVerticalCanvas[0].setHeight(0);
+                mVerticalCanvas[0].updateViewPort(0, 0, 0, 0);
+            }
+            if (mVerticalCanvas[2] != null) {
+                mVerticalCanvas[2].setWidth(0);
+                mVerticalCanvas[2].setHeight(0);
+                mVerticalCanvas[2].updateViewPort(0, 0, 0, 0);
             }
             setInUpdateCanvasPortLayout(false);
+            updateDrawingPortLayout();
             return;
         }
 
