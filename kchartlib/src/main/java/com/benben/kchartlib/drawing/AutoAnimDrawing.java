@@ -13,6 +13,9 @@ import com.benben.kchartlib.index.Index;
  */
 public abstract class AutoAnimDrawing extends Drawing implements Animation {
 
+    public AutoAnimDrawing() {
+    }
+
     public AutoAnimDrawing(@Nullable Index index) {
         super(index);
     }

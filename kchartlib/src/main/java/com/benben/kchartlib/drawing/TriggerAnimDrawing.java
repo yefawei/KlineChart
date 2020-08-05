@@ -12,6 +12,9 @@ import com.benben.kchartlib.index.Index;
  */
 public abstract class TriggerAnimDrawing extends Drawing implements Animation {
 
+    public TriggerAnimDrawing() {
+    }
+
     public TriggerAnimDrawing(@Nullable Index index) {
         super(index);
     }

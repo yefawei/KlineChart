@@ -27,11 +27,15 @@ public abstract class Drawing implements IDrawing, IViewPort {
 
     protected IDataProvider mDataProvider;
 
-    public Drawing(@Nullable Index index) {
+    public Drawing() {
+    }
 
+    public Drawing(@Nullable Index index) {
+        mIndex = index;
     }
 
     public Drawing(@Nullable Index index, IDrawingPortLayout.DrawingLayoutParams params) {
+        mIndex = index;
         if (params == null) {
             throw new NullPointerException("DrawingLayoutParams cannot be null!");
         }
