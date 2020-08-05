@@ -88,7 +88,6 @@ public abstract class Index {
         mMinIndex = -1;
     }
 
-
     public void addExtendedData(IEntity... entitys) {
         for (IEntity entity : entitys) {
             //一般值比较小，所以采用add方式
