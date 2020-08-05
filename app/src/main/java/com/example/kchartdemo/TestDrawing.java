@@ -35,7 +35,12 @@ public class TestDrawing extends Drawing {
     }
 
     @Override
-    public void drawing(Canvas canvas) {
+    public void drawEmpty(Canvas canvas) {
+
+    }
+
+    @Override
+    public void drawData(Canvas canvas) {
         canvas.drawRect(mViewPort, mPaint);
         float w = mTextPaint.measureText(mMsg);
         float center = FontCalculateUtils.getBaselineFromCenter(mTextPaint, mViewPort.height() * 1.0f / 2 + mViewPort.top);

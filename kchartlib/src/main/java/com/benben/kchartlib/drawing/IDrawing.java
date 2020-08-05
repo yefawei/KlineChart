@@ -35,7 +35,12 @@ public interface IDrawing {
     void setDrawInViewPort(boolean in);
 
     /**
+     * 绘制空值
+     */
+    void drawEmpty(Canvas canvas);
+
+    /**
      * 绘制
      */
-    void drawing(Canvas canvas);
+    void drawData(Canvas canvas);
 }

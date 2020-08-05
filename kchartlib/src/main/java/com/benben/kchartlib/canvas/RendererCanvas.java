@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.CallSuper;
 
+import com.benben.kchartlib.adapter.IAdapter;
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.impl.ICanvasPortLayout;
 import com.benben.kchartlib.impl.IDataProvider;
@@ -421,13 +422,34 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
 
     @Override
     public void render(Canvas canvas) {
+        IAdapter adapter = mDataProvider.getAdapter();
+        if (adapter == null || adapter.getCount() == 0) {
+            renderEmpty(canvas);
+        } else {
+            renderData(canvas);
+        }
+    }
+
+    private void renderEmpty(Canvas canvas) {
         for (Drawing drawing : mDrawings) {
             if (!drawing.isValid()) continue;
             canvas.save();
             if (drawing.drawInViewPort()) {
                 canvas.clipRect(drawing.getLeft(), drawing.getTop(), drawing.getRight(), drawing.getBottom());
             }
-            drawing.drawing(canvas);
+            drawing.drawEmpty(canvas);
+            canvas.restore();
+        }
+    }
+
+    private void renderData(Canvas canvas) {
+        for (Drawing drawing : mDrawings) {
+            if (!drawing.isValid()) continue;
+            canvas.save();
+            if (drawing.drawInViewPort()) {
+                canvas.clipRect(drawing.getLeft(), drawing.getTop(), drawing.getRight(), drawing.getBottom());
+            }
+            drawing.drawData(canvas);
             canvas.restore();
         }
     }
