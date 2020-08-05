@@ -1,12 +1,15 @@
-package com.benben.kchartlib.index;
+package com.benben.kchartlib.index.range;
+
+import com.benben.kchartlib.index.IEntity;
+import com.benben.kchartlib.index.IKDJ;
 
 /**
  * @日期 : 2020/7/10
  * @描述 :
  */
-public class KdjIndex extends Index {
+public class KdjIndexRange extends IndexRange {
 
-    public KdjIndex() {
+    public KdjIndexRange() {
         super(0.1f);
     }
 

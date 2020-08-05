@@ -19,10 +19,10 @@ public class KlineInfo {
      */
 
     public long timestamp;
-    public String open_price;       // 开盘价
-    public String max_price;        // 最高价
-    public String min_price;        // 最低价
-    public String close_price;      // 收盘价
-    public String volume;           // 数量
-    public String amount;           // 金额
+    public float open_price;       // 开盘价
+    public float max_price;        // 最高价
+    public float min_price;        // 最低价
+    public float close_price;      // 收盘价
+    public float volume;           // 数量
+    public float amount;           // 金额
 }

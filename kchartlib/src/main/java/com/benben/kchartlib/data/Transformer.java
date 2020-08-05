@@ -5,8 +5,8 @@ import androidx.annotation.NonNull;
 import com.benben.kchartlib.adapter.IAdapter;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.index.IEntity;
-import com.benben.kchartlib.index.Index;
-import com.benben.kchartlib.index.IndexSet;
+import com.benben.kchartlib.index.range.IndexRange;
+import com.benben.kchartlib.index.range.IndexRangeSet;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class Transformer {
     private int mStopIndex;                 // 当前内容的结束坐标
 
     private HashMap<String, Integer> mIndexCount = new HashMap<>();
-    private HashMap<String, Index> mIndexMap = new HashMap<>();
+    private HashMap<String, IndexRange> mIndexMap = new HashMap<>();
 
     public Transformer(IDataProvider dataProvider) {
         mDataProvider = dataProvider;
@@ -60,7 +60,7 @@ public class Transformer {
             mStopIndex = getItemCount();
             mStartPointX = mDataProvider.getScalePointWidth() / 2.0f;
         }
-        for (Index value : mIndexMap.values()) {
+        for (IndexRange value : mIndexMap.values()) {
             value.resetValue();
         }
         if (getItemCount() > 0) {
@@ -96,56 +96,56 @@ public class Transformer {
     }
 
     private void calcMinMax(IAdapter adapter) {
-        Collection<Index> values = mIndexMap.values();
-        for (Index value : values) {
+        Collection<IndexRange> values = mIndexMap.values();
+        for (IndexRange value : values) {
             value.calcExtendedData();
         }
         for (int i = mStartIndex; i <= mStopIndex; i++) {
             IEntity cur = adapter.getItem(i);
-            for (Index value : values) {
+            for (IndexRange value : values) {
                 value.calcMinMaxValue(i, cur);
             }
         }
-        for (Index value : mIndexMap.values()) {
+        for (IndexRange value : mIndexMap.values()) {
             value.calcPaddingValue();
         }
     }
 
     /**
-     * 添加相关指标计算类，如果{@link Index#getIndexTag()}一致，会在原有基础计数器+1，
+     * 添加相关指标计算类，如果{@link IndexRange#getIndexTag()}一致，会在原有基础计数器+1，
      * 并要求已存对象与传入对象一致，防止重复计算
      */
-    public void addIndexData(Index index) {
-        if (index == null) return;
-        if (index instanceof IndexSet) {
-            ((IndexSet) index).setCanChangeIndex(false);
+    public void addIndexData(IndexRange indexRange) {
+        if (indexRange == null) return;
+        if (indexRange instanceof IndexRangeSet) {
+            ((IndexRangeSet) indexRange).setCanChangeIndex(false);
         }
-        Integer count = mIndexCount.get(index.getIndexTag());
+        Integer count = mIndexCount.get(indexRange.getIndexTag());
         if (count == null) {
-            mIndexCount.put(index.getIndexTag(), 1);
-            mIndexMap.put(index.getIndexTag(), index);
+            mIndexCount.put(indexRange.getIndexTag(), 1);
+            mIndexMap.put(indexRange.getIndexTag(), indexRange);
             return;
         }
-        if (mIndexMap.get(index.getIndexTag()) != index) {
-            throw new IllegalArgumentException("Inconsistent index instances: " + index.getIndexTag());
+        if (mIndexMap.get(indexRange.getIndexTag()) != indexRange) {
+            throw new IllegalArgumentException("Inconsistent indexRange instances: " + indexRange.getIndexTag());
         }
-        mIndexCount.put(index.getIndexTag(), count + 1);
+        mIndexCount.put(indexRange.getIndexTag(), count + 1);
 
     }
 
     /**
-     * 移除指标计算类，会先通过{@link Index#getIndexTag()}判断计数器是否等于1，等于就移除，否则计数器-1
+     * 移除指标计算类，会先通过{@link IndexRange#getIndexTag()}判断计数器是否等于1，等于就移除，否则计数器-1
      */
-    public void removeIndexData(@NonNull Index index) {
-        Integer count = mIndexCount.get(index.getIndexTag());
+    public void removeIndexData(@NonNull IndexRange indexRange) {
+        Integer count = mIndexCount.get(indexRange.getIndexTag());
         if (count == null) return;
         if (count > 1) {
-            mIndexCount.put(index.getIndexTag(), count - 1);
+            mIndexCount.put(indexRange.getIndexTag(), count - 1);
         }
-        mIndexCount.remove(index.getIndexTag());
-        Index remove = mIndexMap.remove(index.getIndexTag());
-        if (remove instanceof IndexSet) {
-            ((IndexSet) remove).setCanChangeIndex(true);
+        mIndexCount.remove(indexRange.getIndexTag());
+        IndexRange remove = mIndexMap.remove(indexRange.getIndexTag());
+        if (remove instanceof IndexRangeSet) {
+            ((IndexRangeSet) remove).setCanChangeIndex(true);
         }
     }
 }

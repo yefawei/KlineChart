@@ -1,12 +1,15 @@
-package com.benben.kchartlib.index;
+package com.benben.kchartlib.index.range;
+
+import com.benben.kchartlib.index.IEntity;
+import com.benben.kchartlib.index.IMA;
 
 /**
  * @日期 : 2020/7/10
  * @描述 : MA计算类
  */
-public class MaIndex extends Index {
+public class MaIndexRange extends IndexRange {
 
-    public MaIndex() {
+    public MaIndexRange() {
         super( 0.1f);
     }
 

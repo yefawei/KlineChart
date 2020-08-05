@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IDrawingPortLayout;
-import com.benben.kchartlib.index.Index;
+import com.benben.kchartlib.index.range.IndexRange;
 
 /**
  * @日期 : 2020/7/1
@@ -35,7 +35,7 @@ public interface IDrawing {
      */
     void setDrawInViewPort(boolean in);
 
-    Index getIndex();
+    IndexRange getIndexRange();
 
     /**
      * 绘制空值

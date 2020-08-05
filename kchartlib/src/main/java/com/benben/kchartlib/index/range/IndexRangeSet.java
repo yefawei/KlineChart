@@ -1,4 +1,6 @@
-package com.benben.kchartlib.index;
+package com.benben.kchartlib.index.range;
+
+import com.benben.kchartlib.index.IEntity;
 
 import java.util.ArrayList;
 
@@ -6,22 +8,22 @@ import java.util.ArrayList;
  * @日期 : 2020/7/10
  * @描述 : 组合指标计算类
  */
-public class IndexSet extends Index {
+public class IndexRangeSet extends IndexRange {
 
-    private ArrayList<Index> mIndexs = new ArrayList<>();
+    private ArrayList<IndexRange> mIndexRanges = new ArrayList<>();
 
     private String mIndexTag = "Set";
     private boolean mCanChangeIndex = true;
 
-    public IndexSet() {
+    public IndexRangeSet() {
         super();
     }
 
-    public IndexSet(float paddingPercent) {
+    public IndexRangeSet(float paddingPercent) {
         super(paddingPercent);
     }
 
-    public IndexSet(boolean reverse, int sideMode, float paddingPercent, float startValue) {
+    public IndexRangeSet(boolean reverse, int sideMode, float paddingPercent, float startValue) {
         super(reverse, sideMode, paddingPercent, startValue);
     }
 
@@ -32,7 +34,7 @@ public class IndexSet extends Index {
 
     @Override
     protected float calcMaxValue(int index, float curMaxValue, IEntity entity) {
-        for (Index i : mIndexs) {
+        for (IndexRange i : mIndexRanges) {
             curMaxValue = i.calcMaxValue(index, curMaxValue, entity);
         }
         return curMaxValue;
@@ -40,7 +42,7 @@ public class IndexSet extends Index {
 
     @Override
     protected float calcMinValue(int index, float curMinValue, IEntity entity) {
-        for (Index i : mIndexs) {
+        for (IndexRange i : mIndexRanges) {
             curMinValue = i.calcMinValue(index, curMinValue, entity);
         }
         return curMinValue;
@@ -50,34 +52,34 @@ public class IndexSet extends Index {
         mCanChangeIndex = can;
     }
 
-    public void addIndex(Index index) {
-        if (index == null) return;
+    public void addIndex(IndexRange indexRange) {
+        if (indexRange == null) return;
         if (!mCanChangeIndex) {
             throw new IllegalStateException("Adding indicators is not allowed at this time!");
         }
-        if (isReverse() != index.isReverse()) {
+        if (isReverse() != indexRange.isReverse()) {
             throw new IllegalArgumentException("Reverse is inconsistent!");
         }
-        if (getSideMode() != index.getSideMode()) {
+        if (getSideMode() != indexRange.getSideMode()) {
             throw new IllegalArgumentException("SideMode is inconsistent!");
         }
-        mIndexs.add(index);
+        mIndexRanges.add(indexRange);
         generateTag();
     }
 
-    public void removeIndex(Index index) {
+    public void removeIndex(IndexRange indexRange) {
         if (!mCanChangeIndex) {
             throw new IllegalStateException("Indicator removal is not allowed at this time!");
         }
-        mIndexs.remove(index);
+        mIndexRanges.remove(indexRange);
         generateTag();
     }
 
     private void generateTag() {
         StringBuilder sb = new StringBuilder("Set");
-        for (Index index : mIndexs) {
+        for (IndexRange indexRange : mIndexRanges) {
             sb.append("-");
-            sb.append(index.getIndexTag());
+            sb.append(indexRange.getIndexTag());
         }
         mIndexTag = sb.toString();
     }

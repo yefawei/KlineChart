@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IDrawingPortLayout;
 import com.benben.kchartlib.impl.IViewPort;
-import com.benben.kchartlib.index.Index;
+import com.benben.kchartlib.index.range.IndexRange;
 
 /**
  * @日期 : 2020/7/10
@@ -17,7 +17,7 @@ import com.benben.kchartlib.index.Index;
  */
 public abstract class Drawing implements IDrawing, IViewPort {
 
-    protected Index mIndex;
+    protected IndexRange mIndexRange;
     private IDrawingPortLayout.DrawingLayoutParams mLayoutParams;
     private int mWidth;
     private int mHeight;
@@ -30,12 +30,12 @@ public abstract class Drawing implements IDrawing, IViewPort {
     public Drawing() {
     }
 
-    public Drawing(@Nullable Index index) {
-        mIndex = index;
+    public Drawing(@Nullable IndexRange indexRange) {
+        mIndexRange = indexRange;
     }
 
-    public Drawing(@Nullable Index index, IDrawingPortLayout.DrawingLayoutParams params) {
-        mIndex = index;
+    public Drawing(@Nullable IndexRange indexRange, IDrawingPortLayout.DrawingLayoutParams params) {
+        mIndexRange = indexRange;
         if (params == null) {
             throw new NullPointerException("DrawingLayoutParams cannot be null!");
         }
@@ -58,16 +58,16 @@ public abstract class Drawing implements IDrawing, IViewPort {
     public void attachedDrawingPortLayout(IDrawingPortLayout portLayout, IDataProvider dataProvider) {
         mDrawingPortLayout = portLayout;
         mDataProvider = dataProvider;
-        if (mIndex != null) {
-            mDataProvider.getTransformer().addIndexData(mIndex);
+        if (mIndexRange != null) {
+            mDataProvider.getTransformer().addIndexData(mIndexRange);
         }
     }
 
     @CallSuper
     @Override
     public void detachedDrawingPortLayout() {
-        if (mIndex != null) {
-            mDataProvider.getTransformer().removeIndexData(mIndex);
+        if (mIndexRange != null) {
+            mDataProvider.getTransformer().removeIndexData(mIndexRange);
         }
         mDrawingPortLayout = null;
         mDataProvider = null;
@@ -160,7 +160,7 @@ public abstract class Drawing implements IDrawing, IViewPort {
     }
 
     @Override
-    public Index getIndex() {
-        return mIndex;
+    public IndexRange getIndexRange() {
+        return mIndexRange;
     }
 }

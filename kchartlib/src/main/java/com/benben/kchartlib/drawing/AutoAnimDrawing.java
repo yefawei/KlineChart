@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 import com.benben.kchartlib.animation.Animation;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IDrawingPortLayout;
-import com.benben.kchartlib.index.Index;
+import com.benben.kchartlib.index.range.IndexRange;
 
 /**
  * @日期 : 2020/7/10
@@ -16,12 +16,12 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
     public AutoAnimDrawing() {
     }
 
-    public AutoAnimDrawing(@Nullable Index index) {
-        super(index);
+    public AutoAnimDrawing(@Nullable IndexRange indexRange) {
+        super(indexRange);
     }
 
-    public AutoAnimDrawing(@Nullable Index index, IDrawingPortLayout.DrawingLayoutParams params) {
-        super(index, params);
+    public AutoAnimDrawing(@Nullable IndexRange indexRange, IDrawingPortLayout.DrawingLayoutParams params) {
+        super(indexRange, params);
     }
 
     @Override

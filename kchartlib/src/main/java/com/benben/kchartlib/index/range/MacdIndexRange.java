@@ -1,12 +1,15 @@
-package com.benben.kchartlib.index;
+package com.benben.kchartlib.index.range;
+
+import com.benben.kchartlib.index.IEntity;
+import com.benben.kchartlib.index.IMACD;
 
 /**
  * @日期 : 2020/7/10
  * @描述 : MACD计算类
  */
-public class MacdIndex extends Index {
+public class MacdIndexRange extends IndexRange {
 
-    public MacdIndex() {
+    public MacdIndexRange() {
         super(0.1f);
     }
 

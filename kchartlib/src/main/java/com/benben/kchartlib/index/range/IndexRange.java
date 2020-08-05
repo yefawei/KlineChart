@@ -1,6 +1,8 @@
-package com.benben.kchartlib.index;
+package com.benben.kchartlib.index.range;
 
 import androidx.annotation.IntDef;
+
+import com.benben.kchartlib.index.IEntity;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,7 +12,7 @@ import java.util.ArrayList;
  * @日期 : 2020/7/9
  * @描述 : 指标基础计算类
  */
-public abstract class Index {
+public abstract class IndexRange {
 
     public static final int DOUBLE_SIDE = 0;    // 含最大值最小值
     public static final int UP_SIDE = 1;        // 只含最大值
@@ -31,12 +33,12 @@ public abstract class Index {
 
     private ArrayList<IEntity> mExtendedData = new ArrayList<>();
 
-    public Index() {
+    public IndexRange() {
         this(0);
     }
 
-    public Index(float paddingPercent) {
-        this(false, Index.DOUBLE_SIDE, 0, 0);
+    public IndexRange(float paddingPercent) {
+        this(false, IndexRange.DOUBLE_SIDE, 0, 0);
     }
 
     /**
@@ -45,7 +47,7 @@ public abstract class Index {
      * @param paddingPercent 预留空间
      * @param startValue     非双向模式的初始化值
      */
-    public Index(boolean reverse, @SideMode int sideMode, float paddingPercent, float startValue) {
+    public IndexRange(boolean reverse, @SideMode int sideMode, float paddingPercent, float startValue) {
         mReverse = reverse;
         mSideMode = sideMode;
         if (paddingPercent < 0.0f) {

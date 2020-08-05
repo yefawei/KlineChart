@@ -1,12 +1,15 @@
-package com.benben.kchartlib.index;
+package com.benben.kchartlib.index.range;
+
+import com.benben.kchartlib.index.IEntity;
+import com.benben.kchartlib.index.IRSI;
 
 /**
  * @日期 : 2020/7/10
  * @描述 : RIS计算类
  */
-public class RsiIndex extends Index {
+public class RsiIndexRange extends IndexRange {
 
-    public RsiIndex() {
+    public RsiIndexRange() {
         super(0.1f);
     }
 

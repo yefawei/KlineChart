@@ -1,13 +1,15 @@
-package com.benben.kchartlib.index;
+package com.benben.kchartlib.index.range;
+
+import com.benben.kchartlib.index.IEntity;
 
 /**
  * @日期 : 2020/7/10
  * @描述 : 蜡烛图计算类
  */
-public class CandleIndex extends Index {
+public class CandleIndexRange extends IndexRange {
 
 
-    public CandleIndex() {
+    public CandleIndexRange() {
         super(0.1f);
     }
 

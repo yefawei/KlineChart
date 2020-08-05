@@ -1,13 +1,16 @@
-package com.benben.kchartlib.index;
+package com.benben.kchartlib.index.range;
+
+import com.benben.kchartlib.index.IEntity;
+import com.benben.kchartlib.index.IVolume;
 
 /**
  * @日期 : 2020/7/9
  * @描述 : 成交量计算类
  */
-public class VolumeIndex extends Index {
+public class VolumeIndexRange extends IndexRange {
 
-    public VolumeIndex() {
-        super(false, Index.UP_SIDE, 0.1f, 0.0f);
+    public VolumeIndexRange() {
+        super(false, IndexRange.UP_SIDE, 0.1f, 0.0f);
     }
 
     @Override
