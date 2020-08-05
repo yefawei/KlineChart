@@ -1,14 +1,25 @@
 package com.benben.kchartlib.drawing;
 
+import androidx.annotation.Nullable;
+
 import com.benben.kchartlib.animation.Animation;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IDrawingPortLayout;
+import com.benben.kchartlib.index.Index;
 
 /**
  * @日期 : 2020/7/10
  * @描述 : 自动执行动画的绘制
  */
 public abstract class AutoAnimDrawing extends Drawing implements Animation {
+
+    public AutoAnimDrawing(@Nullable Index index) {
+        super(index);
+    }
+
+    public AutoAnimDrawing(@Nullable Index index, IDrawingPortLayout.DrawingLayoutParams params) {
+        super(index, params);
+    }
 
     @Override
     public void attachedDrawingPortLayout(IDrawingPortLayout portLayout, IDataProvider dataProvider) {

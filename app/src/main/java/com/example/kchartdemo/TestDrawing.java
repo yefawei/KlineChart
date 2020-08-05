@@ -21,7 +21,7 @@ public class TestDrawing extends Drawing {
     private final String mMsg;
 
     public TestDrawing(@ColorInt int bgColor, @ColorInt int strColor, String msg, IDrawingPortLayout.DrawingLayoutParams params) {
-        super(params);
+        super(null, params);
         mMsg = msg;
 
         mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
