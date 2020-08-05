@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class IndexSet extends Index {
 
-    private ArrayList<Index> mIndices = new ArrayList<>();
+    private ArrayList<Index> mIndexs = new ArrayList<>();
 
     private String mIndexTag = "Set";
     private boolean mCanChangeIndex = true;
@@ -32,7 +32,7 @@ public class IndexSet extends Index {
 
     @Override
     protected float calcMaxValue(int index, float curMaxValue, IEntity entity) {
-        for (Index i : mIndices) {
+        for (Index i : mIndexs) {
             curMaxValue = i.calcMaxValue(index, curMaxValue, entity);
         }
         return curMaxValue;
@@ -40,7 +40,7 @@ public class IndexSet extends Index {
 
     @Override
     protected float calcMinValue(int index, float curMinValue, IEntity entity) {
-        for (Index i : mIndices) {
+        for (Index i : mIndexs) {
             curMinValue = i.calcMinValue(index, curMinValue, entity);
         }
         return curMinValue;
@@ -61,7 +61,7 @@ public class IndexSet extends Index {
         if (getSideMode() != index.getSideMode()) {
             throw new IllegalArgumentException("SideMode is inconsistent!");
         }
-        mIndices.add(index);
+        mIndexs.add(index);
         generateTag();
     }
 
@@ -69,13 +69,13 @@ public class IndexSet extends Index {
         if (!mCanChangeIndex) {
             throw new IllegalStateException("Indicator removal is not allowed at this time!");
         }
-        mIndices.remove(index);
+        mIndexs.remove(index);
         generateTag();
     }
 
     private void generateTag() {
         StringBuilder sb = new StringBuilder("Set");
-        for (Index index : mIndices) {
+        for (Index index : mIndexs) {
             sb.append("-");
             sb.append(index.getIndexTag());
         }

@@ -1,5 +1,7 @@
 package com.benben.kchartlib.data;
 
+import androidx.annotation.NonNull;
+
 import com.benben.kchartlib.adapter.IAdapter;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.index.IEntity;
@@ -20,6 +22,7 @@ public class Transformer {
     private int mStartIndex;                // 当前内容的开始坐标
     private int mStopIndex;                 // 当前内容的结束坐标
 
+    private HashMap<String, Integer> mIndexCount = new HashMap<>();
     private HashMap<String, Index> mIndexMap = new HashMap<>();
 
     public Transformer(IDataProvider dataProvider) {
@@ -98,21 +101,46 @@ public class Transformer {
                 value.calcMinMaxValue(i, cur);
             }
         }
+        int count = adapter.getCount();
+        //TODO 这里要做扩展计算，如计算第一位的位置
         for (Index value : mIndexMap.values()) {
             value.calcPaddingValue();
         }
     }
 
+    /**
+     * 添加相关指标计算类，如果{@link Index#getIndexTag()}一致，会在原有基础计数器+1，
+     * 并要求已存对象与传入对象一致，防止重复计算
+     */
     public void addIndexData(Index index) {
         if (index == null) return;
         if (index instanceof IndexSet) {
             ((IndexSet) index).setCanChangeIndex(false);
         }
-        mIndexMap.put(index.getIndexTag(), index);
+        Integer count = mIndexCount.get(index.getIndexTag());
+        if (count == null) {
+            mIndexCount.put(index.getIndexTag(), 1);
+            mIndexMap.put(index.getIndexTag(), index);
+            return;
+        }
+        if (mIndexMap.get(index.getIndexTag()) != index) {
+            throw new IllegalArgumentException("Inconsistent index instances: " + index.getIndexTag());
+        }
+        mIndexCount.put(index.getIndexTag(), count + 1);
+
     }
 
-    public void removeIndexData(String indexTag) {
-        Index remove = mIndexMap.remove(indexTag);
+    /**
+     * 移除指标计算类，会先通过{@link Index#getIndexTag()}判断计数器是否等于1，等于就移除，否则计数器-1
+     */
+    public void removeIndexData(@NonNull Index index) {
+        Integer count = mIndexCount.get(index.getIndexTag());
+        if (count == null) return;
+        if (count > 1) {
+            mIndexCount.put(index.getIndexTag(), count - 1);
+        }
+        mIndexCount.remove(index.getIndexTag());
+        Index remove = mIndexMap.remove(index.getIndexTag());
         if (remove instanceof IndexSet) {
             ((IndexSet) remove).setCanChangeIndex(true);
         }

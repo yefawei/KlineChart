@@ -90,19 +90,23 @@ public abstract class Index {
             float maxValue = calcMaxValue(index, mMaxValue, entity);
             float minValue = calcMinValue(index, mMinValue, entity);
             if (maxValue != mMaxValue) {
+                mMaxValue = maxValue;
                 mMaxIndex = index;
             }
             if (minValue != mMinValue) {
+                mMinValue = minValue;
                 mMinIndex = index;
             }
         } else if (mSideMode == UP_SIDE) {
             float maxValue = calcMaxValue(index, mMaxValue, entity);
             if (maxValue != mMaxValue) {
+                mMaxValue = maxValue;
                 mMaxIndex = index;
             }
         } else {
             float minValue = calcMinValue(index, mMinValue, entity);
             if (minValue != mMinValue) {
+                mMinValue = minValue;
                 mMinIndex = index;
             }
         }

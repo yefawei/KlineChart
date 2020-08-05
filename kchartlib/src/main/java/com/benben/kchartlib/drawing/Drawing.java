@@ -4,10 +4,12 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IDrawingPortLayout;
 import com.benben.kchartlib.impl.IViewPort;
+import com.benben.kchartlib.index.Index;
 
 /**
  * @日期 : 2020/7/10
@@ -15,6 +17,7 @@ import com.benben.kchartlib.impl.IViewPort;
  */
 public abstract class Drawing implements IDrawing, IViewPort {
 
+    protected Index mIndex;
     private IDrawingPortLayout.DrawingLayoutParams mLayoutParams;
     private int mWidth;
     private int mHeight;
@@ -24,10 +27,11 @@ public abstract class Drawing implements IDrawing, IViewPort {
 
     protected IDataProvider mDataProvider;
 
-    public Drawing() {
+    public Drawing(@Nullable Index index) {
+
     }
 
-    public Drawing(IDrawingPortLayout.DrawingLayoutParams params) {
+    public Drawing(@Nullable Index index, IDrawingPortLayout.DrawingLayoutParams params) {
         if (params == null) {
             throw new NullPointerException("DrawingLayoutParams cannot be null!");
         }
@@ -50,11 +54,17 @@ public abstract class Drawing implements IDrawing, IViewPort {
     public void attachedDrawingPortLayout(IDrawingPortLayout portLayout, IDataProvider dataProvider) {
         mDrawingPortLayout = portLayout;
         mDataProvider = dataProvider;
+        if (mIndex != null) {
+            mDataProvider.getTransformer().addIndexData(mIndex);
+        }
     }
 
     @CallSuper
     @Override
     public void detachedDrawingPortLayout() {
+        if (mIndex != null) {
+            mDataProvider.getTransformer().removeIndexData(mIndex);
+        }
         mDrawingPortLayout = null;
         mDataProvider = null;
         mWidth = 0;
@@ -120,6 +130,17 @@ public abstract class Drawing implements IDrawing, IViewPort {
     }
 
     @Override
+    public String toViewPortString() {
+        return "----------------" + this.getClass().getSimpleName() +
+                "--ViewPort: " +
+                "[width: " + getWidth() + ", height: " + getHeight() + "]" +
+                "[left: " + getLeft() + "]" +
+                "[top: " + getTop() + "]" +
+                "[right: " + getRight() + "]" +
+                "[bottom: " + getBottom() + "]";
+    }
+
+    @Override
     public boolean drawInViewPort() {
         return mDrawInViewPort;
     }
@@ -127,17 +148,6 @@ public abstract class Drawing implements IDrawing, IViewPort {
     @Override
     public void setDrawInViewPort(boolean in) {
         mDrawInViewPort = in;
-    }
-
-    @Override
-    public String toViewPortString() {
-        return "----------------"+ this.getClass().getSimpleName() +
-                "--ViewPort: " +
-                "[width: " + getWidth() + ", height: " + getHeight() + "]" +
-                "[left: " + getLeft() + "]" +
-                "[top: " + getTop() + "]" +
-                "[right: " + getRight() + "]" +
-                "[bottom: " + getBottom() + "]";
     }
 
     @Override
