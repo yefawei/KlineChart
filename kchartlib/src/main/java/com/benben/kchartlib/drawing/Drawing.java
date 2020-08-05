@@ -158,4 +158,9 @@ public abstract class Drawing implements IDrawing, IViewPort {
     public boolean isValid() {
         return !mViewPort.isEmpty();
     }
+
+    @Override
+    public Index getIndex() {
+        return mIndex;
+    }
 }

@@ -50,7 +50,7 @@ public class AnimationManager {
 
     public static class ChartAnimtion {
 
-        private ArrayList<Animation> mAnimations = new ArrayList<>(8);
+        private ArrayList<Animation> mAnimations = new ArrayList<>();
 
         private AnimationManager mManager;
 

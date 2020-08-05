@@ -8,6 +8,7 @@ import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.Index;
 import com.benben.kchartlib.index.IndexSet;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -95,14 +96,16 @@ public class Transformer {
     }
 
     private void calcMinMax(IAdapter adapter) {
+        Collection<Index> values = mIndexMap.values();
+        for (Index value : values) {
+            value.calcExtendedData();
+        }
         for (int i = mStartIndex; i <= mStopIndex; i++) {
             IEntity cur = adapter.getItem(i);
-            for (Index value : mIndexMap.values()) {
+            for (Index value : values) {
                 value.calcMinMaxValue(i, cur);
             }
         }
-        int count = adapter.getCount();
-        //TODO 这里要做扩展计算，如计算第一位的位置
         for (Index value : mIndexMap.values()) {
             value.calcPaddingValue();
         }

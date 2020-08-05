@@ -4,6 +4,7 @@ import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 
 /**
  * @日期 : 2020/7/9
@@ -27,6 +28,8 @@ public abstract class Index {
     private float mMinValue = Float.MAX_VALUE;
     private int mMaxIndex; // 屏幕内最大值的索引
     private int mMinIndex; // 屏幕内最小值的索引
+
+    private ArrayList<IEntity> mExtendedData = new ArrayList<>();
 
     public Index() {
         this(0);
@@ -83,6 +86,31 @@ public abstract class Index {
         }
         mMaxIndex = -1;
         mMinIndex = -1;
+    }
+
+
+    public void addExtendedData(IEntity... entitys) {
+        for (IEntity entity : entitys) {
+            //一般值比较小，所以采用add方式
+            mExtendedData.add(entity);
+        }
+    }
+
+    public void chearExtendedData() {
+        mExtendedData.clear();
+    }
+
+    public void calcExtendedData() {
+        for (IEntity entity : mExtendedData) {
+            if (mSideMode == DOUBLE_SIDE) {
+                mMaxValue = calcMaxValue(-1, mMaxValue, entity);
+                mMinValue = calcMinValue(-1, mMinValue, entity);
+            } else if (mSideMode == UP_SIDE) {
+                mMaxValue = calcMaxValue(-1, mMaxValue, entity);
+            } else {
+                mMinValue = calcMinValue(-1, mMinValue, entity);
+            }
+        }
     }
 
     public void calcMinMaxValue(int index, IEntity entity) {
@@ -142,10 +170,26 @@ public abstract class Index {
         return mMinIndex;
     }
 
+    /**
+     * 将实体与当前最大值进行最大值比较
+     *
+     * @param index       当前实体的索引，如果索引为-1，则表示为扩展数据
+     * @param curMaxValue 当前最大值
+     * @param entity      实体
+     * @return 新的最大值
+     */
     protected float calcMaxValue(int index, float curMaxValue, IEntity entity) {
         return curMaxValue;
     }
 
+    /**
+     * 将实体与当前最小值进行最小值比较
+     *
+     * @param index       当前实体的索引，如果索引为-1，则表示为扩展数据
+     * @param curMinValue 当前最小值
+     * @param entity      实体
+     * @return 新的最小值
+     */
     protected float calcMinValue(int index, float curMinValue, IEntity entity) {
         return curMinValue;
     }
