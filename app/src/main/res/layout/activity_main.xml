@@ -50,5 +50,38 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_show_view_port" />
+
+        <Button
+            android:id="@+id/btn_scroll_0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="scroll0"
+            android:text="scroll0"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_add_100" />
+
+        <Button
+            android:id="@+id/btn_scroll_10"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="scroll10"
+            android:text="scroll10"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_scroll_0" />
+
+        <Button
+            android:id="@+id/btn_scroll_90"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="scroll90"
+            android:text="scroll90"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_scroll_10" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

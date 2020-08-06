@@ -68,4 +68,16 @@ public class MainActivity extends AppCompatActivity {
         adapter.setData(klineInfos);
         mKChart.setAdapter(adapter);
     }
+
+    public void scroll0(View view) {
+        mKChart.scrollToLeftIndex(0);
+    }
+
+    public void scroll10(View view) {
+        mKChart.scrollToLeftIndex(10);
+    }
+
+    public void scroll90(View view) {
+        mKChart.scrollToLeftIndex(90);
+    }
 }

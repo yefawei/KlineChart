@@ -280,14 +280,14 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         return mPointWidthBuffer.mPointWidth;
     }
 
-//    /**
-//     * 屏幕左侧到达指定索引
-//     */
-//    public void scrollToLeftIndex(int index) {
-//        int targetScrollX = mTransformer.getScrollXForLeftIndex(index);
-//        int maxScrollX = getMaxScrollX();
-//        setScroll(Math.min(targetScrollX, maxScrollX));
-//    }
+    /**
+     * 屏幕左侧到达指定索引
+     */
+    public void scrollToLeftIndex(int index) {
+        int targetScrollX = mTransformer.getScrollXForLeftIndex(index);
+        int maxScrollX = getMaxScrollX();
+        setScroll(Math.min(targetScrollX, maxScrollX));
+    }
 
     public void setAdapter(IAdapter adapter) {
         if (mAdapter != null) {

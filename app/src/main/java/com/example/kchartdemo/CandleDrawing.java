@@ -32,16 +32,19 @@ public class CandleDrawing extends Drawing {
 
     @Override
     public void drawData(Canvas canvas) {
+        Transformer transformer = mDataProvider.getTransformer();
+
+
         String indexTag = mIndexRange.getIndexTag();
         int maxIndex = mIndexRange.getMaxIndex();
         int minIndex = mIndexRange.getMinIndex();
         float maxValue = mIndexRange.getMaxValue();
         float minValue = mIndexRange.getMinValue();
         Log.e("CandleDrawing", indexTag + " maxIndex: " + maxIndex + " minIndex: " + minIndex + " maxValue: " + maxValue + " minValue: " + minValue);
+        Log.e("CandleDrawing", indexTag + " StartIndex: " + transformer.getStartIndex() + " StopIndex: " + transformer.getStopIndex() + " getStartPointX: " + transformer.getStartPointX());
 
         canvas.drawColor(Color.BLACK);
 
-        Transformer transformer = mDataProvider.getTransformer();
         float width = mDataProvider.getScalePointWidth();
         for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
             if (i % 2 == 0) {
@@ -49,7 +52,7 @@ public class CandleDrawing extends Drawing {
             } else {
                 mPaint.setColor(Color.GREEN);
             }
-            float limit = (i - transformer.getStartIndex()) * width + transformer.getStopIndex();
+            float limit = (i - transformer.getStartIndex()) * width + transformer.getStartPointX();
             canvas.drawRect(limit - width / 2, 100, limit + width / 2, 200, mPaint);
             float center = FontCalculateUtils.getBaselineFromCenter(mPaint, 150);
             mPaint.setColor(Color.BLUE);
