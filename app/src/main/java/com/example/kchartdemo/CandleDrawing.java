@@ -3,7 +3,6 @@ package com.example.kchartdemo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.Drawing;
@@ -40,8 +39,8 @@ public class CandleDrawing extends Drawing {
         int minIndex = mIndexRange.getMinIndex();
         float maxValue = mIndexRange.getMaxValue();
         float minValue = mIndexRange.getMinValue();
-        Log.e("CandleDrawing", indexTag + " maxIndex: " + maxIndex + " minIndex: " + minIndex + " maxValue: " + maxValue + " minValue: " + minValue);
-        Log.e("CandleDrawing", indexTag + " StartIndex: " + transformer.getStartIndex() + " StopIndex: " + transformer.getStopIndex() + " getStartPointX: " + transformer.getStartPointX());
+//        Log.e("CandleDrawing", indexTag + " maxIndex: " + maxIndex + " minIndex: " + minIndex + " maxValue: " + maxValue + " minValue: " + minValue);
+//        Log.e("CandleDrawing", indexTag + " StartIndex: " + transformer.getStartIndex() + " StopIndex: " + transformer.getStopIndex() + " getStartPointX: " + transformer.getStartPointX());
 
         canvas.drawColor(Color.BLACK);
 
@@ -59,9 +58,5 @@ public class CandleDrawing extends Drawing {
             mPaint.setTextSize(28);
             canvas.drawText(i + "", limit, center, mPaint);
         }
-
-        canvas.drawLine(getLeft() + getWidth() * 0.25f, getTop(), getLeft() + getWidth() * 0.25f, getBottom(), mPaint);
-        canvas.drawLine(getLeft() + getWidth() * 0.5f, getTop(), getLeft() + getWidth() * 0.5f, getBottom(), mPaint);
-        canvas.drawLine(getLeft() + getWidth() * 0.75f, getTop(), getLeft() + getWidth() * 0.75f, getBottom(), mPaint);
     }
 }

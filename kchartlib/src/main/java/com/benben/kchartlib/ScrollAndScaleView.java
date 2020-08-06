@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.OverScroller;
 
@@ -13,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.GestureDetectorCompat;
 
 import com.benben.kchartlib.compat.GestureMoveActionCompat;
+import com.benben.kchartlib.compat.ScaleGestureDetectorCompat;
 import com.benben.kchartlib.impl.IDataProvider;
 
 /**
@@ -20,7 +20,7 @@ import com.benben.kchartlib.impl.IDataProvider;
  * @描述 :
  */
 public abstract class ScrollAndScaleView extends View implements GestureDetector.OnGestureListener,
-        ScaleGestureDetector.OnScaleGestureListener, IDataProvider {
+        ScaleGestureDetectorCompat.OnScaleGestureListener, IDataProvider {
 
     private boolean mIsAttachedToWindow;
 
@@ -42,7 +42,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     private GestureMoveActionCompat mGestureMoveActionCompat;
     private GestureDetectorCompat mGestureDetectorCompat;
     private OverScroller mScroller;
-    private ScaleGestureDetector mScaleGestureDetector;
+    private ScaleGestureDetectorCompat mScaleGestureDetector;
 
     public ScrollAndScaleView(@NonNull Context context) {
         this(context, null);
@@ -58,7 +58,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         mGestureMoveActionCompat = new GestureMoveActionCompat(context);
         mGestureDetectorCompat = new GestureDetectorCompat(context, this);
         mScroller = new OverScroller(context);
-        mScaleGestureDetector = new ScaleGestureDetector(context, this);
+        mScaleGestureDetector = new ScaleGestureDetectorCompat(context, this);
     }
 
     @Override
@@ -208,12 +208,12 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
     @Override
-    public boolean onScaleBegin(ScaleGestureDetector detector) {
+    public boolean onScaleBegin(ScaleGestureDetectorCompat detector) {
         return mScaleEnable;
     }
 
     @Override
-    public boolean onScale(ScaleGestureDetector detector) {
+    public boolean onScale(ScaleGestureDetectorCompat detector) {
         if (mScaleEnable) {
             float oldScale = mScaleX;
             mScaleX *= detector.getScaleFactor();
@@ -234,7 +234,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
     @Override
-    public void onScaleEnd(ScaleGestureDetector detector) {
+    public void onScaleEnd(ScaleGestureDetectorCompat detector) {
 
     }
 
