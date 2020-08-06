@@ -70,14 +70,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void scroll0(View view) {
-        mKChart.scrollToLeftIndex(0);
+        mKChart.scrollToRightIndex(0);
     }
 
     public void scroll10(View view) {
-        mKChart.scrollToLeftIndex(10);
+        mKChart.scrollToRightIndex(10);
     }
 
     public void scroll90(View view) {
-        mKChart.scrollToLeftIndex(90);
+        mKChart.scrollToRightIndex(90);
     }
 }

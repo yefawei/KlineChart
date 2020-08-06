@@ -289,6 +289,15 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         setScroll(Math.min(targetScrollX, maxScrollX));
     }
 
+    /**
+     * 屏幕右侧到达指定索引
+     */
+    public void scrollToRightIndex(int index) {
+        int targetScrollX = mTransformer.getScrollXForRightIndex(index);
+        int maxScrollX = getMaxScrollX();
+        setScroll(Math.min(targetScrollX, maxScrollX));
+    }
+
     public void setAdapter(IAdapter adapter) {
         if (mAdapter != null) {
             mAdapter.unregisterDataSetObserver(mDataSetObserver);

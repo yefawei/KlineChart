@@ -38,6 +38,14 @@ public class Transformer {
         return Math.round(Math.max(scrollx, 0));
     }
 
+    /**
+     * 获取该索引在屏幕右侧时ScrollX值
+     */
+    public int getScrollXForRightIndex(int index) {
+        float scrollx = (getItemCount() - index - 1) * mDataProvider.getScalePointWidth();
+        return Math.round(Math.max(scrollx, 0));
+    }
+
     public float getStartPointX() {
         return mStartPointX;
     }
