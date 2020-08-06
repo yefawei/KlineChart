@@ -130,10 +130,9 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     void onScaleChanged(float scale, float oldScale, float focusX, float focusY) {
-        float change = scale - oldScale;
         float width = mViewRender.getMainCanvasWidth();
-        float left = mViewRender.getLeft();
-        float right = mViewRender.getRight();
+        float left = mViewRender.getMainCanvasLeft();
+        float right = mViewRender.getMainCanvasRight();
         if (focusX < 0) {
             // 小于0说明无焦点，则让焦点落在视图右边界上
             focusX = right;
@@ -147,7 +146,8 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             x = focusX - left;
         }
         // 使得以缩放手势中心点进行缩放
-        mScrollX += (1 - x / width) * width * change + mScrollX * change;
+        float changeSpace = (width - x) * scale / oldScale - (width - x);
+        mScrollX = Math.round(mScrollX * scale / oldScale + changeSpace);
         fixScrollX();
     }
 
