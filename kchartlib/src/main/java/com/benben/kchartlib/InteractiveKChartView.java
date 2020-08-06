@@ -16,6 +16,7 @@ import com.benben.kchartlib.buffer.MaxScrollXBuffer;
 import com.benben.kchartlib.buffer.PointWidthBuffer;
 import com.benben.kchartlib.buffer.ScalePointWidthBuffer;
 import com.benben.kchartlib.data.Transformer;
+import com.benben.kchartlib.impl.IMainCanvasPort;
 import com.benben.kchartlib.render.BackgroundRenderer;
 import com.benben.kchartlib.render.ForegroundRenderer;
 import com.benben.kchartlib.render.ViewRenderer;
@@ -87,10 +88,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     void preInvalidate() {
-        if (mViewRender.mainCanvasValid()) {
+        if (!mViewRender.mainCanvasValid()) {
             return;
         }
-        mTransformer.updateBounds(mViewRender.getMainCanvasWidth());
+        mTransformer.updateBounds();
         if (mIsRenderBackground) {
             mBackgroundRenderer.preCalcDataValue();
         }
@@ -178,6 +179,11 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     @Override
     public AnimationManager.ChartAnimtion getChartAnimation() {
         return mAnimationManager.getChartAnimtion();
+    }
+
+    @Override
+    public IMainCanvasPort getMainCanvasPort() {
+        return mViewRender;
     }
 
     public void setRenderBackgroud(boolean render) {
@@ -274,14 +280,14 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         return mPointWidthBuffer.mPointWidth;
     }
 
-    /**
-     * 到达指定索引
-     */
-    public void scrollToIndex(int index) {
-        int targetScrollX = mTransformer.getScrollXForIndex(index);
-        int maxScrollX = getMaxScrollX();
-        setScroll(Math.min(targetScrollX, maxScrollX));
-    }
+//    /**
+//     * 屏幕左侧到达指定索引
+//     */
+//    public void scrollToLeftIndex(int index) {
+//        int targetScrollX = mTransformer.getScrollXForLeftIndex(index);
+//        int maxScrollX = getMaxScrollX();
+//        setScroll(Math.min(targetScrollX, maxScrollX));
+//    }
 
     public void setAdapter(IAdapter adapter) {
         if (mAdapter != null) {
@@ -300,12 +306,12 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     private void notifyChange() {
+        resetBuffer();
         if (mAdapter == null) {
             mDataLength = 0;
         } else {
             mDataLength = getPointWidth() * mAdapter.getCount();
         }
-        resetBuffer();
         fixScrollX();
         invalidate();
     }

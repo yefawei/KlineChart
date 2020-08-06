@@ -19,7 +19,7 @@ public class Transformer {
 
     private IDataProvider mDataProvider;
 
-    private float mStartPointX;             // 起始绘制点的中心X坐标
+    private float mStartPointX;             // 起始绘制点的中心X坐标(已包含主画板左侧距离)
     private int mStartIndex;                // 当前内容的开始坐标
     private int mStopIndex;                 // 当前内容的结束坐标
 
@@ -30,35 +30,38 @@ public class Transformer {
         mDataProvider = dataProvider;
     }
 
-    private int getItemCount() {
-        if (mDataProvider.getAdapter() != null) {
-            return mDataProvider.getAdapter().getCount();
-        }
-        return 0;
+    /**
+     * 获取该索引在屏幕左侧时ScrollX值
+     */
+//    public int getScrollXForLeftIndex(int index) {
+//
+//    }
+
+    public float getStartPointX() {
+        return mStartPointX;
     }
 
-    /**
-     * 根据索引获取ScrollX
-     */
-    public int getScrollXForIndex(int index) {
-        if (getItemCount() <= index) {
-            return 0;
-        }
-        return Math.round(mDataProvider.getScalePointWidth() * (getItemCount() - index));
+    public int getStartIndex() {
+        return mStartIndex;
+    }
+
+    public int getStopIndex() {
+        return mStopIndex;
     }
 
     /**
      * 更新相关的边界
      */
-    public void updateBounds(int mainCanvasWidth) {
+    public void updateBounds() {
         if (mDataProvider.isFullScreen()) {
-            mStartIndex = indexOfScrollX(getItemCount(), mDataProvider.getScroll() + mainCanvasWidth);
-            mStopIndex = indexOfScrollX(getItemCount(), mDataProvider.getScroll());
-            mStartPointX = -(getScrollXForIndex(mStartIndex) - mDataProvider.getScroll() - mainCanvasWidth);
+            mStartIndex = indexOfTranslateX(getItemCount() - 1, xToTranslateX(0));
+            mStopIndex = indexOfTranslateX(getItemCount() - 1, xToTranslateX(mDataProvider.getMainCanvasPort().getMainCanvasWidth()));
+            mStartPointX = mDataProvider.getScroll() + mDataProvider.getMainCanvasPort().getMainCanvasRight() - mDataProvider.getScalePointWidth() / 2.0f
+                    - (getItemCount() - mStartIndex - 1) * mDataProvider.getScalePointWidth();
         } else {
             mStartIndex = 0;
-            mStopIndex = getItemCount();
-            mStartPointX = mDataProvider.getScalePointWidth() / 2.0f;
+            mStopIndex = getItemCount() - 1;
+            mStartPointX = mDataProvider.getScalePointWidth() / 2.0f + mDataProvider.getMainCanvasPort().getMainCanvasLeft();
         }
         for (IndexRange value : mIndexMap.values()) {
             value.resetValue();
@@ -68,28 +71,50 @@ public class Transformer {
         }
     }
 
-    private int indexOfScrollX(int itemCount, int scroll) {
+    private int getItemCount() {
+        if (mDataProvider.getAdapter() != null) {
+            return mDataProvider.getAdapter().getCount();
+        }
+        return 0;
+    }
+
+    /**
+     * 根据索引获取转换坐标X
+     * 原点在0索引处
+     */
+    private float getTranslateXForIndex(int index) {
+        return (index + 0.5f) * mDataProvider.getScalePointWidth();
+    }
+
+    /**
+     * 可绘制区域x坐标转成转换坐标x
+     */
+    private float xToTranslateX(float x) {
+        return mDataProvider.getScalePointWidth() * getItemCount() - mDataProvider.getScroll() + x - mDataProvider.getMainCanvasPort().getMainCanvasWidth();
+    }
+
+    private int indexOfTranslateX(int itemCount, float translateX) {
         if (itemCount == 0) {
             return 0;
         }
-        return indexOfScrollX(scroll, 0, itemCount);
+        return indexOfTranslateX(translateX, 0, itemCount);
     }
 
-    private int indexOfScrollX(int scroll, int start, int end) {
+    private int indexOfTranslateX(float translateX, int start, int end) {
         if (end == start) {
             return start;
         }
         if (end - start == 1) {
-            int startValue = getScrollXForIndex(start);
-            int endValue = getScrollXForIndex(end);
-            return Math.abs(scroll - startValue) < Math.abs(scroll - endValue) ? start : end;
+            float startValue = getTranslateXForIndex(start);
+            float endValue = getTranslateXForIndex(end);
+            return Math.abs(translateX - startValue) < Math.abs(translateX - endValue) ? start : end;
         }
         int mid = start + (end - start) / 2;
-        int midValue = getScrollXForIndex(mid);
-        if (scroll < midValue) {
-            return indexOfScrollX(scroll, mid, end);
-        } else if (scroll > midValue) {
-            return indexOfScrollX(scroll, start, mid);
+        float midValue = getTranslateXForIndex(mid);
+        if (translateX < midValue) {
+            return indexOfTranslateX(translateX, start, mid);
+        } else if (translateX > midValue) {
+            return indexOfTranslateX(translateX, mid, end);
         } else {
             return mid;
         }
@@ -115,7 +140,7 @@ public class Transformer {
      * 添加相关指标计算类，如果{@link IndexRange#getIndexTag()}一致，会在原有基础计数器+1，
      * 并要求已存对象与传入对象一致，防止重复计算
      */
-    public void addIndexData(IndexRange indexRange) {
+    public void addIndexRange(IndexRange indexRange) {
         if (indexRange == null) return;
         if (indexRange instanceof IndexRangeSet) {
             ((IndexRangeSet) indexRange).setCanChangeIndex(false);
@@ -136,7 +161,7 @@ public class Transformer {
     /**
      * 移除指标计算类，会先通过{@link IndexRange#getIndexTag()}判断计数器是否等于1，等于就移除，否则计数器-1
      */
-    public void removeIndexData(@NonNull IndexRange indexRange) {
+    public void removeIndexRange(@NonNull IndexRange indexRange) {
         Integer count = mIndexCount.get(indexRange.getIndexTag());
         if (count == null) return;
         if (count > 1) {

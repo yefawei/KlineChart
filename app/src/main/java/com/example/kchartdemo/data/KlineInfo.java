@@ -1,10 +1,12 @@
 package com.example.kchartdemo.data;
 
+import com.benben.kchartlib.index.IEntity;
+
 /**
  * @日期 : 2020/8/5
  * @描述 :
  */
-public class KlineInfo {
+public class KlineInfo implements IEntity {
 
     /**
      * timestamp : 1511712000
@@ -25,4 +27,29 @@ public class KlineInfo {
     public float close_price;      // 收盘价
     public float volume;           // 数量
     public float amount;           // 金额
+
+    @Override
+    public float getOpenPrice() {
+        return open_price;
+    }
+
+    @Override
+    public float getHighPrice() {
+        return max_price;
+    }
+
+    @Override
+    public float getLowPrice() {
+        return min_price;
+    }
+
+    @Override
+    public float getClosePrice() {
+        return close_price;
+    }
+
+    @Override
+    public long getDatetime() {
+        return timestamp * 1000;
+    }
 }

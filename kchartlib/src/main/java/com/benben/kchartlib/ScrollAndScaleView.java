@@ -22,6 +22,8 @@ import com.benben.kchartlib.impl.IDataProvider;
 public abstract class ScrollAndScaleView extends View implements GestureDetector.OnGestureListener,
         ScaleGestureDetector.OnScaleGestureListener, IDataProvider {
 
+    private boolean mIsAttachedToWindow;
+
     private boolean mLongEnable = true;         // 是否支持长按
     private boolean mScrollEnable = true;       // 是否支持滑动
     private boolean mScaleEnable = true;        // 是否支持缩放
@@ -33,7 +35,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     private float mScaleXMax = 2f;              // 缩放的最大值
     private float mScaleXMin = 0.5f;            // 缩放的最小值
     protected float mScaleX = 1.0f;             // 当前缩放值
-    protected int mScrollX = 0;                 // 当前滚动值
+    protected int mScrollX = 0;               // 当前滚动值
     protected float mTouchX;                    // 当前点击的X坐标
     protected float mTouchY;                    // 当前点击的Y坐标
 
@@ -60,7 +62,20 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mIsAttachedToWindow = true;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mIsAttachedToWindow = false;
+    }
+
+    @Override
     public void invalidate() {
+        if (!mIsAttachedToWindow) return;
         preInvalidate();
         super.invalidate();
     }
@@ -363,7 +378,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * 获取当前滚动值
      */
     @Override
-    public int getScroll() {
+    public float getScroll() {
         return mScrollX;
     }
 

@@ -59,7 +59,7 @@ public abstract class Drawing implements IDrawing, IViewPort {
         mDrawingPortLayout = portLayout;
         mDataProvider = dataProvider;
         if (mIndexRange != null) {
-            mDataProvider.getTransformer().addIndexData(mIndexRange);
+            mDataProvider.getTransformer().addIndexRange(mIndexRange);
         }
     }
 
@@ -67,7 +67,7 @@ public abstract class Drawing implements IDrawing, IViewPort {
     @Override
     public void detachedDrawingPortLayout() {
         if (mIndexRange != null) {
-            mDataProvider.getTransformer().removeIndexData(mIndexRange);
+            mDataProvider.getTransformer().removeIndexRange(mIndexRange);
         }
         mDrawingPortLayout = null;
         mDataProvider = null;

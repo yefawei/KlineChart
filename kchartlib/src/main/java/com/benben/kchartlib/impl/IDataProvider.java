@@ -18,7 +18,7 @@ public interface IDataProvider {
 
     boolean isOnLongPress();
 
-    int getScroll();
+    float getScroll();
 
     float getScaleX();
 
@@ -38,4 +38,6 @@ public interface IDataProvider {
     Transformer getTransformer();
 
     AnimationManager.ChartAnimtion getChartAnimation();
+
+    IMainCanvasPort getMainCanvasPort();
 }
