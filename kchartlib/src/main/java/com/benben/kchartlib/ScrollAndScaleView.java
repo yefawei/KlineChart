@@ -135,7 +135,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public void scrollBy(int x, int y) {
-        scrollTo(mScrollX - Math.round(x / mScaleX), 0);
+        scrollTo(mScrollX - x , 0);
     }
 
     @Override
@@ -199,7 +199,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         if (mScrollEnable) {
-            mScroller.fling(mScrollX, 0, Math.round(velocityX / mScaleX), 0,
+            mScroller.fling(mScrollX, 0, (int) velocityX, 0,
                     Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
             invalidate();
             return true;
@@ -226,6 +226,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
                 float focusX = detector.getFocusX();
                 float focusY = detector.getFocusY();
                 onScaleChanged(mScaleX, oldScale, focusX, focusY);
+                invalidate();
             }
             return true;
         }
