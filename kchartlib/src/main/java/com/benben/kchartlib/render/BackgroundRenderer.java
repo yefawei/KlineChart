@@ -18,9 +18,9 @@ public class BackgroundRenderer extends Renderer {
     }
 
     @Override
-    public void updatePortLayout() {
+    public void updateChildLayout() {
         if (mRenderCanvas == null) return;
-        setInUpdateCanvasPortLayout(true);
+        setInUpdateChildLayout(true);
         if (mViewPort.isEmpty()) {
             mRenderCanvas.setWidth(0);
             mRenderCanvas.setHeight(0);
@@ -30,8 +30,8 @@ public class BackgroundRenderer extends Renderer {
             mRenderCanvas.setHeight(mViewPort.height());
             mRenderCanvas.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
         }
-        setInUpdateCanvasPortLayout(false);
-        mRenderCanvas.updatePortLayout();
+        setInUpdateChildLayout(false);
+        mRenderCanvas.updateChildLayout();
     }
 
     @Override
@@ -49,13 +49,10 @@ public class BackgroundRenderer extends Renderer {
 
     public void setRenderCanvas(RendererCanvas canvas) {
         if (mRenderCanvas != null) {
-            mRenderCanvas.detachedCanvasPortLayout();
+            mRenderCanvas.detachedParentPortLayout();
         }
         if (canvas != null) {
-            canvas.attachedCanvasPortLayout(this, mDataProvider);
-            if (canvas.getLayoutParams() == null) {
-                canvas.setLayoutParams(new CanvasLayoutParams(0, 0));
-            }
+            canvas.attachedParentPortLayout(this, mDataProvider);
         }
         mRenderCanvas = canvas;
     }

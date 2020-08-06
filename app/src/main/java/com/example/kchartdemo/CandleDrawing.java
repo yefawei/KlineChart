@@ -4,9 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.Drawing;
-import com.benben.kchartlib.impl.IDrawingPortLayout;
 import com.benben.kchartlib.index.range.CandleIndexRange;
 import com.benben.kchartlib.utils.FontCalculateUtils;
 
@@ -18,7 +18,7 @@ public class CandleDrawing extends Drawing {
 
     private final Paint mPaint;
 
-    public CandleDrawing(IDrawingPortLayout.DrawingLayoutParams params) {
+    public CandleDrawing(RendererCanvas.DrawingLayoutParams params) {
         super(new CandleIndexRange(), params);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);

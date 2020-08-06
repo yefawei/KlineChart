@@ -3,7 +3,7 @@ package com.benben.kchartlib.drawing;
 import android.graphics.Canvas;
 
 import com.benben.kchartlib.impl.IDataProvider;
-import com.benben.kchartlib.impl.IDrawingPortLayout;
+import com.benben.kchartlib.impl.IParentPortLayout;
 import com.benben.kchartlib.index.range.IndexRange;
 
 /**
@@ -16,9 +16,9 @@ public interface IDrawing {
 
     void setHeight(int height);
 
-    void attachedDrawingPortLayout(IDrawingPortLayout portLayout, IDataProvider dataProvider);
+    void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider);
 
-    void detachedDrawingPortLayout();
+    void detachedParentPortLayout();
 
     /**
      * 画板是否有效

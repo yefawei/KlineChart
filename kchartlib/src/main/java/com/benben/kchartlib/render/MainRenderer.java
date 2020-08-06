@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 
+import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IMainCanvasPort;
@@ -15,7 +16,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * @日期 : 2020/7/1
- * @描述 : 视图层，负责处理[主视图、左视图、顶视图、右视图、底视图]
+ * @描述 : 主视图层，负责处理[主视图、左视图、顶视图、右视图、底视图]
  * -------------------------
  * ┊   ┊      顶       ┊   ┊
  * ┊   ┊---------------┊   ┊
@@ -26,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
  * ┊   ┊      底       ┊   ┊
  * -------------------------
  */
-public class ViewRenderer extends Renderer implements IMainCanvasPort {
+public class MainRenderer extends Renderer implements IMainCanvasPort {
 
     static final int LEFT_TOP_VERTICAL_FLAG = 0b00000001;       // 左上角以垂直为主
     static final int LEFT_BOTTOM_VERTICAL_FLAG = 0b00000010;    // 左下角以垂直为主
@@ -46,18 +47,18 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
     }
 
     private int mCornerRuleFlags = 0b00001111;
-    private RendererCanvas[] mHorizontalCanvas = new RendererCanvas[3]; // [0]:left [1]:main [2]:right
-    private RendererCanvas[] mVerticalCanvas = new RendererCanvas[3]; // [0]:top [1]:main [2]:bottom
+    private MainRendererCanvas[] mHorizontalCanvas = new MainRendererCanvas[3]; // [0]:left [1]:main [2]:right
+    private MainRendererCanvas[] mVerticalCanvas = new MainRendererCanvas[3]; // [0]:top [1]:main [2]:bottom
 
-    public ViewRenderer(IDataProvider dataProvider) {
+    public MainRenderer(IDataProvider dataProvider) {
         super(dataProvider);
     }
 
     @Override
-    public void updatePortLayout() {
+    public void updateChildLayout() {
         if (mHorizontalCanvas[1] == null) return;
 
-        setInUpdateCanvasPortLayout(true);
+        setInUpdateChildLayout(true);
         if (mViewPort.isEmpty()) {
             for (RendererCanvas renderCanvas : mHorizontalCanvas) {
                 if (renderCanvas == null) continue;
@@ -75,7 +76,7 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
                 mVerticalCanvas[2].setHeight(0);
                 mVerticalCanvas[2].updateViewPort(0, 0, 0, 0);
             }
-            setInUpdateCanvasPortLayout(false);
+            setInUpdateChildLayout(false);
             updateDrawingPortLayout();
             return;
         }
@@ -103,7 +104,7 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
 
         int tempValue;
         // 计算出水平方向每个画板的宽度
-        for (RendererCanvas renderCanvas : mHorizontalCanvas) {
+        for (MainRendererCanvas renderCanvas : mHorizontalCanvas) {
             if (renderCanvas == null) continue;
             CanvasLayoutParams layoutParams = renderCanvas.getLayoutParams();
             if (layoutParams.getWidth() > 0) {
@@ -125,7 +126,7 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
         if (width > 0 && weightUnitWidth > 0) {
             int w = 0;
             // 说明按比例宽度没有填满视图
-            for (RendererCanvas horizontalCanva : mHorizontalCanvas) {
+            for (MainRendererCanvas horizontalCanva : mHorizontalCanvas) {
                 if (horizontalCanva == null) continue;
                 CanvasLayoutParams layoutParams = horizontalCanva.getLayoutParams();
                 if (layoutParams.getWidth() > 0) continue;
@@ -135,7 +136,7 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
                         tempValue = width - w;
                     }
                     w += tempValue;
-                    Log.w("ViewRenderer", "Horizontal layout with gaps. " + horizontalCanva.getClass().getSimpleName() + " ext width: " + tempValue);
+                    Log.w("MainRenderer", "Horizontal layout with gaps. " + horizontalCanva.getClass().getSimpleName() + " ext width: " + tempValue);
                     horizontalCanva.setWidth(horizontalCanva.getWidth() + tempValue);
                 }
                 if (width == w) break;
@@ -143,7 +144,7 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
         }
 
         // 计算出垂直方向每个画板的高度
-        for (RendererCanvas renderCanvas : mVerticalCanvas) {
+        for (MainRendererCanvas renderCanvas : mVerticalCanvas) {
             if (renderCanvas == null) continue;
             CanvasLayoutParams layoutParams = renderCanvas.getLayoutParams();
             if (layoutParams.getHeight() > 0) {
@@ -165,7 +166,7 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
         if (height > 0 && weightUnitHeight > 0) {
             int h = 0;
             // 说明按比例高度没有填满视图
-            for (RendererCanvas verticalCanva : mVerticalCanvas) {
+            for (MainRendererCanvas verticalCanva : mVerticalCanvas) {
                 if (verticalCanva == null) continue;
                 CanvasLayoutParams layoutParams = verticalCanva.getLayoutParams();
                 if (layoutParams.getHeight() > 0) continue;
@@ -175,7 +176,7 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
                         tempValue = height - h;
                     }
                     h += tempValue;
-                    Log.w("ViewRenderer", "Vertical layout with gaps. " + verticalCanva.getClass().getSimpleName() + " ext height: " + tempValue);
+                    Log.w("MainRenderer", "Vertical layout with gaps. " + verticalCanva.getClass().getSimpleName() + " ext height: " + tempValue);
                     verticalCanva.setHeight(verticalCanva.getHeight() + tempValue);
                 }
                 if (height == h) break;
@@ -282,7 +283,7 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
                         mHorizontalCanvas[1].getLeft() + mVerticalCanvas[2].getWidth(), mHorizontalCanvas[1].getBottom() + mVerticalCanvas[2].getHeight());
             }
         }
-        setInUpdateCanvasPortLayout(false);
+        setInUpdateChildLayout(false);
         updateDrawingPortLayout();
     }
 
@@ -291,7 +292,7 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
      */
     private int[] getHorizontalWeightAndWidth() {
         int[] i = new int[2];
-        for (RendererCanvas c : mHorizontalCanvas) {
+        for (MainRendererCanvas c : mHorizontalCanvas) {
             if (c == null) continue;
             CanvasLayoutParams layoutParams = c.getLayoutParams();
             if (layoutParams.getWidth() > 0) {
@@ -308,7 +309,7 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
      */
     private int[] getVerticalWeightAndHeight() {
         int[] i = new int[2];
-        for (RendererCanvas c : mVerticalCanvas) {
+        for (MainRendererCanvas c : mVerticalCanvas) {
             if (c == null) continue;
             CanvasLayoutParams layoutParams = c.getLayoutParams();
             if (layoutParams.getHeight() > 0) {
@@ -322,19 +323,19 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
 
     private void updateDrawingPortLayout() {
         if (mHorizontalCanvas[0] != null) {
-            mHorizontalCanvas[0].updatePortLayout();
+            mHorizontalCanvas[0].updateChildLayout();
         }
         if (mHorizontalCanvas[1] != null) {
-            mHorizontalCanvas[1].updatePortLayout();
+            mHorizontalCanvas[1].updateChildLayout();
         }
         if (mHorizontalCanvas[2] != null) {
-            mHorizontalCanvas[2].updatePortLayout();
+            mHorizontalCanvas[2].updateChildLayout();
         }
         if (mVerticalCanvas[0] != null) {
-            mVerticalCanvas[0].updatePortLayout();
+            mVerticalCanvas[0].updateChildLayout();
         }
         if (mVerticalCanvas[2] != null) {
-            mVerticalCanvas[2].updatePortLayout();
+            mVerticalCanvas[2].updateChildLayout();
         }
     }
 
@@ -501,7 +502,7 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
         return null;
     }
 
-    public void addRenderCanvas(RendererCanvas canvas, @Position int position) {
+    public void addRenderCanvas(MainRendererCanvas canvas, @Position int position) {
         if (canvas == null) {
             throw new NullPointerException("RendererCanvas cannot be null!");
         }
@@ -524,40 +525,92 @@ public class ViewRenderer extends Renderer implements IMainCanvasPort {
         if (canvas.getLayoutParams() == null) {
             canvas.setLayoutParams(new CanvasLayoutParams(0, 0));
         }
-        canvas.attachedCanvasPortLayout(this, mDataProvider);
+        canvas.attachedParentPortLayout(this, mDataProvider);
     }
 
     public void removeRenderCanvas(@Position int position) {
         if (position == POSITION_LEFT) {
             if (mHorizontalCanvas[0] != null) {
-                mHorizontalCanvas[0].detachedCanvasPortLayout();
+                mHorizontalCanvas[0].detachedParentPortLayout();
                 mHorizontalCanvas[0] = null;
             }
         }
         if (position == POSITION_TOP) {
             if (mVerticalCanvas[0] != null) {
-                mVerticalCanvas[0].detachedCanvasPortLayout();
+                mVerticalCanvas[0].detachedParentPortLayout();
                 mVerticalCanvas[0] = null;
             }
         }
         if (position == POSITION_MAIN) {
             if (mHorizontalCanvas[1] != null) {
-                mHorizontalCanvas[1].detachedCanvasPortLayout();
+                mHorizontalCanvas[1].detachedParentPortLayout();
                 mHorizontalCanvas[1] = null;
                 mVerticalCanvas[1] = null;
             }
         }
         if (position == POSITION_RIGHT) {
             if (mHorizontalCanvas[2] != null) {
-                mHorizontalCanvas[2].detachedCanvasPortLayout();
+                mHorizontalCanvas[2].detachedParentPortLayout();
                 mHorizontalCanvas[2] = null;
             }
         }
         if (position == POSITION_BOTTOM) {
             if (mVerticalCanvas[2] != null) {
-                mVerticalCanvas[2].detachedCanvasPortLayout();
+                mVerticalCanvas[2].detachedParentPortLayout();
                 mVerticalCanvas[2] = null;
             }
+        }
+    }
+
+    /**
+     * 画板布局参数
+     */
+    public static class CanvasLayoutParams {
+        private int mWidth;
+        private int mHeight;
+        private int mWeight;
+
+        public CanvasLayoutParams(int width, int height) {
+            mWidth = width;
+            mHeight = height;
+        }
+
+        public CanvasLayoutParams(int width, int height, int weight) {
+            mWidth = width;
+            mHeight = height;
+            mWeight = weight;
+        }
+
+        public void setWidth(int width) {
+            if (width < 0) width = 0;
+            mWidth = width;
+        }
+
+        public int getWidth() {
+            return mWidth;
+        }
+
+        public void setHeight(int height) {
+            if (height < 0) height = 0;
+            mHeight = height;
+        }
+
+        public int getHeight() {
+            return mHeight;
+        }
+
+        /**
+         * 比例权重
+         * 在水平方向如果{@link CanvasLayoutParams#mWidth}不为0则不起作用
+         * 在垂直方向如果{@link CanvasLayoutParams#mHeight}不为0则不起作用
+         */
+        public void setWeight(int weight) {
+            if (weight < 0) weight = 0;
+            mWeight = weight;
+        }
+
+        public int getWeight() {
+            return mWeight;
         }
     }
 }

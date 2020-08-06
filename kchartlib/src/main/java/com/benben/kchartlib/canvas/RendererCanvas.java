@@ -5,28 +5,29 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.IntDef;
 
 import com.benben.kchartlib.adapter.IAdapter;
 import com.benben.kchartlib.drawing.Drawing;
-import com.benben.kchartlib.impl.ICanvasPortLayout;
 import com.benben.kchartlib.impl.IDataProvider;
-import com.benben.kchartlib.impl.IDrawingPortLayout;
+import com.benben.kchartlib.impl.IParentPortLayout;
 import com.benben.kchartlib.impl.IViewPort;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 /**
  * @日期 : 2020/7/1
  * @描述 : 画板
  */
-public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IViewPort {
+public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IViewPort {
 
-    private ICanvasPortLayout.CanvasLayoutParams mLayoutParams;
     private int mWidth;
     private int mHeight;
     protected Rect mViewPort = new Rect();
-    private boolean mInUpdateDrawingPortLayout;
-    private ICanvasPortLayout mCanvasPortLayout;
+    private boolean mInUpdateChildLayout;
+    private IParentPortLayout mParentPortLayout;
 
     protected IDataProvider mDataProvider;
 
@@ -37,44 +38,26 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
     public RendererCanvas() {
     }
 
-    public RendererCanvas(ICanvasPortLayout.CanvasLayoutParams params) {
-        if (params == null) {
-            throw new NullPointerException("CanvasLayoutParams cannot be null!");
-        }
-        mLayoutParams = params;
-    }
-
-    public void setLayoutParams(ICanvasPortLayout.CanvasLayoutParams params) {
-        if (params == null) {
-            throw new NullPointerException("CanvasLayoutParams cannot be null!");
-        }
-        mLayoutParams = params;
-    }
-
-    public ICanvasPortLayout.CanvasLayoutParams getLayoutParams() {
-        return mLayoutParams;
+    @Override
+    public void setInUpdateChildLayout(boolean inUpdate) {
+        mInUpdateChildLayout = inUpdate;
     }
 
     @Override
-    public void setInUpdateDrawingPortLayout(boolean inUpdate) {
-        mInUpdateDrawingPortLayout = inUpdate;
+    public boolean inUpdateChildLayout() {
+        return mInUpdateChildLayout;
     }
 
     @Override
-    public boolean inUpdateDrawingPortLayout() {
-        return mInUpdateDrawingPortLayout;
-    }
-
-    @Override
-    public void updatePortLayout() {
-        setInUpdateDrawingPortLayout(true);
+    public void updateChildLayout() {
+        setInUpdateChildLayout(true);
         if (mViewPort.isEmpty()) {
             for (Drawing drawing : mDrawings) {
                 drawing.setWidth(0);
                 drawing.setHeight(0);
                 drawing.updateViewPort(0, 0, 0, 0);
             }
-            setInUpdateDrawingPortLayout(false);
+            setInUpdateChildLayout(false);
             return;
         }
 
@@ -256,7 +239,7 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
             drawing.updateViewPort(x, y, x + drawing.getWidth(), y + drawing.getHeight());
         }
 
-        setInUpdateDrawingPortLayout(false);
+        setInUpdateChildLayout(false);
     }
 
     /**
@@ -297,30 +280,30 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
 
     @CallSuper
     @Override
-    public void attachedCanvasPortLayout(ICanvasPortLayout portLayout, IDataProvider dataProvider) {
-        mCanvasPortLayout = portLayout;
+    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider) {
+        mParentPortLayout = portLayout;
         mDataProvider = dataProvider;
         for (Drawing drawing : mDrawings) {
-            drawing.attachedDrawingPortLayout(this, mDataProvider);
+            drawing.attachedParentPortLayout(this, mDataProvider);
         }
     }
 
     @CallSuper
     @Override
-    public void detachedCanvasPortLayout() {
-        mCanvasPortLayout = null;
+    public void detachedParentPortLayout() {
+        mParentPortLayout = null;
         mDataProvider = null;
         mWidth = 0;
         mHeight = 0;
         mViewPort.setEmpty();
         for (Drawing drawing : mDrawings) {
-            drawing.detachedDrawingPortLayout();
+            drawing.detachedParentPortLayout();
         }
     }
 
     @Override
     public void setWidth(int width) {
-        if (mCanvasPortLayout != null && mCanvasPortLayout.inUpdateCanvasPortLayout()) {
+        if (mParentPortLayout != null && mParentPortLayout.inUpdateChildLayout()) {
             mWidth = width;
         } else {
             Log.w("RendererCanvas", "Setting width is not allowed.");
@@ -334,7 +317,7 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
 
     @Override
     public void setHeight(int height) {
-        if (mCanvasPortLayout != null && mCanvasPortLayout.inUpdateCanvasPortLayout()) {
+        if (mParentPortLayout != null && mParentPortLayout.inUpdateChildLayout()) {
             mHeight = height;
         } else {
             Log.w("RendererCanvas", "Setting width is not allowed.");
@@ -368,7 +351,7 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
 
     @Override
     public void updateViewPort(int left, int top, int right, int bottom) {
-        if (mCanvasPortLayout != null && mCanvasPortLayout.inUpdateCanvasPortLayout()) {
+        if (mParentPortLayout != null && mParentPortLayout.inUpdateChildLayout()) {
             mViewPort.set(left, top, right, bottom);
         } else {
             Log.w("RendererCanvas", "Setting port is not allowed.");
@@ -405,8 +388,8 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
             drawing.setLayoutParams(new DrawingLayoutParams());
         }
         mDrawings.add(drawing);
-        if (mCanvasPortLayout != null) {
-            drawing.attachedDrawingPortLayout(this, mDataProvider);
+        if (mParentPortLayout != null) {
+            drawing.attachedParentPortLayout(this, mDataProvider);
         }
     }
 
@@ -415,8 +398,8 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
         if (drawing == null) return;
 
         mDrawings.remove(drawing);
-        if (mCanvasPortLayout != null) {
-            drawing.detachedDrawingPortLayout();
+        if (mParentPortLayout != null) {
+            drawing.detachedParentPortLayout();
         }
     }
 
@@ -451,6 +434,115 @@ public class RendererCanvas implements IRendererCanvas, IDrawingPortLayout, IVie
             }
             drawing.drawData(canvas);
             canvas.restore();
+        }
+    }
+
+    /**
+     * 绘制预期布局参数
+     */
+    public static class DrawingLayoutParams {
+        public static final int NO_POSITION = -1;
+        public static final int POSITION_LEFT = 0;
+        public static final int POSITION_TOP = 2;
+        public static final int POSITION_CENTER = 1;
+        public static final int POSITION_RIGHT = 3;
+        public static final int POSITION_BOTTOM = 4;
+
+        @Retention(RetentionPolicy.SOURCE)
+        @IntDef({NO_POSITION, POSITION_LEFT, POSITION_CENTER, POSITION_RIGHT})
+        public @interface HorizontalPosition {
+
+        }
+
+        @Retention(RetentionPolicy.SOURCE)
+        @IntDef({NO_POSITION, POSITION_TOP, POSITION_CENTER, POSITION_BOTTOM})
+        public @interface VerticalPosition {
+
+        }
+
+        // 优先级：【固定宽度/固定高度】>【百分比】>【自适应】
+        private int mWidth;             // 固定宽度
+        private int mHeight;            // 固定高度
+        private float mPercent;         // 百分比
+        private int mWeight;            // 自适应 注意：如果非垂直布局和非水平布局将会铺满
+
+        // 优先级: 【水平布局/垂直布局】>【相对父布局】
+        private boolean mIsHorizontalLinear;    // 是否是水平布局
+        private boolean mIsVerticalLinear;      // 是否是垂直布局
+
+        private int mHorizontalPosition = NO_POSITION;        // 相对父布局位置：左 中 右
+        private int mVerticalPosition = NO_POSITION;          // 相对父布局位置：上 中 下
+
+        public int getWidth() {
+            return mWidth;
+        }
+
+        public void setWidth(int width) {
+            if (width < 0) width = 0;
+            mWidth = width;
+        }
+
+        public int getHeight() {
+            return mHeight;
+        }
+
+        public void setHeight(int height) {
+            if (height < 0) height = 0;
+            mHeight = height;
+        }
+
+        public float getPercent() {
+            return mPercent;
+        }
+
+        public void setPercent(float percent) {
+            if (percent > 1.0f) {
+                percent = 1.0f;
+            } else if (percent < 0) {
+                percent = 0;
+            }
+            mPercent = percent;
+        }
+
+        public int getWeight() {
+            return mWeight;
+        }
+
+        public void setWeight(int weight) {
+            if (weight < 0) weight = 0;
+            mWeight = weight;
+        }
+
+        public boolean isHorizontalLinear() {
+            return mIsHorizontalLinear;
+        }
+
+        public void setHorizontalLinear(boolean isHorizontalLinear) {
+            mIsHorizontalLinear = isHorizontalLinear;
+        }
+
+        public boolean isVerticalLinear() {
+            return mIsVerticalLinear;
+        }
+
+        public void setVerticalLinear(boolean isVerticalLinear) {
+            mIsVerticalLinear = isVerticalLinear;
+        }
+
+        public int getHorizontalPosition() {
+            return mHorizontalPosition;
+        }
+
+        public void setHorizontalPosition(@HorizontalPosition int horizontalPosition) {
+            mHorizontalPosition = horizontalPosition;
+        }
+
+        public int getVerticalPosition() {
+            return mVerticalPosition;
+        }
+
+        public void setVerticalPosition(@VerticalPosition int verticalPosition) {
+            mVerticalPosition = verticalPosition;
         }
     }
 }

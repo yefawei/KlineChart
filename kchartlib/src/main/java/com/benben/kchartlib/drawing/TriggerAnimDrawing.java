@@ -3,7 +3,7 @@ package com.benben.kchartlib.drawing;
 import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.animation.Animation;
-import com.benben.kchartlib.impl.IDrawingPortLayout;
+import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.index.range.IndexRange;
 
 /**
@@ -19,7 +19,7 @@ public abstract class TriggerAnimDrawing extends Drawing implements Animation {
         super(indexRange);
     }
 
-    public TriggerAnimDrawing(@Nullable IndexRange indexRange, IDrawingPortLayout.DrawingLayoutParams params) {
+    public TriggerAnimDrawing(@Nullable IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
     }
 

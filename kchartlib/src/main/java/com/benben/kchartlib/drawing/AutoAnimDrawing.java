@@ -3,8 +3,9 @@ package com.benben.kchartlib.drawing;
 import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.animation.Animation;
+import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.impl.IDataProvider;
-import com.benben.kchartlib.impl.IDrawingPortLayout;
+import com.benben.kchartlib.impl.IParentPortLayout;
 import com.benben.kchartlib.index.range.IndexRange;
 
 /**
@@ -20,20 +21,20 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
         super(indexRange);
     }
 
-    public AutoAnimDrawing(@Nullable IndexRange indexRange, IDrawingPortLayout.DrawingLayoutParams params) {
+    public AutoAnimDrawing(@Nullable IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
     }
 
     @Override
-    public void attachedDrawingPortLayout(IDrawingPortLayout portLayout, IDataProvider dataProvider) {
-        super.attachedDrawingPortLayout(portLayout, dataProvider);
+    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider) {
+        super.attachedParentPortLayout(portLayout, dataProvider);
         mDataProvider.getChartAnimation().addAnim(this);
     }
 
     @Override
-    public void detachedDrawingPortLayout() {
+    public void detachedParentPortLayout() {
         mDataProvider.getChartAnimation().removeAnim(this);
-        super.detachedDrawingPortLayout();
+        super.detachedParentPortLayout();
     }
 
     @Override

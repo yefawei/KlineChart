@@ -20,7 +20,7 @@ import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.impl.IMainCanvasPort;
 import com.benben.kchartlib.render.BackgroundRenderer;
 import com.benben.kchartlib.render.ForegroundRenderer;
-import com.benben.kchartlib.render.ViewRenderer;
+import com.benben.kchartlib.render.MainRenderer;
 
 /**
  * @日期 : 2020/6/30
@@ -47,7 +47,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private Rect mViewPort = new Rect();    // 视图可绘制区域
     private boolean mIsRenderBackground = false;
     private BackgroundRenderer mBackgroundRenderer;
-    private ViewRenderer mViewRender;
+    private MainRenderer mViewRender;
     private boolean mIsRenderForeground = false;
     private ForegroundRenderer mForegroundRenderer;
 
@@ -62,7 +62,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     public InteractiveKChartView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mBackgroundRenderer = new BackgroundRenderer(this);
-        mViewRender = new ViewRenderer(this);
+        mViewRender = new MainRenderer(this);
         mForegroundRenderer = new ForegroundRenderer(this);
         mTransformer = new Transformer(this);
         mAnimationManager = new AnimationManager(this);
@@ -188,6 +188,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     public void setRenderBackgroud(boolean render) {
+        if (mIsRenderBackground == render) return;
         mIsRenderBackground = render;
         updateRenderPortLayout();
     }
@@ -196,11 +197,12 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         return mBackgroundRenderer;
     }
 
-    public ViewRenderer getViewRender() {
+    public MainRenderer getViewRender() {
         return mViewRender;
     }
 
     public void setRenderForeground(boolean render) {
+        if (mIsRenderForeground == render) return;
         mIsRenderForeground = render;
         updateRenderPortLayout();
     }
@@ -216,9 +218,9 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mBackgroundRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
         mViewRender.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
         mForegroundRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
-        mBackgroundRenderer.updatePortLayout();
-        mViewRender.updatePortLayout();
-        mForegroundRenderer.updatePortLayout();
+        mBackgroundRenderer.updateChildLayout();
+        mViewRender.updateChildLayout();
+        mForegroundRenderer.updateChildLayout();
         notifyChange();
     }
 

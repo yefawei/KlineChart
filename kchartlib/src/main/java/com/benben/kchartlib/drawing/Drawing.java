@@ -6,8 +6,9 @@ import android.util.Log;
 import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
+import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.impl.IDataProvider;
-import com.benben.kchartlib.impl.IDrawingPortLayout;
+import com.benben.kchartlib.impl.IParentPortLayout;
 import com.benben.kchartlib.impl.IViewPort;
 import com.benben.kchartlib.index.range.IndexRange;
 
@@ -18,12 +19,12 @@ import com.benben.kchartlib.index.range.IndexRange;
 public abstract class Drawing implements IDrawing, IViewPort {
 
     protected IndexRange mIndexRange;
-    private IDrawingPortLayout.DrawingLayoutParams mLayoutParams;
+    private RendererCanvas.DrawingLayoutParams mLayoutParams;
     private int mWidth;
     private int mHeight;
     protected Rect mViewPort = new Rect();
     private boolean mDrawInViewPort = true;
-    private IDrawingPortLayout mDrawingPortLayout;
+    private IParentPortLayout mDrawingPortLayout;
 
     protected IDataProvider mDataProvider;
 
@@ -34,7 +35,7 @@ public abstract class Drawing implements IDrawing, IViewPort {
         mIndexRange = indexRange;
     }
 
-    public Drawing(@Nullable IndexRange indexRange, IDrawingPortLayout.DrawingLayoutParams params) {
+    public Drawing(@Nullable IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         mIndexRange = indexRange;
         if (params == null) {
             throw new NullPointerException("DrawingLayoutParams cannot be null!");
@@ -42,20 +43,20 @@ public abstract class Drawing implements IDrawing, IViewPort {
         mLayoutParams = params;
     }
 
-    public void setLayoutParams(IDrawingPortLayout.DrawingLayoutParams params) {
+    public void setLayoutParams(RendererCanvas.DrawingLayoutParams params) {
         if (params == null) {
             throw new NullPointerException("DrawingLayoutParams cannot be null!");
         }
         mLayoutParams = params;
     }
 
-    public IDrawingPortLayout.DrawingLayoutParams getLayoutParams() {
+    public RendererCanvas.DrawingLayoutParams getLayoutParams() {
         return mLayoutParams;
     }
 
     @CallSuper
     @Override
-    public void attachedDrawingPortLayout(IDrawingPortLayout portLayout, IDataProvider dataProvider) {
+    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider) {
         mDrawingPortLayout = portLayout;
         mDataProvider = dataProvider;
         if (mIndexRange != null) {
@@ -65,7 +66,7 @@ public abstract class Drawing implements IDrawing, IViewPort {
 
     @CallSuper
     @Override
-    public void detachedDrawingPortLayout() {
+    public void detachedParentPortLayout() {
         if (mIndexRange != null) {
             mDataProvider.getTransformer().removeIndexRange(mIndexRange);
         }
@@ -78,7 +79,7 @@ public abstract class Drawing implements IDrawing, IViewPort {
 
     @Override
     public void setWidth(int width) {
-        if (mDrawingPortLayout != null && mDrawingPortLayout.inUpdateDrawingPortLayout()) {
+        if (mDrawingPortLayout != null && mDrawingPortLayout.inUpdateChildLayout()) {
             mWidth = width;
         } else {
             Log.w("Drawing", "Setting width is not allowed.");
@@ -92,7 +93,7 @@ public abstract class Drawing implements IDrawing, IViewPort {
 
     @Override
     public void setHeight(int height) {
-        if (mDrawingPortLayout != null && mDrawingPortLayout.inUpdateDrawingPortLayout()) {
+        if (mDrawingPortLayout != null && mDrawingPortLayout.inUpdateChildLayout()) {
             mHeight = height;
         } else {
             Log.w("Drawing", "Setting width is not allowed.");
@@ -126,7 +127,7 @@ public abstract class Drawing implements IDrawing, IViewPort {
 
     @Override
     public void updateViewPort(int left, int top, int right, int bottom) {
-        if (mDrawingPortLayout != null && mDrawingPortLayout.inUpdateDrawingPortLayout()) {
+        if (mDrawingPortLayout != null && mDrawingPortLayout.inUpdateChildLayout()) {
             mViewPort.set(left, top, right, bottom);
         } else {
             Log.w("Drawing", "Setting port is not allowed.");

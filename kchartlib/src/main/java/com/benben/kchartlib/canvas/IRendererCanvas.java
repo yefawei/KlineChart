@@ -3,8 +3,8 @@ package com.benben.kchartlib.canvas;
 import android.graphics.Canvas;
 
 import com.benben.kchartlib.drawing.Drawing;
-import com.benben.kchartlib.impl.ICanvasPortLayout;
 import com.benben.kchartlib.impl.IDataProvider;
+import com.benben.kchartlib.impl.IParentPortLayout;
 
 /**
  * @日期 : 2020/7/1
@@ -16,9 +16,9 @@ public interface IRendererCanvas {
 
     void setHeight(int height);
 
-    void attachedCanvasPortLayout(ICanvasPortLayout portLayout, IDataProvider dataProvider);
+    void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider);
 
-    void detachedCanvasPortLayout();
+    void detachedParentPortLayout();
 
     /**
      * 画板是否有效

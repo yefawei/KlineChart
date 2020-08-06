@@ -4,33 +4,33 @@ import android.graphics.Rect;
 
 import androidx.annotation.CallSuper;
 
-import com.benben.kchartlib.impl.ICanvasPortLayout;
 import com.benben.kchartlib.impl.IDataProvider;
+import com.benben.kchartlib.impl.IParentPortLayout;
 import com.benben.kchartlib.impl.IViewPort;
 
 /**
  * @日期 : 2020/7/1
  * @描述 : 渲染类
  */
-public abstract class Renderer implements IRenderer, ICanvasPortLayout, IViewPort {
+public abstract class Renderer implements IRenderer, IParentPortLayout, IViewPort {
 
     protected IDataProvider mDataProvider;
 
     protected Rect mViewPort = new Rect();
-    private boolean mInUpdateCanvasPortLayout;
+    private boolean mInUpdateChildLayout;
 
     public Renderer(IDataProvider dataProvider) {
         mDataProvider = dataProvider;
     }
 
     @Override
-    public void setInUpdateCanvasPortLayout(boolean inUpdate) {
-        mInUpdateCanvasPortLayout = inUpdate;
+    public void setInUpdateChildLayout(boolean inUpdate) {
+        mInUpdateChildLayout = inUpdate;
     }
 
     @Override
-    public boolean inUpdateCanvasPortLayout() {
-        return mInUpdateCanvasPortLayout;
+    public boolean inUpdateChildLayout() {
+        return mInUpdateChildLayout;
     }
 
     @Override

@@ -8,10 +8,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.benben.kchartlib.InteractiveKChartView;
+import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
-import com.benben.kchartlib.impl.ICanvasPortLayout;
-import com.benben.kchartlib.impl.IDrawingPortLayout;
-import com.benben.kchartlib.render.ViewRenderer;
+import com.benben.kchartlib.render.MainRenderer;
 import com.example.kchartdemo.data.Data;
 import com.example.kchartdemo.data.KlineInfo;
 
@@ -34,14 +33,14 @@ public class MainActivity extends AppCompatActivity {
         mData = new Data();
 
         mKChart.setPointWidth((int) (getResources().getDisplayMetrics().density * 24 + 0.5f));
-        ICanvasPortLayout.CanvasLayoutParams canvasLayoutParams = new ICanvasPortLayout.CanvasLayoutParams(0, 0, 1);
-        RendererCanvas mainRenderCanvas = new RendererCanvas(canvasLayoutParams);
+        MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
+        MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         mKChart.setPadding(60, 60, 60, 60);
-        IDrawingPortLayout.DrawingLayoutParams params = new IDrawingPortLayout.DrawingLayoutParams();
+        RendererCanvas.DrawingLayoutParams params = new RendererCanvas.DrawingLayoutParams();
         params.setWeight(1);
-        params.setVerticalPosition(IDrawingPortLayout.DrawingLayoutParams.POSITION_BOTTOM);
+        params.setVerticalPosition(RendererCanvas.DrawingLayoutParams.POSITION_BOTTOM);
         mainRenderCanvas.addDrawing(new CandleDrawing(params));
-        mKChart.getViewRender().addRenderCanvas(mainRenderCanvas, ViewRenderer.POSITION_MAIN);
+        mKChart.getViewRender().addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
     }
 
 
