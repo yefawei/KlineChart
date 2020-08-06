@@ -283,9 +283,15 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     /**
      * 指定屏幕位置到达指定索引
+     *
      * @param inScreenPercent 屏幕所在百分比位置
      */
     public void scrollToIndex(int index, @FloatRange(from = 0, to = 1.0) float inScreenPercent) {
+        if (index < 0 || mAdapter == null) {
+            index = 0;
+        } else if (index >= mAdapter.getCount()) {
+            index = mAdapter.getCount() - 1;
+        }
         if (inScreenPercent < 0) {
             inScreenPercent = 0;
         } else if (inScreenPercent > 1.0f) {
