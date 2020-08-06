@@ -33,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         mData = new Data();
 
-        mKChart.setPointWidth((int)(getResources().getDisplayMetrics().density * 24 + 0.5f));
+        mKChart.setPointWidth((int) (getResources().getDisplayMetrics().density * 24 + 0.5f));
         ICanvasPortLayout.CanvasLayoutParams canvasLayoutParams = new ICanvasPortLayout.CanvasLayoutParams(0, 0, 1);
         RendererCanvas mainRenderCanvas = new RendererCanvas(canvasLayoutParams);
-        mKChart.setPadding(60,60,60,60);
+        mKChart.setPadding(60, 60, 60, 60);
         IDrawingPortLayout.DrawingLayoutParams params = new IDrawingPortLayout.DrawingLayoutParams();
         params.setWeight(1);
         params.setVerticalPosition(IDrawingPortLayout.DrawingLayoutParams.POSITION_BOTTOM);
@@ -70,14 +70,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void scroll0(View view) {
-        mKChart.scrollToRightIndex(0);
+        mKChart.scrollToIndex(0, 0.25f);
     }
 
     public void scroll10(View view) {
-        mKChart.scrollToRightIndex(10);
+        mKChart.scrollToIndex(50, 0.25f);
     }
 
     public void scroll90(View view) {
-        mKChart.scrollToRightIndex(90);
+        mKChart.scrollToIndex(99, 0.25f);
     }
 }

@@ -59,5 +59,9 @@ public class CandleDrawing extends Drawing {
             mPaint.setTextSize(28);
             canvas.drawText(i + "", limit, center, mPaint);
         }
+
+        canvas.drawLine(getLeft() + getWidth() * 0.25f, getTop(), getLeft() + getWidth() * 0.25f, getBottom(), mPaint);
+        canvas.drawLine(getLeft() + getWidth() * 0.5f, getTop(), getLeft() + getWidth() * 0.5f, getBottom(), mPaint);
+        canvas.drawLine(getLeft() + getWidth() * 0.75f, getTop(), getLeft() + getWidth() * 0.75f, getBottom(), mPaint);
     }
 }

@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 
+import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -281,19 +282,16 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     /**
-     * 屏幕左侧到达指定索引
+     * 指定屏幕位置到达指定索引
+     * @param inScreenPercent 屏幕所在百分比位置
      */
-    public void scrollToLeftIndex(int index) {
-        int targetScrollX = mTransformer.getScrollXForLeftIndex(index);
-        int maxScrollX = getMaxScrollX();
-        setScroll(Math.min(targetScrollX, maxScrollX));
-    }
-
-    /**
-     * 屏幕右侧到达指定索引
-     */
-    public void scrollToRightIndex(int index) {
-        int targetScrollX = mTransformer.getScrollXForRightIndex(index);
+    public void scrollToIndex(int index, @FloatRange(from = 0, to = 1.0) float inScreenPercent) {
+        if (inScreenPercent < 0) {
+            inScreenPercent = 0;
+        } else if (inScreenPercent > 1.0f) {
+            inScreenPercent = 1.0f;
+        }
+        int targetScrollX = mTransformer.getScrollXForIndex(index, inScreenPercent);
         int maxScrollX = getMaxScrollX();
         setScroll(Math.min(targetScrollX, maxScrollX));
     }

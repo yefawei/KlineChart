@@ -33,16 +33,9 @@ public class Transformer {
     /**
      * 获取该索引在屏幕左侧时ScrollX值
      */
-    public int getScrollXForLeftIndex(int index) {
-        float scrollx = mDataProvider.getScalePointWidth() * (getItemCount() - index) - mDataProvider.getMainCanvasPort().getMainCanvasWidth();
-        return Math.round(Math.max(scrollx, 0));
-    }
-
-    /**
-     * 获取该索引在屏幕右侧时ScrollX值
-     */
-    public int getScrollXForRightIndex(int index) {
-        float scrollx = (getItemCount() - index - 1) * mDataProvider.getScalePointWidth();
+    public int getScrollXForIndex(int index, float inScreenPercent) {
+        float scrollx = (getItemCount() - index - inScreenPercent) * mDataProvider.getScalePointWidth()
+                - mDataProvider.getMainCanvasPort().getMainCanvasWidth() * (1.0f - inScreenPercent);
         return Math.round(Math.max(scrollx, 0));
     }
 
