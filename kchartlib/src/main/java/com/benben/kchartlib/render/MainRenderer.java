@@ -107,16 +107,16 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
         for (MainRendererCanvas renderCanvas : mHorizontalCanvas) {
             if (renderCanvas == null) continue;
             CanvasLayoutParams layoutParams = renderCanvas.getLayoutParams();
-            if (layoutParams.getWidth() > 0) {
-                if (layoutParams.getWidth() > width) {
+            if (layoutParams.mWidth > 0) {
+                if (layoutParams.mWidth > width) {
                     renderCanvas.setWidth(width);
                     width = 0;
                 } else {
-                    renderCanvas.setWidth(layoutParams.getWidth());
-                    width -= layoutParams.getWidth();
+                    renderCanvas.setWidth(layoutParams.mWidth);
+                    width -= layoutParams.mWidth;
                 }
-            } else if (layoutParams.getWeight() > 0) {
-                tempValue = weightUnitWidth * layoutParams.getWeight();
+            } else if (layoutParams.mWeight > 0) {
+                tempValue = weightUnitWidth * layoutParams.mWeight;
                 renderCanvas.setWidth(tempValue);
                 width -= tempValue;
             } else {
@@ -129,9 +129,9 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
             for (MainRendererCanvas horizontalCanva : mHorizontalCanvas) {
                 if (horizontalCanva == null) continue;
                 CanvasLayoutParams layoutParams = horizontalCanva.getLayoutParams();
-                if (layoutParams.getWidth() > 0) continue;
-                if (layoutParams.getWeight() > 0) {
-                    tempValue = Math.round(width * 1.0f / horizontalWeightAndWidth[0] * layoutParams.getWeight() + 0.5f);
+                if (layoutParams.mWidth > 0) continue;
+                if (layoutParams.mWeight > 0) {
+                    tempValue = Math.round(width * 1.0f / horizontalWeightAndWidth[0] * layoutParams.mWeight + 0.5f);
                     if (tempValue + w > width) {
                         tempValue = width - w;
                     }
@@ -147,16 +147,16 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
         for (MainRendererCanvas renderCanvas : mVerticalCanvas) {
             if (renderCanvas == null) continue;
             CanvasLayoutParams layoutParams = renderCanvas.getLayoutParams();
-            if (layoutParams.getHeight() > 0) {
-                if (layoutParams.getHeight() > height) {
+            if (layoutParams.mHeight > 0) {
+                if (layoutParams.mHeight > height) {
                     renderCanvas.setHeight(height);
                     height = 0;
                 } else {
-                    renderCanvas.setHeight(layoutParams.getHeight());
-                    height -= layoutParams.getHeight();
+                    renderCanvas.setHeight(layoutParams.mHeight);
+                    height -= layoutParams.mHeight;
                 }
-            } else if (layoutParams.getWeight() > 0) {
-                tempValue = weightUnitHeight * layoutParams.getWeight();
+            } else if (layoutParams.mWeight > 0) {
+                tempValue = weightUnitHeight * layoutParams.mWeight;
                 renderCanvas.setHeight(tempValue);
                 height -= tempValue;
             } else {
@@ -169,9 +169,9 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
             for (MainRendererCanvas verticalCanva : mVerticalCanvas) {
                 if (verticalCanva == null) continue;
                 CanvasLayoutParams layoutParams = verticalCanva.getLayoutParams();
-                if (layoutParams.getHeight() > 0) continue;
-                if (layoutParams.getWeight() > 0) {
-                    tempValue = Math.round(height * 1.0f / verticalWeightAndHeight[0] * layoutParams.getWeight() + 0.5f);
+                if (layoutParams.mHeight > 0) continue;
+                if (layoutParams.mWeight > 0) {
+                    tempValue = Math.round(height * 1.0f / verticalWeightAndHeight[0] * layoutParams.mWeight + 0.5f);
                     if (tempValue + h > height) {
                         tempValue = height - h;
                     }
@@ -295,10 +295,10 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
         for (MainRendererCanvas c : mHorizontalCanvas) {
             if (c == null) continue;
             CanvasLayoutParams layoutParams = c.getLayoutParams();
-            if (layoutParams.getWidth() > 0) {
-                i[1] += layoutParams.getWidth();
+            if (layoutParams.mWidth > 0) {
+                i[1] += layoutParams.mWidth;
             } else {
-                i[0] += layoutParams.getWeight();
+                i[0] += layoutParams.mWeight;
             }
         }
         return i;
@@ -312,10 +312,10 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
         for (MainRendererCanvas c : mVerticalCanvas) {
             if (c == null) continue;
             CanvasLayoutParams layoutParams = c.getLayoutParams();
-            if (layoutParams.getHeight() > 0) {
-                i[1] += layoutParams.getHeight();
+            if (layoutParams.mHeight > 0) {
+                i[1] += layoutParams.mHeight;
             } else {
-                i[0] += layoutParams.getWeight();
+                i[0] += layoutParams.mWeight;
             }
         }
         return i;
