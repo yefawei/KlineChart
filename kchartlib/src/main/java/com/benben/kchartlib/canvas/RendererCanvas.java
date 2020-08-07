@@ -97,13 +97,13 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         }
         int tempValue;
         DrawingLayoutParams params;
-        // 计算出水平方向宽度
+        // 计算出水平方向线性布局宽度
         for (Drawing drawing : mHorizontalLinearDrawings) {
             params = drawing.getLayoutParams();
             if (params.getWidth() > 0) {
                 tempValue = params.getWidth();
-            } else if (params.getPercent() > 0) {
-                tempValue = Math.round(w * params.getPercent());
+            } else if (params.getHorizontalPercent() > 0) {
+                tempValue = Math.round(w * params.getHorizontalPercent());
             } else if (params.getWeight() > 0) {
                 tempValue = params.getWeight() * weightUnitWidth;
             } else {
@@ -124,7 +124,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
             // 说明按比例宽度没有填满视图
             for (Drawing drawing : mHorizontalLinearDrawings) {
                 params = drawing.getLayoutParams();
-                if (params.getWidth() > 0 || params.getPercent() > 0) continue;
+                if (params.getWidth() > 0 || params.getHorizontalPercent() > 0) continue;
                 if (params.getWeight() > 0) {
                     tempValue = Math.round(width * 1.0f / horizontalWeightAndWidth[0] * params.getWeight() + 0.5f);
                     if (tempValue + tw > width) {
@@ -137,13 +137,13 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
                 if (width == tw) break;
             }
         }
-        // 计算出垂直方向宽度
+        // 计算出垂直方向线性布局高度
         for (Drawing drawing : mVerticalLinearDrawings) {
             params = drawing.getLayoutParams();
             if (params.getHeight() > 0) {
                 tempValue = params.getHeight();
-            } else if (params.getPercent() > 0) {
-                tempValue = Math.round(h * params.getPercent());
+            } else if (params.getVerticalPercent() > 0) {
+                tempValue = Math.round(h * params.getVerticalPercent());
             } else if (params.getWeight() > 0) {
                 tempValue = params.getWeight() * weightUnitHeight;
             } else {
@@ -164,7 +164,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
             // 说明按比例高度没有填满视图
             for (Drawing drawing : mVerticalLinearDrawings) {
                 params = drawing.getLayoutParams();
-                if (params.getHeight() > 0 || params.getPercent() > 0) continue;
+                if (params.getHeight() > 0 || params.getVerticalPercent() > 0) continue;
                 if (params.getWeight() > 0) {
                     tempValue = Math.round(width * 1.0f / horizontalWeightAndWidth[0] * params.getWeight() + 0.5f);
                     if (tempValue + th > height) {
@@ -177,13 +177,15 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
                 if (height == th) break;
             }
         }
+
+        //计算非线性布局宽高
         for (Drawing drawing : mDrawings) {
             params = drawing.getLayoutParams();
             if (!params.isHorizontalLinear()) {
                 if (params.getWidth() > 0) {
                     tempValue = params.getWidth();
-                } else if (params.getPercent() > 0) {
-                    tempValue = Math.round(w * params.getPercent());
+                } else if (params.getHorizontalPercent() > 0) {
+                    tempValue = Math.round(w * params.getHorizontalPercent());
                 } else if (params.getWeight() > 0) {
                     tempValue = w;
                 } else {
@@ -196,8 +198,8 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
             if (!params.isVerticalLinear()) {
                 if (params.getHeight() > 0) {
                     tempValue = params.getHeight();
-                } else if (params.getPercent() > 0) {
-                    tempValue = Math.round(h * params.getPercent());
+                } else if (params.getVerticalPercent() > 0) {
+                    tempValue = Math.round(h * params.getVerticalPercent());
                 } else if (params.getWeight() > 0) {
                     tempValue = h;
                 } else {
@@ -251,8 +253,8 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
             DrawingLayoutParams params = drawing.getLayoutParams();
             if (params.getWidth() > 0) {
                 i[1] += params.getWidth();
-            } else if (params.getPercent() > 0) {
-                i[1] += Math.round(this.getWidth() * params.getPercent());
+            } else if (params.getHorizontalPercent() > 0) {
+                i[1] += Math.round(this.getWidth() * params.getHorizontalPercent());
             } else if (params.getWeight() > 0) {
                 i[0] += params.getWeight();
             }
@@ -269,8 +271,8 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
             DrawingLayoutParams params = drawing.getLayoutParams();
             if (params.getHeight() > 0) {
                 i[1] += params.getHeight();
-            } else if (params.getPercent() > 0) {
-                i[1] += Math.round(this.getHeight() * params.getPercent());
+            } else if (params.getVerticalPercent() > 0) {
+                i[1] += Math.round(this.getHeight() * params.getVerticalPercent());
             } else if (params.getWeight() > 0) {
                 i[0] += params.getWeight();
             }
@@ -382,11 +384,26 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
 
     @Override
     public void addDrawing(Drawing drawing) {
+        addDrawing(drawing, false);
+    }
+
+    @Override
+    public void addDrawing(Drawing drawing, boolean isMainIndexDrawing) {
         if (drawing == null) return;
 
         if (drawing.getLayoutParams() == null) {
-            drawing.setLayoutParams(new DrawingLayoutParams());
+            drawing.setLayoutParams(new DrawingLayoutParams(true));
         }
+        if (isMainIndexDrawing) {
+            DrawingLayoutParams layoutParams = drawing.getLayoutParams();
+            if (!layoutParams.mIsDefault) {
+                layoutParams.mWidth = 0;
+                layoutParams.mHorizontalPercent = 0;
+                layoutParams.mWeight = 1;
+                layoutParams.mIsHorizontalLinear = false;
+            }
+        }
+
         mDrawings.add(drawing);
         if (mParentPortLayout != null) {
             drawing.attachedParentPortLayout(this, mDataProvider);
@@ -463,7 +480,8 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         // 优先级：【固定宽度/固定高度】>【百分比】>【自适应】
         private int mWidth;             // 固定宽度
         private int mHeight;            // 固定高度
-        private float mPercent;         // 百分比
+        private float mHorizontalPercent;       // 水平百分比
+        private float mVerticalPercent;         // 垂直百分比
         private int mWeight;            // 自适应 注意：如果非垂直布局和非水平布局将会铺满
 
         // 优先级: 【水平布局/垂直布局】>【相对父布局】
@@ -472,6 +490,15 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
 
         private int mHorizontalPosition = NO_POSITION;        // 相对父布局位置：左 中 右
         private int mVerticalPosition = NO_POSITION;          // 相对父布局位置：上 中 下
+
+        private boolean mIsDefault;
+
+        public DrawingLayoutParams() {
+        }
+
+        private DrawingLayoutParams(boolean defaultParams) {
+            mIsDefault = defaultParams;
+        }
 
         public int getWidth() {
             return mWidth;
@@ -491,17 +518,30 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
             mHeight = height;
         }
 
-        public float getPercent() {
-            return mPercent;
+        public float getHorizontalPercent() {
+            return mHorizontalPercent;
         }
 
-        public void setPercent(float percent) {
+        public void setHorizontalPercent(float percent) {
             if (percent > 1.0f) {
                 percent = 1.0f;
             } else if (percent < 0) {
                 percent = 0;
             }
-            mPercent = percent;
+            mHorizontalPercent = percent;
+        }
+
+        public float getVerticalPercent() {
+            return mVerticalPercent;
+        }
+
+        public void setVerticalPercent(float percent) {
+            if (percent > 1.0f) {
+                percent = 1.0f;
+            } else if (percent < 0) {
+                percent = 0;
+            }
+            mVerticalPercent = percent;
         }
 
         public int getWeight() {

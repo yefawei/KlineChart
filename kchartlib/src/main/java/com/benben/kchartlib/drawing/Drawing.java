@@ -31,6 +31,13 @@ public abstract class Drawing implements IDrawing, IViewPort {
     public Drawing() {
     }
 
+    public Drawing(RendererCanvas.DrawingLayoutParams params) {
+        if (params == null) {
+            throw new NullPointerException("DrawingLayoutParams cannot be null!");
+        }
+        mLayoutParams = params;
+    }
+
     public Drawing(@Nullable IndexRange indexRange) {
         mIndexRange = indexRange;
     }
