@@ -64,10 +64,10 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         mHorizontalLinearDrawings.clear();
         mVerticalLinearDrawings.clear();
         for (Drawing drawing : mDrawings) {
-            if (drawing.getLayoutParams().isHorizontalLinear()) {
+            if (drawing.getLayoutParams().mIsHorizontalLinear) {
                 mHorizontalLinearDrawings.add(drawing);
             }
-            if (drawing.getLayoutParams().isVerticalLinear()) {
+            if (drawing.getLayoutParams().mIsVerticalLinear) {
                 mVerticalLinearDrawings.add(drawing);
             }
         }
@@ -100,12 +100,12 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         // 计算出水平方向线性布局宽度
         for (Drawing drawing : mHorizontalLinearDrawings) {
             params = drawing.getLayoutParams();
-            if (params.getWidth() > 0) {
-                tempValue = params.getWidth();
-            } else if (params.getHorizontalPercent() > 0) {
-                tempValue = Math.round(w * params.getHorizontalPercent());
-            } else if (params.getWeight() > 0) {
-                tempValue = params.getWeight() * weightUnitWidth;
+            if (params.mWidth > 0) {
+                tempValue = params.mWidth;
+            } else if (params.mHorizontalPercent > 0) {
+                tempValue = Math.round(w * params.mHorizontalPercent);
+            } else if (params.mWeight > 0) {
+                tempValue = params.mWeight * weightUnitWidth;
             } else {
                 tempValue = 0;
             }
@@ -124,9 +124,9 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
             // 说明按比例宽度没有填满视图
             for (Drawing drawing : mHorizontalLinearDrawings) {
                 params = drawing.getLayoutParams();
-                if (params.getWidth() > 0 || params.getHorizontalPercent() > 0) continue;
-                if (params.getWeight() > 0) {
-                    tempValue = Math.round(width * 1.0f / horizontalWeightAndWidth[0] * params.getWeight() + 0.5f);
+                if (params.mWidth > 0 || params.mHorizontalPercent > 0) continue;
+                if (params.mWeight > 0) {
+                    tempValue = Math.round(width * 1.0f / horizontalWeightAndWidth[0] * params.mWeight + 0.5f);
                     if (tempValue + tw > width) {
                         tempValue = width - tw;
                     }
@@ -140,12 +140,12 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         // 计算出垂直方向线性布局高度
         for (Drawing drawing : mVerticalLinearDrawings) {
             params = drawing.getLayoutParams();
-            if (params.getHeight() > 0) {
-                tempValue = params.getHeight();
-            } else if (params.getVerticalPercent() > 0) {
-                tempValue = Math.round(h * params.getVerticalPercent());
-            } else if (params.getWeight() > 0) {
-                tempValue = params.getWeight() * weightUnitHeight;
+            if (params.mHeight > 0) {
+                tempValue = params.mHeight;
+            } else if (params.mVerticalPercent > 0) {
+                tempValue = Math.round(h * params.mVerticalPercent);
+            } else if (params.mWeight > 0) {
+                tempValue = params.mWeight * weightUnitHeight;
             } else {
                 tempValue = 0;
             }
@@ -164,9 +164,9 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
             // 说明按比例高度没有填满视图
             for (Drawing drawing : mVerticalLinearDrawings) {
                 params = drawing.getLayoutParams();
-                if (params.getHeight() > 0 || params.getVerticalPercent() > 0) continue;
-                if (params.getWeight() > 0) {
-                    tempValue = Math.round(width * 1.0f / horizontalWeightAndWidth[0] * params.getWeight() + 0.5f);
+                if (params.mHeight > 0 || params.mVerticalPercent > 0) continue;
+                if (params.mWeight > 0) {
+                    tempValue = Math.round(width * 1.0f / horizontalWeightAndWidth[0] * params.mWeight + 0.5f);
                     if (tempValue + th > height) {
                         tempValue = height - th;
                     }
@@ -181,12 +181,12 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         //计算非线性布局宽高
         for (Drawing drawing : mDrawings) {
             params = drawing.getLayoutParams();
-            if (!params.isHorizontalLinear()) {
-                if (params.getWidth() > 0) {
-                    tempValue = params.getWidth();
-                } else if (params.getHorizontalPercent() > 0) {
-                    tempValue = Math.round(w * params.getHorizontalPercent());
-                } else if (params.getWeight() > 0) {
+            if (!params.mIsHorizontalLinear) {
+                if (params.mWidth > 0) {
+                    tempValue = params.mWidth;
+                } else if (params.mHorizontalPercent > 0) {
+                    tempValue = Math.round(w * params.mHorizontalPercent);
+                } else if (params.mWeight > 0) {
                     tempValue = w;
                 } else {
                     tempValue = 0;
@@ -195,12 +195,12 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
                     drawing.setWidth(Math.min(tempValue, w));
                 }
             }
-            if (!params.isVerticalLinear()) {
-                if (params.getHeight() > 0) {
-                    tempValue = params.getHeight();
-                } else if (params.getVerticalPercent() > 0) {
-                    tempValue = Math.round(h * params.getVerticalPercent());
-                } else if (params.getWeight() > 0) {
+            if (!params.mIsVerticalLinear) {
+                if (params.mHeight > 0) {
+                    tempValue = params.mHeight;
+                } else if (params.mVerticalPercent > 0) {
+                    tempValue = Math.round(h * params.mVerticalPercent);
+                } else if (params.mWeight > 0) {
                     tempValue = h;
                 } else {
                     tempValue = 0;
@@ -218,22 +218,22 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         // 最终确认布局
         for (Drawing drawing : mDrawings) {
             params = drawing.getLayoutParams();
-            if (params.isHorizontalLinear()) {
+            if (params.mIsHorizontalLinear) {
                 x = startX;
                 startX += drawing.getWidth();
-            } else if (params.getHorizontalPosition() == DrawingLayoutParams.POSITION_CENTER) {
+            } else if (params.mHorizontalPosition == DrawingLayoutParams.POSITION_CENTER) {
                 x = getLeft() + (getWidth() - drawing.getWidth()) / 2;
-            } else if (params.getHorizontalPosition() == DrawingLayoutParams.POSITION_RIGHT) {
+            } else if (params.mHorizontalPosition == DrawingLayoutParams.POSITION_RIGHT) {
                 x = getRight() - drawing.getWidth();
             } else {
                 x = getLeft();
             }
-            if (params.isVerticalLinear()) {
+            if (params.mIsVerticalLinear) {
                 y = startY;
                 startY += drawing.getHeight();
-            } else if (params.getVerticalPosition() == DrawingLayoutParams.POSITION_CENTER) {
+            } else if (params.mVerticalPosition == DrawingLayoutParams.POSITION_CENTER) {
                 y = getTop() + (getHeight() - drawing.getHeight()) / 2;
-            } else if (params.getVerticalPosition() == DrawingLayoutParams.POSITION_BOTTOM) {
+            } else if (params.mVerticalPosition == DrawingLayoutParams.POSITION_BOTTOM) {
                 y = getBottom() - drawing.getHeight();
             } else {
                 y = getTop();
@@ -251,12 +251,12 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         int[] i = new int[2];
         for (Drawing drawing : mHorizontalLinearDrawings) {
             DrawingLayoutParams params = drawing.getLayoutParams();
-            if (params.getWidth() > 0) {
-                i[1] += params.getWidth();
-            } else if (params.getHorizontalPercent() > 0) {
-                i[1] += Math.round(this.getWidth() * params.getHorizontalPercent());
-            } else if (params.getWeight() > 0) {
-                i[0] += params.getWeight();
+            if (params.mWidth > 0) {
+                i[1] += params.mWidth;
+            } else if (params.mHorizontalPercent > 0) {
+                i[1] += Math.round(this.getWidth() * params.mHorizontalPercent);
+            } else if (params.mWeight > 0) {
+                i[0] += params.mWeight;
             }
         }
         return i;
@@ -269,12 +269,12 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         int[] i = new int[2];
         for (Drawing drawing : mVerticalLinearDrawings) {
             DrawingLayoutParams params = drawing.getLayoutParams();
-            if (params.getHeight() > 0) {
-                i[1] += params.getHeight();
-            } else if (params.getVerticalPercent() > 0) {
-                i[1] += Math.round(this.getHeight() * params.getVerticalPercent());
-            } else if (params.getWeight() > 0) {
-                i[0] += params.getWeight();
+            if (params.mHeight > 0) {
+                i[1] += params.mHeight;
+            } else if (params.mVerticalPercent > 0) {
+                i[1] += Math.round(this.getHeight() * params.mVerticalPercent);
+            } else if (params.mWeight > 0) {
+                i[0] += params.mWeight;
             }
         }
         return i;
