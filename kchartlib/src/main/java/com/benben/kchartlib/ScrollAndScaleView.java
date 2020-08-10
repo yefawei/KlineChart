@@ -19,7 +19,7 @@ import com.benben.kchartlib.impl.IDataProvider;
  * @日期 : 2020/6/30
  * @描述 :
  */
-public abstract class ScrollAndScaleView extends View implements GestureDetector.OnGestureListener,
+public abstract class ScrollAndScaleView extends View implements GestureDetector.OnGestureListener,GestureDetector.OnDoubleTapListener,
         ScaleGestureDetectorCompat.OnScaleGestureListener, IDataProvider {
 
     private boolean mIsAttachedToWindow;
@@ -169,11 +169,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        if (isClickable()) {
-            //TODO 这里要判断是否会被自己消费掉
-            performClick();
-            return true;
-        }
         return false;
     }
 
@@ -204,6 +199,32 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             invalidate();
             return true;
         }
+        return false;
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+        if (isClickable()) {
+            //TODO 这里要判断是否会被自己消费掉
+            performClick();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {
+        boolean result = false;
+        if (mScaleGestureDetector.isQuickScaleEnabled()) {
+            mScaleGestureDetector.setOnDoubleTapEvent(e);
+            result = true;
+        }
+        //TODO 双击回调
+        return result;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent e) {
         return false;
     }
 

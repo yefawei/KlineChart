@@ -3,18 +3,16 @@ package com.benben.kchartlib.compat;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ViewConfiguration;
-
-import androidx.core.view.GestureDetectorCompat;
 
 
 /**
  * @日期 : 2020/8/6
  * @描述 : 缩放兼容类，参考{@link ScaleGestureDetector} Api29
  * 修改了{@link ScaleGestureDetectorCompat#mMinSpan}值的获取
+ * 屏蔽了mGestureDetector，快速双击缩放交由外部传递
  */
 public class ScaleGestureDetectorCompat {
 
@@ -134,7 +132,7 @@ public class ScaleGestureDetectorCompat {
     private static final int ANCHORED_SCALE_MODE_DOUBLE_TAP = 1;
     private static final int ANCHORED_SCALE_MODE_STYLUS = 2;
 
-    private GestureDetectorCompat mGestureDetector;
+//    private GestureDetectorCompat mGestureDetector;
 
     private boolean mEventBeforeOrAboveStartingGestureEvent;
 
@@ -198,9 +196,9 @@ public class ScaleGestureDetectorCompat {
         final int action = event.getActionMasked();
 
         // Forward the event to check for double tap gesture
-        if (mQuickScaleEnabled) {
-            mGestureDetector.onTouchEvent(event);
-        }
+//        if (mQuickScaleEnabled) {
+//            mGestureDetector.onTouchEvent(event);
+//        }
 
         final int count = event.getPointerCount();
         final boolean isStylusButtonDown =
@@ -360,21 +358,29 @@ public class ScaleGestureDetectorCompat {
      */
     public void setQuickScaleEnabled(boolean scales) {
         mQuickScaleEnabled = scales;
-        if (mQuickScaleEnabled && mGestureDetector == null) {
-            GestureDetector.SimpleOnGestureListener gestureListener =
-                    new GestureDetector.SimpleOnGestureListener() {
-                        @Override
-                        public boolean onDoubleTap(MotionEvent e) {
-                            // Double tap: start watching for a swipe
-                            mAnchoredScaleStartX = e.getX();
-                            mAnchoredScaleStartY = e.getY();
-                            mAnchoredScaleMode = ANCHORED_SCALE_MODE_DOUBLE_TAP;
-                            return true;
-                        }
-                    };
-            mGestureDetector = new GestureDetectorCompat(mContext, gestureListener, mHandler);
-        }
+//        if (mQuickScaleEnabled && mGestureDetector == null) {
+//            GestureDetector.SimpleOnGestureListener gestureListener =
+//                    new GestureDetector.SimpleOnGestureListener() {
+//                        @Override
+//                        public boolean onDoubleTap(MotionEvent e) {
+//                            // Double tap: start watching for a swipe
+//                            mAnchoredScaleStartX = e.getX();
+//                            mAnchoredScaleStartY = e.getY();
+//                            mAnchoredScaleMode = ANCHORED_SCALE_MODE_DOUBLE_TAP;
+//                            return true;
+//                        }
+//                    };
+//            mGestureDetector = new GestureDetectorCompat(mContext, gestureListener, mHandler);
+//        }
     }
+
+    public void setOnDoubleTapEvent(MotionEvent e) {
+        // Double tap: start watching for a swipe
+        mAnchoredScaleStartX = e.getX();
+        mAnchoredScaleStartY = e.getY();
+        mAnchoredScaleMode = ANCHORED_SCALE_MODE_DOUBLE_TAP;
+    }
+
 
     /**
      * Return whether the quick scale gesture, in which the user performs a double tap followed by a
