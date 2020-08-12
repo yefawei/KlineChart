@@ -45,6 +45,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private Transformer mTransformer;
     private AnimationManager mAnimationManager;
 
+    private boolean mCanUpdateLayout;
     private Rect mViewPort = new Rect();    // 视图可绘制区域
     private boolean mIsRenderBackground = false;
     private BackgroundRenderer mBackgroundRenderer;
@@ -71,6 +72,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        mCanUpdateLayout = true;
         mViewPort.left = getPaddingLeft();
         mViewPort.top = getPaddingTop();
         mViewPort.right = w - getPaddingRight();
@@ -218,6 +220,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
      * 更新子布局
      */
     public void updateRenderPortLayout() {
+        if (!mCanUpdateLayout) return;
         mBackgroundRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
         mViewRender.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
         mForegroundRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
