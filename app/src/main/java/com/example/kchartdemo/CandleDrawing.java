@@ -31,7 +31,7 @@ public class CandleDrawing extends Drawing {
         Transformer transformer = mDataProvider.getTransformer();
         for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
             IEntity item = mDataProvider.getAdapter().getItem(i);
-            float limit = (i - transformer.getStartIndex()) * width + transformer.getStartPointX();
+            float limit = transformer.getPointXByIndex(i);
             drawCandle(canvas, item, width, limit);
         }
     }

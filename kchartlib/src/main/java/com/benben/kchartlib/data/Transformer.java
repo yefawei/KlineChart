@@ -21,6 +21,7 @@ public class Transformer {
     private IDataProvider mDataProvider;
 
     private float mStartPointX;             // 起始绘制点的中心X坐标(已包含主画板左侧距离)
+    private float[] mPointXBuffer = new float[]{};
     private int mStartIndex;                // 当前内容的开始坐标
     private int mStopIndex;                 // 当前内容的结束坐标
 
@@ -33,7 +34,8 @@ public class Transformer {
 
     /**
      * 获取该索引在屏幕上的ScrollX值
-     * @param index 当前索引
+     *
+     * @param index           当前索引
      * @param inScreenPercent X轴方向主视窗{@link IMainCanvasPort#getMainCanvasWidth()}所在百分比位置
      */
     public int getScrollXForIndex(int index, float inScreenPercent) {
@@ -54,6 +56,13 @@ public class Transformer {
         return mStopIndex;
     }
 
+    public float getPointXByIndex(int index) {
+        if (index >= mStartIndex && index <= mStopIndex) {
+            return mPointXBuffer[index - mStartIndex];
+        }
+        return (index - mStartIndex) * mDataProvider.getScalePointWidth() + mStartPointX;
+    }
+
     /**
      * 更新数据的边界，边界以{@link IMainCanvasPort}提供的数据为准
      */
@@ -67,6 +76,16 @@ public class Transformer {
             mStartIndex = 0;
             mStopIndex = getItemCount() - 1;
             mStartPointX = mDataProvider.getScalePointWidth() / 2.0f + mDataProvider.getMainCanvasPort().getMainCanvasLeft();
+        }
+        int size = mStopIndex - mStartIndex + 1;
+        if (mPointXBuffer.length < size) {
+            mPointXBuffer = new float[size];
+        } else if (mPointXBuffer.length - size > 30) {
+            // buffer差距超30个缩减buffer长度
+            mPointXBuffer = new float[size];
+        }
+        for (int i = 0; i < mPointXBuffer.length; i++) {
+            mPointXBuffer[i] = i * mDataProvider.getScalePointWidth() + mStartPointX;
         }
         for (IndexRange value : mIndexMap.values()) {
             value.resetValue();
@@ -127,6 +146,7 @@ public class Transformer {
 
     /**
      * 计算当前页面的最大最小值
+     *
      * @param adapter
      */
     private void calcMinMax(IAdapter adapter) {

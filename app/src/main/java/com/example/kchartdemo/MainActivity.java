@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         mData = new Data();
 
-        mKChart.setPointWidth((int) (getResources().getDisplayMetrics().density * 24 + 0.5f));
+        mKChart.setPointWidth((int) (getResources().getDisplayMetrics().density * 8 + 0.5f));
         mKChart.setPadding(60, 60, 60, 60);
         MainRenderer viewRender = mKChart.getViewRender();
 
@@ -65,15 +65,15 @@ public class MainActivity extends AppCompatActivity {
         mainRenderCanvas.addDrawing(new VolumeDrawing(valume, params), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
 
-        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
-        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
-        mainRenderCanvas.addDrawing(new BGDrawing());
-        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_LEFT);
-
-        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
-        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
-        mainRenderCanvas.addDrawing(new BGDrawing());
-        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_RIGHT);
+//        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
+//        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
+//        mainRenderCanvas.addDrawing(new BGDrawing());
+//        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_LEFT);
+//
+//        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
+//        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
+//        mainRenderCanvas.addDrawing(new BGDrawing());
+//        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_RIGHT);
     }
 
 

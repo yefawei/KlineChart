@@ -5,6 +5,7 @@ import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
@@ -153,6 +154,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     protected void onDraw(Canvas canvas) {
+        long startTime = System.nanoTime();
         if (!mViewRender.mainCanvasValid()) {
             return;
         }
@@ -164,6 +166,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         if (mIsRenderForeground) {
             mForegroundRenderer.render(canvas);
         }
+        Log.e("drawTime","time: " + (System.nanoTime() - startTime));
         mAnimationManager.animUpdate();
     }
 
