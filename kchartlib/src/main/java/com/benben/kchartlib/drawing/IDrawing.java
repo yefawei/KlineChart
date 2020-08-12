@@ -37,6 +37,8 @@ public interface IDrawing {
 
     IndexRange getIndexRange();
 
+    void preCalcDataValue();
+
     /**
      * 绘制空值
      */

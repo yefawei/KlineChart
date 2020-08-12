@@ -382,6 +382,8 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         return !mViewPort.isEmpty();
     }
 
+
+
     @Override
     public void addDrawing(Drawing drawing) {
         addDrawing(drawing, false);
@@ -417,6 +419,13 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         mDrawings.remove(drawing);
         if (mParentPortLayout != null) {
             drawing.detachedParentPortLayout();
+        }
+    }
+
+    @Override
+    public void preCalcDataValue() {
+        for (Drawing drawing : mDrawings) {
+            drawing.preCalcDataValue();
         }
     }
 

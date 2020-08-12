@@ -38,7 +38,7 @@ public abstract class IndexRange {
     }
 
     public IndexRange(float paddingPercent) {
-        this(false, IndexRange.DOUBLE_SIDE, 0, 0);
+        this(false, IndexRange.DOUBLE_SIDE, paddingPercent, 0);
     }
 
     /**
@@ -77,6 +77,9 @@ public abstract class IndexRange {
         return mSideMode;
     }
 
+    /**
+     * 重置数据
+     */
     public void resetValue() {
         if (mSideMode == DOUBLE_SIDE) {
             mMaxValue = Float.MIN_VALUE;
@@ -90,17 +93,24 @@ public abstract class IndexRange {
         mMinIndex = -1;
     }
 
-    public void addExtendedData(IEntity... entitys) {
-        for (IEntity entity : entitys) {
-            //一般值比较小，所以采用add方式
-            mExtendedData.add(entity);
-        }
+    /**
+     * 添加需要扩展计算的数据
+     */
+    public void addExtendedData(IEntity entity) {
+        //一般值比较小，所以采用add方式
+        mExtendedData.add(entity);
     }
 
+    /**
+     * 移除所有扩展计算数据
+     */
     public void chearExtendedData() {
         mExtendedData.clear();
     }
 
+    /**
+     * 计算扩展数据
+     */
     public void calcExtendedData() {
         for (IEntity entity : mExtendedData) {
             if (mSideMode == DOUBLE_SIDE) {
@@ -141,6 +151,9 @@ public abstract class IndexRange {
         }
     }
 
+    /**
+     * 计算上下边界预留的空间
+     */
     public void calcPaddingValue() {
         if (mSideMode == DOUBLE_SIDE) {
             float paddingValue = Math.abs((mMaxValue - mMinValue) / (1.0f - 2 * mPaddingPercent) * mPaddingPercent);
@@ -155,18 +168,32 @@ public abstract class IndexRange {
         }
     }
 
+    /**
+     * 当前页面的最大值
+     * 如果是{@link IndexRange#DOUBLE_SIDE}和{@link IndexRange#UP_SIDE}则已包含预留空间
+     */
     public float getMaxValue() {
         return mMaxValue;
     }
 
+    /**
+     * 当前页面的最小值
+     * 如果是{@link IndexRange#DOUBLE_SIDE}和{@link IndexRange#DOWN_SIDE}则已包含预留空间
+     */
     public float getMinValue() {
         return mMinValue;
     }
 
+    /**
+     * 当前页面的最大值索引
+     */
     public int getMaxIndex() {
         return mMaxIndex;
     }
 
+    /**
+     * 当前页面的最小值索引
+     */
     public int getMinIndex() {
         return mMinIndex;
     }

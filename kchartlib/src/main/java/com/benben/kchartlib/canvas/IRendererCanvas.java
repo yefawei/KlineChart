@@ -36,10 +36,10 @@ public interface IRendererCanvas {
 
     void removeDrawing(Drawing drawing);
 
+    void preCalcDataValue();
+
     /**
      * 绘制
      */
     void render(Canvas canvas);
-
-
 }

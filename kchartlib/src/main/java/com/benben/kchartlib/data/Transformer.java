@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.benben.kchartlib.adapter.IAdapter;
 import com.benben.kchartlib.impl.IDataProvider;
+import com.benben.kchartlib.impl.IMainCanvasPort;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.IndexRange;
 import com.benben.kchartlib.index.range.IndexRangeSet;
@@ -31,7 +32,9 @@ public class Transformer {
     }
 
     /**
-     * 获取该索引在屏幕左侧时ScrollX值
+     * 获取该索引在屏幕上的ScrollX值
+     * @param index 当前索引
+     * @param inScreenPercent X轴方向主视窗{@link IMainCanvasPort#getMainCanvasWidth()}所在百分比位置
      */
     public int getScrollXForIndex(int index, float inScreenPercent) {
         float scrollx = (getItemCount() - index - inScreenPercent) * mDataProvider.getScalePointWidth()
@@ -122,6 +125,10 @@ public class Transformer {
         }
     }
 
+    /**
+     * 计算当前页面的最大最小值
+     * @param adapter
+     */
     private void calcMinMax(IAdapter adapter) {
         Collection<IndexRange> values = mIndexMap.values();
         for (IndexRange value : values) {

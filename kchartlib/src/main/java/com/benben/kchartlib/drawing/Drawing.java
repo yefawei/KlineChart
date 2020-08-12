@@ -1,5 +1,6 @@
 package com.benben.kchartlib.drawing;
 
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -23,6 +24,7 @@ public abstract class Drawing implements IDrawing, IViewPort {
     private int mWidth;
     private int mHeight;
     protected Rect mViewPort = new Rect();
+    private float mScaleValueY;         // Y轴缩放值
     private boolean mDrawInViewPort = true;
     private IParentPortLayout mDrawingPortLayout;
 
@@ -170,5 +172,38 @@ public abstract class Drawing implements IDrawing, IViewPort {
     @Override
     public IndexRange getIndexRange() {
         return mIndexRange;
+    }
+
+    @CallSuper
+    @Override
+    public void preCalcDataValue() {
+        if (mIndexRange != null) {
+            float maxValue = mIndexRange.getMaxValue();
+            float minValue = mIndexRange.getMinValue();
+            mScaleValueY = mHeight * 1.0f / (maxValue - minValue);
+        }
+    }
+
+    protected final float getCoordinateY(float value) {
+//        if (mIndexRange == null) return -1;
+//        if (mIndexRange.isReverse()) {
+//            if (mIndexRange.getSideMode() == IndexRange.DOUBLE_SIDE) {
+//                return mViewPort.bottom - (value-mIndexRange.getMinValue()) * mScaleValueY;
+//            }
+//        } else {
+//            if (mIndexRange.getSideMode() == IndexRange.DOUBLE_SIDE) {
+                return mViewPort.bottom - (value-mIndexRange.getMinValue()) * mScaleValueY;
+//            }
+//        }
+    }
+
+    @Override
+    public void drawEmpty(Canvas canvas) {
+
+    }
+
+    @Override
+    public void drawData(Canvas canvas) {
+
     }
 }

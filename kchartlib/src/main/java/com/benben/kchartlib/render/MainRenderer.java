@@ -341,7 +341,21 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
     @Override
     public void preCalcDataValue() {
-
+        if (mHorizontalCanvas[0] != null) {
+            mHorizontalCanvas[0].preCalcDataValue();
+        }
+        if (mHorizontalCanvas[1] != null) {
+            mHorizontalCanvas[1].preCalcDataValue();
+        }
+        if (mHorizontalCanvas[2] != null) {
+            mHorizontalCanvas[2].preCalcDataValue();
+        }
+        if (mVerticalCanvas[0] != null) {
+            mVerticalCanvas[0].preCalcDataValue();
+        }
+        if (mVerticalCanvas[2] != null) {
+            mVerticalCanvas[2].preCalcDataValue();
+        }
     }
 
     @Override
