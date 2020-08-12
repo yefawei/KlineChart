@@ -55,7 +55,7 @@ public class Transformer {
     }
 
     /**
-     * 更新相关的边界
+     * 更新数据的边界，边界以{@link IMainCanvasPort}提供的数据为准
      */
     public void updateBounds() {
         if (mDataProvider.isFullScreen()) {
