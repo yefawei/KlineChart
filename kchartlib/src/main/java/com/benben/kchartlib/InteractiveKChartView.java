@@ -291,7 +291,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
      *                        视窗中间，inScreenPercent = 0.5f
      *                        视窗右侧，inScreenPercent = 1.0f
      */
-    public void scrollToIndex(int index, @FloatRange(from = 0, to = 1.0) float inScreenPercent) {
+    public void scrollToIndex(int index, @FloatRange(from = 0, to = 1.0) float inScreenPercent, boolean anim) {
         if (index < 0 || mAdapter == null) {
             index = 0;
         } else if (index >= mAdapter.getCount()) {
@@ -304,7 +304,12 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         }
         int targetScrollX = mTransformer.getScrollXForIndex(index, inScreenPercent);
         int maxScrollX = getMaxScrollX();
-        setScroll(Math.min(targetScrollX, maxScrollX));
+        int targetScroll = Math.min(targetScrollX, maxScrollX);
+        if (anim) {
+            animScroll(targetScrollX);
+        } else {
+            setScroll(targetScroll);
+        }
     }
 
     public void setAdapter(IAdapter adapter) {

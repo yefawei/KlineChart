@@ -1,10 +1,15 @@
 package com.benben.kchartlib;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.OverScroller;
 
 import androidx.annotation.NonNull;
@@ -19,7 +24,7 @@ import com.benben.kchartlib.impl.IDataProvider;
  * @日期 : 2020/6/30
  * @描述 :
  */
-public abstract class ScrollAndScaleView extends View implements GestureDetector.OnGestureListener,GestureDetector.OnDoubleTapListener,
+public abstract class ScrollAndScaleView extends View implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener,
         ScaleGestureDetectorCompat.OnScaleGestureListener, IDataProvider {
 
     private boolean mIsAttachedToWindow;
@@ -43,6 +48,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     private GestureDetectorCompat mGestureDetectorCompat;
     private OverScroller mScroller;
     private ScaleGestureDetectorCompat mScaleGestureDetector;
+
+    private TimeInterpolator mInterpolator;
+    private Animator.AnimatorListener mAnimatorListener;
+    private ObjectAnimator mAnimScroll;
 
     public ScrollAndScaleView(@NonNull Context context) {
         this(context, null);
@@ -103,6 +112,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         mOnMultipleTouch = event.getPointerCount() > 1;
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                stopAnimScroll();
                 mOnTouch = true;
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -135,7 +145,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public void scrollBy(int x, int y) {
-        scrollTo(mScrollX - x , 0);
+        scrollTo(mScrollX - x, 0);
     }
 
     @Override
@@ -268,6 +278,36 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         } else if (mScrollX > getMaxScrollX()) {
             mScrollX = getMaxScrollX();
             mScroller.forceFinished(true);
+        }
+    }
+
+    public void animScroll(int targetScrollX) {
+        if (mOnTouch || targetScrollX == mScrollX) return;
+        stopAnimScroll();
+        if (targetScrollX < getMinScrollX()) {
+            targetScrollX = getMinScrollX();
+        } else if (targetScrollX > getMaxScrollX()) {
+            targetScrollX = getMaxScrollX();
+        }
+        if (mInterpolator == null) {
+            mInterpolator = new DecelerateInterpolator();
+            mAnimatorListener = new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mAnimScroll = null;
+                }
+            };
+        }
+        mAnimScroll = ObjectAnimator.ofInt(this, "Scroll", mScrollX, targetScrollX);
+        mAnimScroll.setDuration(400);
+        mAnimScroll.setInterpolator(mInterpolator);
+        mAnimScroll.addListener(mAnimatorListener);
+        mAnimScroll.start();
+    }
+
+    public void stopAnimScroll() {
+        if (mAnimScroll != null) {
+            mAnimScroll.cancel();
         }
     }
 

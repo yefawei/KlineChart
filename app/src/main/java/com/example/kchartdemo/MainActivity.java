@@ -102,14 +102,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void scroll0(View view) {
-        mKChart.scrollToIndex(0, 0.25f);
+        mKChart.scrollToIndex(0, 0.25f, true);
     }
 
     public void scroll10(View view) {
-        mKChart.scrollToIndex(50, 0.25f);
+        mKChart.scrollToIndex(50, 0.5f, false);
     }
 
     public void scroll90(View view) {
-        mKChart.scrollToIndex(99, 0.25f);
+        mKChart.scrollToIndex(99, 0.25f, true);
     }
 }
