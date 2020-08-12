@@ -185,16 +185,12 @@ public abstract class Drawing implements IDrawing, IViewPort {
     }
 
     protected final float getCoordinateY(float value) {
-//        if (mIndexRange == null) return -1;
-//        if (mIndexRange.isReverse()) {
-//            if (mIndexRange.getSideMode() == IndexRange.DOUBLE_SIDE) {
-//                return mViewPort.bottom - (value-mIndexRange.getMinValue()) * mScaleValueY;
-//            }
-//        } else {
-//            if (mIndexRange.getSideMode() == IndexRange.DOUBLE_SIDE) {
-                return mViewPort.bottom - (value-mIndexRange.getMinValue()) * mScaleValueY;
-//            }
-//        }
+        if (mIndexRange == null) return -1;
+        if (mIndexRange.isReverse()) {
+            return mViewPort.top + (value - mIndexRange.getMinValue()) * mScaleValueY;
+        } else {
+            return mViewPort.bottom - (value - mIndexRange.getMinValue()) * mScaleValueY;
+        }
     }
 
     @Override

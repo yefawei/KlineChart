@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.benben.kchartlib.InteractiveKChartView;
 import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
+import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.example.kchartdemo.data.Data;
 import com.example.kchartdemo.data.KlineInfo;
@@ -33,14 +34,46 @@ public class MainActivity extends AppCompatActivity {
         mData = new Data();
 
         mKChart.setPointWidth((int) (getResources().getDisplayMetrics().density * 24 + 0.5f));
-        MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
-        MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         mKChart.setPadding(60, 60, 60, 60);
+        MainRenderer viewRender = mKChart.getViewRender();
+
+        MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 3);
+        MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
+        mainRenderCanvas.addDrawing(new BGDrawing());
+
         RendererCanvas.DrawingLayoutParams params = new RendererCanvas.DrawingLayoutParams();
-        params.setWeight(1);
+        params.setVerticalPercent(0.3f);
         params.setVerticalPosition(RendererCanvas.DrawingLayoutParams.POSITION_BOTTOM);
-        mainRenderCanvas.addDrawing(new CandleDrawing(params));
-        mKChart.getViewRender().addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
+        VolumeIndexRange valume = new VolumeIndexRange();
+        mainRenderCanvas.addDrawing(new VolumeDrawing(valume, params), true);
+
+        params = new RendererCanvas.DrawingLayoutParams();
+        mainRenderCanvas.addDrawing(new CandleDrawing(params), true);
+        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
+
+        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
+        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
+        params = new RendererCanvas.DrawingLayoutParams();
+        params.setWeight(1);
+        mainRenderCanvas.addDrawing(new VolumeDrawing(valume, params), true);
+        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_TOP);
+
+        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
+        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
+        params = new RendererCanvas.DrawingLayoutParams();
+        params.setWeight(1);
+        mainRenderCanvas.addDrawing(new VolumeDrawing(valume, params), true);
+        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
+
+        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
+        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
+        mainRenderCanvas.addDrawing(new BGDrawing());
+        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_LEFT);
+
+        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
+        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
+        mainRenderCanvas.addDrawing(new BGDrawing());
+        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_RIGHT);
     }
 
 

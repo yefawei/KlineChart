@@ -26,14 +26,7 @@ public class CandleDrawing extends Drawing {
     }
 
     @Override
-    public void drawEmpty(Canvas canvas) {
-
-    }
-
-    @Override
     public void drawData(Canvas canvas) {
-        canvas.drawColor(Color.BLACK);
-
         float width = mDataProvider.getScalePointWidth();
         Transformer transformer = mDataProvider.getTransformer();
         for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {

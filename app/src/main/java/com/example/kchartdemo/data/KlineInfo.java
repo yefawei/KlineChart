@@ -1,12 +1,13 @@
 package com.example.kchartdemo.data;
 
 import com.benben.kchartlib.index.IEntity;
+import com.benben.kchartlib.index.IVolume;
 
 /**
  * @日期 : 2020/8/5
  * @描述 :
  */
-public class KlineInfo implements IEntity {
+public class KlineInfo implements IEntity, IVolume {
 
     /**
      * timestamp : 1511712000
@@ -51,5 +52,15 @@ public class KlineInfo implements IEntity {
     @Override
     public long getDatetime() {
         return timestamp * 1000;
+    }
+
+    @Override
+    public float getVolume() {
+        return volume;
+    }
+
+    @Override
+    public float getAmount() {
+        return amount;
     }
 }
