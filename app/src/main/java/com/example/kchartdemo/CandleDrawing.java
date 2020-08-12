@@ -50,12 +50,15 @@ public class CandleDrawing extends Drawing {
         float closeY = getCoordinateY(entity.getClosePrice());
         if (entity.getOpenPrice() > entity.getClosePrice()) { // 跌
             mPaint.setColor(Color.RED);
-            canvas.drawRect(center - width / 2, openY, center + width / 2, closeY, mPaint);
-            canvas.drawLine(center, lowY, center, heighY, mPaint);
         } else {
             mPaint.setColor(Color.GREEN);
-            canvas.drawRect(center - width / 2, closeY, center + width / 2, openY, mPaint);
-            canvas.drawLine(center, lowY, center, heighY, mPaint);
         }
+        // 部分手机top值需要小于bottom值才能正常显示，这里做了个兼容
+        if (closeY > openY) {
+            canvas.drawRect(center - width / 2, openY, center + width / 2, closeY, mPaint);
+        } else {
+            canvas.drawRect(center - width / 2, closeY, center + width / 2, openY, mPaint);
+        }
+        canvas.drawLine(center, lowY, center, heighY, mPaint);
     }
 }
