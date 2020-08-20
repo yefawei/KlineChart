@@ -152,6 +152,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         fixScrollX();
     }
 
+    // for performance tracking
+    private long totalTime = 0;
+    private long drawCycles = 0;
+
     @Override
     protected void onDraw(Canvas canvas) {
         long startTime = System.nanoTime();
@@ -166,7 +170,11 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         if (mIsRenderForeground) {
             mForegroundRenderer.render(canvas);
         }
-        Log.e("drawTime","time: " + (System.nanoTime() - startTime));
+        long drawtime = System.nanoTime() - startTime;
+        totalTime += drawtime;
+        drawCycles++;
+        long average = totalTime / drawCycles;
+        Log.i("Drawtime", "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
         mAnimationManager.animUpdate();
     }
 
