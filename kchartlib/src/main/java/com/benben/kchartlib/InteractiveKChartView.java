@@ -49,7 +49,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private Rect mViewPort = new Rect();    // 视图可绘制区域
     private boolean mIsRenderBackground = false;
     private BackgroundRenderer mBackgroundRenderer;
-    private MainRenderer mViewRender;
+    private MainRenderer mMainRenderer;
     private boolean mIsRenderForeground = false;
     private ForegroundRenderer mForegroundRenderer;
 
@@ -63,7 +63,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     public InteractiveKChartView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mViewRender = new MainRenderer(this);
+        mMainRenderer = new MainRenderer(this);
         mTransformer = new Transformer(this);
         mAnimationManager = new AnimationManager(this);
     }
@@ -90,14 +90,14 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     void preInvalidate() {
-        if (!mViewRender.mainCanvasValid()) {
+        if (!mMainRenderer.mainCanvasValid()) {
             return;
         }
         mTransformer.updateBounds();
         if (mIsRenderBackground) {
             mBackgroundRenderer.preCalcDataValue();
         }
-        mViewRender.preCalcDataValue();
+        mMainRenderer.preCalcDataValue();
         if (mIsRenderForeground) {
             mForegroundRenderer.preCalcDataValue();
         }
@@ -118,7 +118,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
                 return mMaxScrollXBuffer.mMaxScrollX;
             }
             mMaxScrollXBuffer.mScaleX = getScaleX();
-            mMaxScrollXBuffer.mMaxScrollX = Math.round(mDataLength * getScaleX() - mViewRender.getMainCanvasWidth());
+            mMaxScrollXBuffer.mMaxScrollX = Math.round(mDataLength * getScaleX() - mMainRenderer.getMainCanvasWidth());
             return mMaxScrollXBuffer.mMaxScrollX;
         }
         return 0;
@@ -131,9 +131,9 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     void onScaleChanged(float scale, float oldScale, float focusX, float focusY) {
-        float width = mViewRender.getMainCanvasWidth();
-        float left = mViewRender.getMainCanvasLeft();
-        float right = mViewRender.getMainCanvasRight();
+        float width = mMainRenderer.getMainCanvasWidth();
+        float left = mMainRenderer.getMainCanvasLeft();
+        float right = mMainRenderer.getMainCanvasRight();
         if (focusX < 0) {
             // 小于0说明无焦点，则让焦点落在视图右边界上
             focusX = right;
@@ -155,14 +155,14 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     @Override
     protected void onDraw(Canvas canvas) {
         long startTime = System.nanoTime();
-        if (!mViewRender.mainCanvasValid()) {
+        if (!mMainRenderer.mainCanvasValid()) {
             return;
         }
         canvas.clipRect(mViewPort);
         if (mIsRenderBackground) {
             mBackgroundRenderer.render(canvas);
         }
-        mViewRender.render(canvas);
+        mMainRenderer.render(canvas);
         if (mIsRenderForeground) {
             mForegroundRenderer.render(canvas);
         }
@@ -187,7 +187,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     public IMainCanvasPort getMainCanvasPort() {
-        return mViewRender;
+        return mMainRenderer;
     }
 
     public void setRenderBackgroud(boolean render) {
@@ -196,7 +196,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             mBackgroundRenderer = new BackgroundRenderer(this);
         }
         mIsRenderBackground = render;
-        updateRenderPortLayout();
+        if (render) {
+            mBackgroundRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
+            mBackgroundRenderer.updateChildLayout();
+        }
     }
 
     public BackgroundRenderer getBackgroundRenderer() {
@@ -206,8 +209,8 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         return mBackgroundRenderer;
     }
 
-    public MainRenderer getViewRender() {
-        return mViewRender;
+    public MainRenderer getMainRenderer() {
+        return mMainRenderer;
     }
 
     public void setRenderForeground(boolean render) {
@@ -216,7 +219,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             mForegroundRenderer = new ForegroundRenderer(this);
         }
         mIsRenderForeground = render;
-        updateRenderPortLayout();
+        if (render) {
+            mForegroundRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
+            mForegroundRenderer.updateChildLayout();
+        }
     }
 
     public ForegroundRenderer getForegroundRenderer() {
@@ -231,12 +237,16 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
      */
     public void updateRenderPortLayout() {
         if (!mCanUpdateLayout) return;
-        mBackgroundRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
-        mViewRender.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
-        mForegroundRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
-        mBackgroundRenderer.updateChildLayout();
-        mViewRender.updateChildLayout();
-        mForegroundRenderer.updateChildLayout();
+        if (mBackgroundRenderer != null) {
+            mBackgroundRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
+            mBackgroundRenderer.updateChildLayout();
+        }
+        mMainRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
+        mMainRenderer.updateChildLayout();
+        if (mForegroundRenderer != null) {
+            mForegroundRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
+            mForegroundRenderer.updateChildLayout();
+        }
         notifyChange();
     }
 
@@ -246,7 +256,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             return mIsFullScreenBuffer.mIsFullScreen;
         }
         mIsFullScreenBuffer.mScaleX = getScaleX();
-        mIsFullScreenBuffer.mIsFullScreen = mDataLength * getScaleX() >= mViewRender.getMainCanvasWidth();
+        mIsFullScreenBuffer.mIsFullScreen = mDataLength * getScaleX() >= mMainRenderer.getMainCanvasWidth();
         return mIsFullScreenBuffer.mIsFullScreen;
     }
 
@@ -291,7 +301,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             if (mPointMode == POINT_FIXED_WIDTH_MODE) {
                 mPointWidthBuffer.mPointWidth = mPointModeValue;
             } else {
-                int canvasWidth = mViewRender.getMainCanvasWidth();
+                int canvasWidth = mMainRenderer.getMainCanvasWidth();
                 mPointWidthBuffer.mPointWidth = Math.max(Math.round(canvasWidth * 1.0f / mPointModeValue), 3);
             }
             mPointWidthBuffer.mHasBuffer = true;

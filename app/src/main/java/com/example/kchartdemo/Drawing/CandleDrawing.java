@@ -1,4 +1,4 @@
-package com.example.kchartdemo;
+package com.example.kchartdemo.Drawing;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

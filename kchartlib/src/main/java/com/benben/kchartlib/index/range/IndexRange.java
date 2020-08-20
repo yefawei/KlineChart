@@ -97,7 +97,6 @@ public abstract class IndexRange {
      * 添加需要扩展计算的数据
      */
     public void addExtendedData(IEntity entity) {
-        //一般值比较小，所以采用add方式
         mExtendedData.add(entity);
     }
 

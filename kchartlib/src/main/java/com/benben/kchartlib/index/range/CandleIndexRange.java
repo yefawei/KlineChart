@@ -8,7 +8,6 @@ import com.benben.kchartlib.index.IEntity;
  */
 public class CandleIndexRange extends IndexRange {
 
-
     public CandleIndexRange() {
         super(0.1f);
     }

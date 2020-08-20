@@ -12,7 +12,10 @@ import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
-import com.example.kchartdemo.data.Data;
+import com.benben.kchartlib.utils.ConvertUtils;
+import com.example.kchartdemo.Drawing.CandleDrawing;
+import com.example.kchartdemo.Drawing.VolumeDrawing;
+import com.example.kchartdemo.data.DataProvider;
 import com.example.kchartdemo.data.KlineInfo;
 
 import java.util.ArrayList;
@@ -20,76 +23,38 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private InteractiveKChartView mKChart;
-    private Data mData;
+    private DataProvider mData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mKChart = findViewById(R.id.k_chart);
-        init();
-    }
+        mData = new DataProvider();
 
-    private void init() {
-        mData = new Data();
+        mKChart.setPointWidth(ConvertUtils.dp2px(this, 8));
 
-        mKChart.setPointWidth((int) (getResources().getDisplayMetrics().density * 8 + 0.5f));
-        mKChart.setPadding(60, 60, 60, 60);
-        MainRenderer viewRender = mKChart.getViewRender();
+        MainRenderer viewRender = mKChart.getMainRenderer();
 
-        MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 3);
+        MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, ConvertUtils.dp2px(this, 340), 1);
         MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
-        mainRenderCanvas.addDrawing(new BGDrawing());
 
-        RendererCanvas.DrawingLayoutParams params = new RendererCanvas.DrawingLayoutParams();
-        params.setVerticalPercent(0.3f);
-        params.setVerticalPosition(RendererCanvas.DrawingLayoutParams.POSITION_BOTTOM);
-        VolumeIndexRange valume = new VolumeIndexRange();
-        mainRenderCanvas.addDrawing(new VolumeDrawing(valume, params), true);
-
-        params = new RendererCanvas.DrawingLayoutParams();
-        mainRenderCanvas.addDrawing(new CandleDrawing(params), true);
+        RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        mainRenderCanvas.addDrawing(new CandleDrawing(layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
+        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, ConvertUtils.dp2px(this, 90), 1);
 
-        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
         mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
-        params = new RendererCanvas.DrawingLayoutParams();
-        params.setWeight(1);
-        mainRenderCanvas.addDrawing(new VolumeDrawing(valume, params), true);
-        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_TOP);
-
-        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
-        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
-        params = new RendererCanvas.DrawingLayoutParams();
-        params.setWeight(1);
-        mainRenderCanvas.addDrawing(new VolumeDrawing(valume, params), true);
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        mainRenderCanvas.addDrawing(new VolumeDrawing(new VolumeIndexRange(), layoutParams));
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
-
-//        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
-//        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
-//        mainRenderCanvas.addDrawing(new BGDrawing());
-//        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_LEFT);
-//
-//        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1);
-//        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
-//        mainRenderCanvas.addDrawing(new BGDrawing());
-//        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_RIGHT);
     }
 
+    public void pre10(View view) {
 
-    public void updateLayout(View view) {
-        mKChart.updateRenderPortLayout();
-        showToast("更新布局");
     }
-
-    public void toViewPort(View view) {
-        Log.e("ScrollAndScaleView", mKChart.getViewRender().toViewPortString());
-    }
-
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
 
     public void add100(View view) {
         ArrayList<KlineInfo> klineInfos = new ArrayList<>();
@@ -101,15 +66,29 @@ public class MainActivity extends AppCompatActivity {
         mKChart.setAdapter(adapter);
     }
 
-    public void scroll0(View view) {
-        mKChart.scrollToIndex(0, 0.25f, true);
+    public void add1(View view) {
+
     }
 
-    public void scroll10(View view) {
-        mKChart.scrollToIndex(50, 0.5f, false);
+    public void line(View view) {
+
     }
 
-    public void scroll90(View view) {
-        mKChart.scrollToIndex(99, 0.25f, true);
+    public void candle(View view) {
+
     }
+
+    public void toViewPort(View view) {
+        Log.e("ScrollAndScaleView", mKChart.getMainRenderer().toViewPortString());
+    }
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void updateLayout(View view) {
+        mKChart.updateRenderPortLayout();
+        showToast("更新布局");
+    }
+
 }

@@ -4,10 +4,9 @@ import android.graphics.Paint;
 
 /**
  * @日期 : 2020/7/9
- * @描述 : 字体计算工具【注：非线程安全的】
+ * @描述 : 字体计算工具
  */
 public class FontCalculateUtils {
-
 
     private static Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
 
