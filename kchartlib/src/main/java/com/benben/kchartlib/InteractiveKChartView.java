@@ -63,9 +63,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     public InteractiveKChartView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mBackgroundRenderer = new BackgroundRenderer(this);
         mViewRender = new MainRenderer(this);
-        mForegroundRenderer = new ForegroundRenderer(this);
         mTransformer = new Transformer(this);
         mAnimationManager = new AnimationManager(this);
     }
@@ -194,11 +192,17 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     public void setRenderBackgroud(boolean render) {
         if (mIsRenderBackground == render) return;
+        if (render && mBackgroundRenderer == null) {
+            mBackgroundRenderer = new BackgroundRenderer(this);
+        }
         mIsRenderBackground = render;
         updateRenderPortLayout();
     }
 
     public BackgroundRenderer getBackgroundRenderer() {
+        if (mBackgroundRenderer == null) {
+            mBackgroundRenderer = new BackgroundRenderer(this);
+        }
         return mBackgroundRenderer;
     }
 
@@ -208,11 +212,17 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     public void setRenderForeground(boolean render) {
         if (mIsRenderForeground == render) return;
+        if (render && mForegroundRenderer == null) {
+            mForegroundRenderer = new ForegroundRenderer(this);
+        }
         mIsRenderForeground = render;
         updateRenderPortLayout();
     }
 
     public ForegroundRenderer getForegroundRenderer() {
+        if (mForegroundRenderer == null) {
+            mForegroundRenderer = new ForegroundRenderer(this);
+        }
         return mForegroundRenderer;
     }
 
