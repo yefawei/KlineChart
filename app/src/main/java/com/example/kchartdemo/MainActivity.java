@@ -78,17 +78,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void reset(View view) {
+        mKChart.reset(true);
+    }
+
     public void toViewPort(View view) {
         Log.e("ScrollAndScaleView", mKChart.getMainRenderer().toViewPortString());
     }
 
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    private void showToast() {
+        Toast.makeText(this, "更新布局", Toast.LENGTH_SHORT).show();
     }
 
     public void updateLayout(View view) {
         mKChart.updateRenderPortLayout();
-        showToast("更新布局");
+        showToast();
     }
-
 }

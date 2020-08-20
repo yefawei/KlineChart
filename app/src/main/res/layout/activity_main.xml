@@ -14,6 +14,7 @@
             android:id="@+id/k_chart"
             android:layout_width="0dp"
             android:layout_height="430dp"
+            android:background="@drawable/texture"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -75,6 +76,17 @@
             app:layout_constraintTop_toBottomOf="@+id/add_100" />
 
         <Button
+            android:id="@+id/reset"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="reset"
+            android:text="reset"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/candle" />
+
+        <Button
             android:id="@+id/btn_update_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -83,7 +95,7 @@
             android:textAllCaps="false"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/candle" />
+            app:layout_constraintTop_toBottomOf="@+id/reset" />
 
         <Button
             android:id="@+id/btn_show_view_port"

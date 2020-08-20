@@ -96,14 +96,14 @@ public abstract class IndexRange {
     /**
      * 添加需要扩展计算的数据
      */
-    public void addExtendedData(IEntity entity) {
+    public void addExtendedCalcData(IEntity entity) {
         mExtendedData.add(entity);
     }
 
     /**
      * 移除所有扩展计算数据
      */
-    public void chearExtendedData() {
+    public void chearExtendedCalcData() {
         mExtendedData.clear();
     }
 
