@@ -6,9 +6,9 @@ import java.util.List;
 
 /**
  * @日期 : 2020/8/5
- * @描述 : K线数据提供者
+ * @描述 : 龙网K线数据
  */
-public class DataProvider {
+public class DragonKLineDataProvider {
     // DT 2017-11-27 00:00:00起的日K
     static String kline = "{\"ok\":true,\"code\":1,\"msg\":\"\",\"data\":[" +
             "{\"timestamp\":1511712000,\"open_price\":\"5.385\",\"max_price\":\"7.385\",\"min_price\":\"2.308\",\"close_price\":\"7.352\",\"pre_close_price\":\"0.000\",\"volume\":\"403212.2060\",\"amount\":\"1804191.4374\",\"usdt_amount\":\"0.0000\"}," +
@@ -315,7 +315,7 @@ public class DataProvider {
 
     public final List<KlineInfo> mData;
 
-    public DataProvider() {
+    public DragonKLineDataProvider() {
         JsonData jsonData = new Gson().fromJson(kline, JsonData.class);
         mData = jsonData.data;
     }

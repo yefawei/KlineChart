@@ -44,18 +44,30 @@ public class Transformer {
         return Math.round(Math.max(scrollx, 0));
     }
 
+    /**
+     * 起始绘制点的中心X坐标(已包含主画板左侧距离)
+     */
     public float getStartPointX() {
         return mStartPointX;
     }
 
+    /**
+     * 获取视图起始索引
+     */
     public int getStartIndex() {
         return mStartIndex;
     }
 
+    /**
+     * 获取视图结束索引
+     */
     public int getStopIndex() {
         return mStopIndex;
     }
 
+    /**
+     * 获取该索引此时的X位置
+     */
     public float getPointXByIndex(int index) {
         if (index >= mStartIndex && index <= mStopIndex) {
             return mPointXBuffer[index - mStartIndex];
