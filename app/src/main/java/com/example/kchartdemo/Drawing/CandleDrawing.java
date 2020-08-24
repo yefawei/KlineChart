@@ -10,11 +10,18 @@ import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * @日期 : 2020/7/14
  * @描述 :
  */
 public class CandleDrawing extends Drawing {
+
+    private Date date = new Date();
+    private static final SimpleDateFormat format = new SimpleDateFormat("dd", Locale.getDefault());
 
     private final Paint mPaint;
 
@@ -23,6 +30,7 @@ public class CandleDrawing extends Drawing {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(3);
+        mPaint.setTextSize(18);
     }
 
     @Override
@@ -58,5 +66,11 @@ public class CandleDrawing extends Drawing {
             canvas.drawRect(center - width / 2, closeY, center + width / 2, openY, mPaint);
         }
         canvas.drawLine(center, lowY, center, heighY, mPaint);
+
+        date.setTime(entity.getDatatime());
+        String format = CandleDrawing.format.format(date);
+        mPaint.setColor(Color.WHITE);
+        float v = mPaint.measureText(format);
+        canvas.drawText(format, center - v / 2, heighY, mPaint);
     }
 }
