@@ -39,8 +39,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     protected int mScrollX = 0;                 // 当前滚动值
     protected float mTouchX;                    // 当前点击的X坐标
     protected float mTouchY;                    // 当前点击的Y坐标
+    protected PaddingHelper mPaddingHelper;     // 边界辅助类
 
-    private PaddingHelper mPaddingHelper;
     private GestureMoveActionCompat mGestureMoveActionCompat;
     private GestureDetectorCompat mGestureDetectorCompat;
     private OverScroller mScroller;
@@ -390,7 +390,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
     public void animScroll(int targetScrollX) {
-        animScroll(targetScrollX, 400);
+        animScroll(targetScrollX, 4000);
     }
 
     /**
@@ -408,7 +408,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
 
     public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX) {
-        setScrollerThenAnimScroll(newScrollX, targetScrollX, 400);
+        setScrollerThenAnimScroll(newScrollX, targetScrollX, 4000);
     }
 
     /**
@@ -441,6 +441,16 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             return getMaxScrollX();
         }
         return scrollX;
+    }
+
+    /**
+     * 滚动辅助函数，获取最终滚动值
+     */
+    protected final int getFinalScroll() {
+        if (mScroller.isFinished()) {
+            return mScrollX;
+        }
+        return mScroller.getFinalX();
     }
 
     /**
@@ -483,6 +493,11 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public boolean isOnLongPress() {
         return mOnLongPress;
+    }
+
+    @Override
+    public PaddingHelper getPaddingHelper() {
+        return mPaddingHelper;
     }
 
     /**

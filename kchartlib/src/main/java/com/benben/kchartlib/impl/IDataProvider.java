@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.adapter.BaseKChartAdapter;
 import com.benben.kchartlib.animation.AnimationManager;
+import com.benben.kchartlib.data.PaddingHelper;
 import com.benben.kchartlib.data.Transformer;
 
 /**
@@ -25,6 +26,8 @@ public interface IDataProvider {
     float getTouchX();
 
     float getTouchY();
+
+    PaddingHelper getPaddingHelper();
 
     @Nullable
     BaseKChartAdapter getAdapter();

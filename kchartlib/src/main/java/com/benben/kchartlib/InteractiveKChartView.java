@@ -378,16 +378,15 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     private void notifyLastInserted(int itemCount) {
-        //TODO 快速且多次添加数据，此时动画未结束，会出现目标值偏移
         mDataLength = getPointWidth() * mAdapter.getCount();
         resetBuffer();
         if (!isFullScreen()) {
             invalidate();
             return;
         }
-        int oldScrollX = mScrollX;
+        int finalScroll = getFinalScroll();
         int scrollRange = Math.round(getScalePointWidth() * itemCount);
-        setScrollerThenAnimScroll(oldScrollX + scrollRange, oldScrollX);
+        setScrollerThenAnimScroll(mScrollX + scrollRange, finalScroll);
     }
 
     private void resetBuffer() {
