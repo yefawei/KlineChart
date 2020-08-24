@@ -418,6 +418,11 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         mAnimScroll.start();
     }
 
+
+    public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX) {
+        setScrollerThenAnimScroll(newScrollX, targetScrollX, 300);
+    }
+
     /**
      * 更新当前滚动值并滑动到目标滚动值
      * 如果处于触控状态{@link #mOnTouch}=true,则无滚动效果
@@ -425,7 +430,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * @param newScrollX    新滚动值
      * @param targetScrollX 目标滚动值
      */
-    public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX) {
+    public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX, long duration) {
         newScrollX = getFixScrollX(newScrollX);
         targetScrollX = getFixScrollX(targetScrollX);
         if (mOnTouch || newScrollX == targetScrollX) {
@@ -435,7 +440,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             return;
         }
         mScrollX = newScrollX;
-        animScroll(targetScrollX, 300);
+        animScroll(targetScrollX, duration);
     }
 
     public void stopAnimScroll() {
