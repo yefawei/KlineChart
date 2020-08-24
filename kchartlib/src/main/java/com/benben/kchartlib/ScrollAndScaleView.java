@@ -40,7 +40,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     private float mScaleXMax = 2f;              // 缩放的最大值
     private float mScaleXMin = 0.5f;            // 缩放的最小值
     protected float mScaleX = 1.0f;             // 当前缩放值
-    protected int mScrollX = 0;               // 当前滚动值
+    protected int mScrollX = 0;                 // 当前滚动值
     protected float mTouchX;                    // 当前点击的X坐标
     protected float mTouchY;                    // 当前点击的Y坐标
 
@@ -256,7 +256,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             if (oldScale != mScaleX) {
                 float focusX = detector.getFocusX();
                 float focusY = detector.getFocusY();
-                onScaleChanged(mScaleX, oldScale, focusX, focusY);
+                int scrollX = onScaleChanged(mScaleX, oldScale, focusX, focusY);
+                mScrollX = getFixScrollX(scrollX);
                 invalidate();
             }
             return true;
@@ -267,48 +268,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public void onScaleEnd(ScaleGestureDetectorCompat detector) {
 
-    }
-
-    /**
-     * 修正滚动值
-     */
-    protected void fixScrollX() {
-        if (mScrollX < getMinScrollX()) {
-            mScrollX = getMinScrollX();
-        } else if (mScrollX > getMaxScrollX()) {
-            mScrollX = getMaxScrollX();
-            mScroller.forceFinished(true);
-        }
-    }
-
-    public void animScroll(int targetScrollX) {
-        if (mOnTouch || targetScrollX == mScrollX) return;
-        stopAnimScroll();
-        if (targetScrollX < getMinScrollX()) {
-            targetScrollX = getMinScrollX();
-        } else if (targetScrollX > getMaxScrollX()) {
-            targetScrollX = getMaxScrollX();
-        }
-        if (mInterpolator == null) {
-            mInterpolator = new DecelerateInterpolator();
-            mAnimatorListener = new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mAnimScroll = null;
-                }
-            };
-        }
-        mAnimScroll = ObjectAnimator.ofInt(this, "Scroll", mScrollX, targetScrollX);
-        mAnimScroll.setDuration(400);
-        mAnimScroll.setInterpolator(mInterpolator);
-        mAnimScroll.addListener(mAnimatorListener);
-        mAnimScroll.start();
-    }
-
-    public void stopAnimScroll() {
-        if (mAnimScroll != null) {
-            mAnimScroll.cancel();
-        }
     }
 
     public void reset(boolean invalidate) {
@@ -376,7 +335,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             mScaleX = mScaleXMax;
         }
         if (mScaleX != oldScale) {
-            onScaleChanged(mScaleX, oldScale, -1, -1);
+            int scrollX = onScaleChanged(mScaleX, oldScale, -1, -1);
+            mScrollX = getFixScrollX(scrollX);
             invalidate();
         }
     }
@@ -432,8 +392,81 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     /**
      * 设置滚动值
      */
-    public void setScroll(int scroll) {
-        scrollTo(scroll, 0);
+    public void setScroll(int scrollX) {
+        scrollTo(scrollX, 0);
+    }
+
+    public void animScroll(int targetScrollX) {
+        animScroll(targetScrollX, 400);
+    }
+
+    /**
+     * 从当前滚动值以动画的形式滚动到目标滚动值
+     * 如果处于触控状态{@link #mOnTouch}=true,则无滚动效果
+     *
+     * @param targetScrollX 目标滚动值
+     */
+    public void animScroll(int targetScrollX, long duration) {
+        if (mOnTouch || targetScrollX == mScrollX) return;
+        stopAnimScroll();
+        targetScrollX = getFixScrollX(targetScrollX);
+        initAnimator();
+        mAnimScroll = ObjectAnimator.ofInt(this, "Scroll", mScrollX, targetScrollX);
+        mAnimScroll.setDuration(duration);
+        mAnimScroll.setInterpolator(mInterpolator);
+        mAnimScroll.addListener(mAnimatorListener);
+        mAnimScroll.start();
+    }
+
+    /**
+     * 更新当前滚动值并滑动到目标滚动值
+     * 如果处于触控状态{@link #mOnTouch}=true,则无滚动效果
+     *
+     * @param newScrollX    新滚动值
+     * @param targetScrollX 目标滚动值
+     */
+    public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX) {
+        newScrollX = getFixScrollX(newScrollX);
+        targetScrollX = getFixScrollX(targetScrollX);
+        if (mOnTouch || newScrollX == targetScrollX) {
+            if (newScrollX == mScrollX) return;
+            mScrollX = newScrollX;
+            invalidate();
+            return;
+        }
+        mScrollX = newScrollX;
+        animScroll(targetScrollX, 300);
+    }
+
+    public void stopAnimScroll() {
+        if (mAnimScroll != null) {
+            mAnimScroll.cancel();
+        }
+    }
+
+
+    private void initAnimator() {
+        if (mInterpolator == null) {
+            mInterpolator = new DecelerateInterpolator();
+            mAnimatorListener = new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mAnimScroll = null;
+                }
+            };
+        }
+    }
+
+    /**
+     * 获取修正后的滚动值
+     */
+    protected int getFixScrollX(int scrollX) {
+        if (scrollX < getMinScrollX()) {
+            return getMinScrollX();
+        } else if (scrollX > getMaxScrollX()) {
+            return getMaxScrollX();
+        }
+        return scrollX;
     }
 
     /**
@@ -500,6 +533,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     /**
      * 缩放值有变化
+     *
+     * @return 缩放后的滚动值
      */
-    abstract void onScaleChanged(float scale, float oldScale, float focusX, float focusY);
+    abstract int onScaleChanged(float scale, float oldScale, float focusX, float focusY);
 }

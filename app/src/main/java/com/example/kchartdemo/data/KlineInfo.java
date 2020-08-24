@@ -50,7 +50,7 @@ public class KlineInfo implements IEntity, IVolume {
     }
 
     @Override
-    public long getDatetime() {
+    public long getDatatime() {
         return timestamp * 1000;
     }
 

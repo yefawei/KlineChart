@@ -21,7 +21,7 @@ import java.util.Locale;
 public class CandleDrawing extends Drawing {
 
     private Date date = new Date();
-    private static final SimpleDateFormat format = new SimpleDateFormat("dd", Locale.getDefault());
+    private static final SimpleDateFormat format = new SimpleDateFormat("MM-dd", Locale.getDefault());
 
     private final Paint mPaint;
 

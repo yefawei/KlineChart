@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.benben.kchartlib.InteractiveKChartView;
+import com.benben.kchartlib.adapter.DefaultKChartAdapter;
 import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
@@ -15,22 +16,24 @@ import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.utils.ConvertUtils;
 import com.example.kchartdemo.Drawing.CandleDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
-import com.example.kchartdemo.data.DataProvider;
+import com.example.kchartdemo.data.DragonKLineDataProvider;
 import com.example.kchartdemo.data.KlineInfo;
 
 import java.util.ArrayList;
 
+
 public class MainActivity extends AppCompatActivity {
 
+    private DragonKLineDataProvider mDataProvider;
     private InteractiveKChartView mKChart;
-    private DataProvider mData;
+    private DefaultKChartAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mKChart = findViewById(R.id.k_chart);
-        mData = new DataProvider();
+        mDataProvider = new DragonKLineDataProvider();
 
         mKChart.setPointWidth(ConvertUtils.dp2px(this, 8));
 
@@ -50,24 +53,39 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.setWeight(1);
         mainRenderCanvas.addDrawing(new VolumeDrawing(new VolumeIndexRange(), layoutParams));
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
+
+        mAdapter = new DefaultKChartAdapter();
+        mKChart.setAdapter(mAdapter);
     }
+
+    int startIndex = 100;
+    int endIndex = 100;
 
     public void pre10(View view) {
-
-    }
-
-    public void add100(View view) {
-        ArrayList<KlineInfo> klineInfos = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            klineInfos.add(mData.mData.get(i));
+        ArrayList<KlineInfo> list = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            list.add(mDataProvider.mData.get(startIndex - 10 + i));
         }
-        KChartAdapter adapter = new KChartAdapter();
-        adapter.setData(klineInfos);
-        mKChart.setAdapter(adapter);
+        mAdapter.addDatas(list);
+        showToast("pre add: " + (startIndex - 10) + "-" + (startIndex + 9));
+        startIndex -= 10;
     }
 
-    public void add1(View view) {
+    public void centerAdd(View view) {
+        KlineInfo klineInfo = mDataProvider.mData.get(endIndex);
+        showToast("add index: " + endIndex);
+        mAdapter.addData(klineInfo);
+        endIndex++;
+    }
 
+    public void add10(View view) {
+        ArrayList<KlineInfo> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(mDataProvider.mData.get(endIndex + i));
+        }
+        mAdapter.addDatas(list);
+        showToast("add10: " + (endIndex) + "-" + (endIndex + 9));
+        endIndex += 10;
     }
 
     public void line(View view) {
@@ -86,12 +104,12 @@ public class MainActivity extends AppCompatActivity {
         Log.e("ScrollAndScaleView", mKChart.getMainRenderer().toViewPortString());
     }
 
-    private void showToast() {
-        Toast.makeText(this, "更新布局", Toast.LENGTH_SHORT).show();
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     public void updateLayout(View view) {
         mKChart.updateRenderPortLayout();
-        showToast();
+        showToast("更新布局");
     }
 }

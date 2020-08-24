@@ -29,5 +29,5 @@ public interface ICandle {
     /**
      * 时间戳
      */
-    long getDatetime();
+    long getDatatime();
 }

@@ -27,28 +27,28 @@
             android:text="pre10"
             android:textAllCaps="false"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/add_100"
+            app:layout_constraintRight_toLeftOf="@+id/center_add"
             app:layout_constraintTop_toBottomOf="@+id/k_chart" />
 
         <Button
-            android:id="@+id/add_100"
+            android:id="@+id/center_add"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:onClick="add100"
-            android:text="add100"
+            android:onClick="centerAdd"
+            android:text="centerAdd"
             android:textAllCaps="false"
             app:layout_constraintLeft_toRightOf="@+id/pre_10"
-            app:layout_constraintRight_toLeftOf="@+id/add1"
+            app:layout_constraintRight_toLeftOf="@+id/add10"
             app:layout_constraintTop_toBottomOf="@+id/k_chart" />
 
         <Button
-            android:id="@+id/add1"
+            android:id="@+id/add10"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:onClick="add1"
-            android:text="add1"
+            android:onClick="add10"
+            android:text="add10"
             android:textAllCaps="false"
-            app:layout_constraintLeft_toRightOf="@+id/add_100"
+            app:layout_constraintLeft_toRightOf="@+id/center_add"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/k_chart" />
 
@@ -62,7 +62,7 @@
             android:textAllCaps="false"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/candle"
-            app:layout_constraintTop_toBottomOf="@+id/add_100" />
+            app:layout_constraintTop_toBottomOf="@+id/center_add" />
 
         <Button
             android:id="@+id/candle"
@@ -73,7 +73,7 @@
             android:textAllCaps="false"
             app:layout_constraintLeft_toRightOf="@+id/line"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/add_100" />
+            app:layout_constraintTop_toBottomOf="@+id/center_add" />
 
         <Button
             android:id="@+id/reset"

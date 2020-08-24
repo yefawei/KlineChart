@@ -1,7 +1,6 @@
 package com.benben.kchartlib;
 
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -17,6 +16,7 @@ import com.benben.kchartlib.buffer.IsFullScreenBuffer;
 import com.benben.kchartlib.buffer.MaxScrollXBuffer;
 import com.benben.kchartlib.buffer.PointWidthBuffer;
 import com.benben.kchartlib.buffer.ScalePointWidthBuffer;
+import com.benben.kchartlib.data.AdapterDataObserver;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.impl.IMainCanvasPort;
 import com.benben.kchartlib.render.BackgroundRenderer;
@@ -130,7 +130,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     @Override
-    void onScaleChanged(float scale, float oldScale, float focusX, float focusY) {
+    int onScaleChanged(float scale, float oldScale, float focusX, float focusY) {
         float width = mMainRenderer.getMainCanvasWidth();
         float left = mMainRenderer.getMainCanvasLeft();
         float right = mMainRenderer.getMainCanvasRight();
@@ -148,8 +148,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         }
         // 使得以缩放手势中心点进行缩放
         float changeSpace = (width - x) * scale / oldScale - (width - x);
-        mScrollX = Math.round(mScrollX * scale / oldScale + changeSpace);
-        fixScrollX();
+        return Math.round(mScrollX * scale / oldScale + changeSpace);
     }
 
     // for performance tracking
@@ -348,11 +347,11 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     public void setAdapter(IAdapter adapter) {
         if (mAdapter != null) {
-            mAdapter.unregisterDataSetObserver(mDataSetObserver);
+            mAdapter.unregisterDataSetObserver(mDataObserver);
         }
         mAdapter = adapter;
         if (adapter != null) {
-            adapter.registerDataSetObserver(mDataSetObserver);
+            adapter.registerDataSetObserver(mDataObserver);
         }
         notifyChange();
     }
@@ -369,8 +368,25 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         } else {
             mDataLength = getPointWidth() * mAdapter.getCount();
         }
-        fixScrollX();
-        invalidate();
+        int oldScrollX = mScrollX;
+        int fixScrollX = getFixScrollX(oldScrollX);
+        if (fixScrollX == oldScrollX) {
+            invalidate();
+        } else {
+            setScroll(fixScrollX);
+        }
+    }
+
+    private void notifyLastInserted(int itemCount) {
+        mDataLength = getPointWidth() * mAdapter.getCount();
+        resetBuffer();
+        if (!isFullScreen()) {
+            invalidate();
+            return;
+        }
+        int oldScrollX = mScrollX;
+        int scrollRange = Math.round(getScalePointWidth() * itemCount);
+        setScrollerThenAnimScroll(oldScrollX + scrollRange, oldScrollX);
     }
 
     private void resetBuffer() {
@@ -380,11 +396,26 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mMaxScrollXBuffer.mScaleX = 0;
     }
 
-    private DataSetObserver mDataSetObserver = new DataSetObserver() {
+    private AdapterDataObserver mDataObserver = new AdapterDataObserver() {
 
         @Override
         public void onChanged() {
             notifyChange();
+        }
+
+        @Override
+        public void onFirstInserted(int itemCount) {
+            notifyChange();
+        }
+
+        @Override
+        public void notifyLastUpdated() {
+            notifyChange();
+        }
+
+        @Override
+        public void onLastInserted(int itemCount) {
+            notifyLastInserted(itemCount);
         }
     };
 }
