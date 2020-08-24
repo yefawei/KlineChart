@@ -11,6 +11,7 @@ import com.benben.kchartlib.InteractiveKChartView;
 import com.benben.kchartlib.adapter.DefaultKChartAdapter;
 import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
+import com.benben.kchartlib.data.AnimDataSizeChangeHandler;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.utils.ConvertUtils;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         mDataProvider = new DragonKLineDataProvider();
 
         mKChart.setPointWidth(ConvertUtils.dp2px(this, 8));
+        mKChart.setDataSizeChangeHandler(new AnimDataSizeChangeHandler());
 
         MainRenderer viewRender = mKChart.getMainRenderer();
 

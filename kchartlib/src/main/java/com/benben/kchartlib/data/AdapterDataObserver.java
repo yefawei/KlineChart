@@ -14,7 +14,7 @@ public class AdapterDataObserver {
     }
 
     /**
-     * 头部插入新数据
+     * 头部有插入新数据
      */
     public void onFirstInserted(int itemCount) {
 
@@ -23,7 +23,7 @@ public class AdapterDataObserver {
     /**
      * 最后一个数据有更新
      */
-    public void notifyLastUpdated() {
+    public void onLastUpdated() {
 
     }
 

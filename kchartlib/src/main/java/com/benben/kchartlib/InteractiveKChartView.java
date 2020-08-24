@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.adapter.BaseKChartAdapter;
+import com.benben.kchartlib.data.IDataSizeChangeHandler;
 import com.benben.kchartlib.animation.AnimationManager;
 import com.benben.kchartlib.buffer.IsFullScreenBuffer;
 import com.benben.kchartlib.buffer.MaxScrollXBuffer;
@@ -43,6 +44,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     private int mDataLength;                // 视图总长度
     private BaseKChartAdapter mAdapter;     // 数据适配器
+    private IDataSizeChangeHandler mDataSizeChangeHandler;
 
     private Transformer mTransformer;
     private AnimationManager mAnimationManager;
@@ -256,7 +258,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             mForegroundRenderer.updateViewPort(mViewPort.left, mViewPort.top, mViewPort.right, mViewPort.bottom);
             mForegroundRenderer.updateChildLayout();
         }
-        notifyChange();
+        requestDraw();
     }
 
     @Override
@@ -276,7 +278,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     public void setPointShowSize(int size) {
         mPointModeValue = Math.max(size, 2);
         mPointMode = POINT_FIXED_SIZE_MODE;
-        notifyChange();
+        requestDraw();
     }
 
     /**
@@ -285,7 +287,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     public void setPointWidth(int pointWidth) {
         mPointModeValue = Math.max(pointWidth, 3);
         mPointMode = POINT_FIXED_WIDTH_MODE;
-        notifyChange();
+        requestDraw();
     }
 
     /**
@@ -353,7 +355,14 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         if (adapter != null) {
             adapter.registerDataSetObserver(mDataObserver);
         }
-        notifyChange();
+        requestDraw();
+    }
+
+    /**
+     * 数据数量变更时扩展操作类
+     */
+    public void setDataSizeChangeHandler(@Nullable IDataSizeChangeHandler handler) {
+        mDataSizeChangeHandler = handler;
     }
 
     @Override
@@ -361,7 +370,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         return mAdapter;
     }
 
-    private void notifyChange() {
+    private void requestDraw() {
         resetBuffer();
         if (mAdapter == null) {
             mDataLength = 0;
@@ -377,18 +386,6 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         }
     }
 
-    private void notifyLastInserted(int itemCount) {
-        mDataLength = getPointWidth() * mAdapter.getCount();
-        resetBuffer();
-        if (!isFullScreen()) {
-            invalidate();
-            return;
-        }
-        int finalScroll = getFinalScroll();
-        int scrollRange = Math.round(getScalePointWidth() * itemCount);
-        setScrollerThenAnimScroll(mScrollX + scrollRange, finalScroll);
-    }
-
     private void resetBuffer() {
         mPointWidthBuffer.mHasBuffer = false;
         mScalePointWidthBuffer.mScaleX = 0;
@@ -400,22 +397,40 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
         @Override
         public void onChanged() {
-            notifyChange();
+            requestDraw();
         }
 
         @Override
         public void onFirstInserted(int itemCount) {
-            notifyChange();
+            mDataLength = getPointWidth() * mAdapter.getCount();
+            resetBuffer();
+            if (mDataSizeChangeHandler == null) {
+                invalidate();
+                return;
+            }
+            if (!mDataSizeChangeHandler.onFirstInserted(InteractiveKChartView.this,
+                    itemCount, mScrollX, getFinalScroll())) {
+                invalidate();
+            }
         }
 
         @Override
-        public void notifyLastUpdated() {
-            notifyChange();
+        public void onLastUpdated() {
+            invalidate();
         }
 
         @Override
         public void onLastInserted(int itemCount) {
-            notifyLastInserted(itemCount);
+            mDataLength = getPointWidth() * mAdapter.getCount();
+            resetBuffer();
+            if (mDataSizeChangeHandler == null) {
+                invalidate();
+                return;
+            }
+            if (!mDataSizeChangeHandler.onLastInserted(InteractiveKChartView.this,
+                    itemCount, mScrollX, getFinalScroll())) {
+                invalidate();
+            }
         }
     };
 }

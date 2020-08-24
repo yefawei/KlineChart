@@ -390,7 +390,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
     public void animScroll(int targetScrollX) {
-        animScroll(targetScrollX, 4000);
+        animScroll(targetScrollX, 400);
     }
 
     /**
@@ -408,7 +408,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
 
     public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX) {
-        setScrollerThenAnimScroll(newScrollX, targetScrollX, 4000);
+        setScrollerThenAnimScroll(newScrollX, targetScrollX, 400);
     }
 
     /**
@@ -444,7 +444,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
     /**
-     * 滚动辅助函数，获取最终滚动值
+     * 滚动辅助函数，如果处于动画滚动状态的目标滚动值，否则返回当前滚动值
      */
     protected final int getFinalScroll() {
         if (mScroller.isFinished()) {

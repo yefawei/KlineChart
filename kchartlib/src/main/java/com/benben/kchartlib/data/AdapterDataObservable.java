@@ -31,7 +31,7 @@ public class AdapterDataObservable extends Observable<AdapterDataObserver> {
      */
     public void notifyLastUpdated() {
         for (AdapterDataObserver observer : mObservers) {
-            observer.notifyLastUpdated();
+            observer.onLastUpdated();
         }
     }
 
