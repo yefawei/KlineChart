@@ -92,9 +92,8 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     void preInvalidate() {
-        if (!mMainRenderer.mainCanvasValid()) {
-            return;
-        }
+        if (mAdapter == null || !mMainRenderer.mainCanvasValid()) return;
+
         mTransformer.updateBounds();
         if (mIsRenderBackground) {
             mBackgroundRenderer.preCalcDataValue();

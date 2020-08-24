@@ -112,4 +112,16 @@ public class MainActivity extends AppCompatActivity {
         mKChart.updateRenderPortLayout();
         showToast("更新布局");
     }
+
+    public void toLeft(View view) {
+        mKChart.scrollToIndex(0, 0, true);
+    }
+
+    public void toCenter(View view) {
+        mKChart.scrollToIndex(mAdapter.getCount() / 2, 0.5f, true);
+    }
+
+    public void toRight(View view) {
+        mKChart.scrollToIndex(mAdapter.getCount() - 1, 1f, true);
+    }
 }

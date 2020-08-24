@@ -108,10 +108,7 @@ public class Transformer {
     }
 
     private int getItemCount() {
-        if (mDataProvider.getAdapter() != null) {
-            return mDataProvider.getAdapter().getCount();
-        }
-        return 0;
+        return mDataProvider.getAdapter().getCount();
     }
 
     /**

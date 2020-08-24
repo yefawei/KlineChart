@@ -2,7 +2,7 @@ package com.benben.kchartlib.data;
 
 /**
  * @日期 : 2020/8/21
- * @描述 :
+ * @描述 : 数据更新观察者
  */
 public class AdapterDataObserver {
 

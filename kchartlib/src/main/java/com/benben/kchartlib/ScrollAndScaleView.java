@@ -1,15 +1,10 @@
 package com.benben.kchartlib;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.OverScroller;
 
 import androidx.annotation.NonNull;
@@ -18,6 +13,7 @@ import androidx.core.view.GestureDetectorCompat;
 
 import com.benben.kchartlib.compat.GestureMoveActionCompat;
 import com.benben.kchartlib.compat.ScaleGestureDetectorCompat;
+import com.benben.kchartlib.data.PaddingHelper;
 import com.benben.kchartlib.impl.IDataProvider;
 
 /**
@@ -44,14 +40,11 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     protected float mTouchX;                    // 当前点击的X坐标
     protected float mTouchY;                    // 当前点击的Y坐标
 
+    private PaddingHelper mPaddingHelper;
     private GestureMoveActionCompat mGestureMoveActionCompat;
     private GestureDetectorCompat mGestureDetectorCompat;
     private OverScroller mScroller;
     private ScaleGestureDetectorCompat mScaleGestureDetector;
-
-    private TimeInterpolator mInterpolator;
-    private Animator.AnimatorListener mAnimatorListener;
-    private ObjectAnimator mAnimScroll;
 
     public ScrollAndScaleView(@NonNull Context context) {
         this(context, null);
@@ -64,6 +57,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     public ScrollAndScaleView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setClickable(true);
+        mPaddingHelper = new PaddingHelper();
         mGestureMoveActionCompat = new GestureMoveActionCompat(context);
         mGestureDetectorCompat = new GestureDetectorCompat(context, this);
         mScroller = new OverScroller(context);
@@ -112,7 +106,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         mOnMultipleTouch = event.getPointerCount() > 1;
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                stopAnimScroll();
                 mOnTouch = true;
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -406,21 +399,16 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      *
      * @param targetScrollX 目标滚动值
      */
-    public void animScroll(int targetScrollX, long duration) {
+    public void animScroll(int targetScrollX, int duration) {
         if (mOnTouch || targetScrollX == mScrollX) return;
-        stopAnimScroll();
         targetScrollX = getFixScrollX(targetScrollX);
-        initAnimator();
-        mAnimScroll = ObjectAnimator.ofInt(this, "Scroll", mScrollX, targetScrollX);
-        mAnimScroll.setDuration(duration);
-        mAnimScroll.setInterpolator(mInterpolator);
-        mAnimScroll.addListener(mAnimatorListener);
-        mAnimScroll.start();
+        mScroller.startScroll(mScrollX, 0, targetScrollX - mScrollX, 0, duration);
+        invalidate();
     }
 
 
     public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX) {
-        setScrollerThenAnimScroll(newScrollX, targetScrollX, 300);
+        setScrollerThenAnimScroll(newScrollX, targetScrollX, 400);
     }
 
     /**
@@ -430,7 +418,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * @param newScrollX    新滚动值
      * @param targetScrollX 目标滚动值
      */
-    public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX, long duration) {
+    public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX, int duration) {
         newScrollX = getFixScrollX(newScrollX);
         targetScrollX = getFixScrollX(targetScrollX);
         if (mOnTouch || newScrollX == targetScrollX) {
@@ -441,25 +429,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         }
         mScrollX = newScrollX;
         animScroll(targetScrollX, duration);
-    }
-
-    public void stopAnimScroll() {
-        if (mAnimScroll != null) {
-            mAnimScroll.cancel();
-        }
-    }
-
-
-    private void initAnimator() {
-        if (mInterpolator == null) {
-            mInterpolator = new DecelerateInterpolator();
-            mAnimatorListener = new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mAnimScroll = null;
-                }
-            };
-        }
     }
 
     /**
