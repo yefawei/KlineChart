@@ -2,7 +2,7 @@ package com.benben.kchartlib.impl;
 
 import androidx.annotation.Nullable;
 
-import com.benben.kchartlib.adapter.IAdapter;
+import com.benben.kchartlib.adapter.BaseKChartAdapter;
 import com.benben.kchartlib.animation.AnimationManager;
 import com.benben.kchartlib.data.Transformer;
 
@@ -27,7 +27,7 @@ public interface IDataProvider {
     float getTouchY();
 
     @Nullable
-    IAdapter getAdapter();
+    BaseKChartAdapter getAdapter();
 
     int getPointWidth();
 

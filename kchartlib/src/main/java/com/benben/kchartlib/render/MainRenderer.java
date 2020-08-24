@@ -7,7 +7,6 @@ import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.canvas.MainRendererCanvas;
-import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IMainCanvasPort;
 
@@ -60,7 +59,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
         setInUpdateChildLayout(true);
         if (mViewPort.isEmpty()) {
-            for (RendererCanvas renderCanvas : mHorizontalCanvas) {
+            for (MainRendererCanvas renderCanvas : mHorizontalCanvas) {
                 if (renderCanvas == null) continue;
                 renderCanvas.setWidth(0);
                 renderCanvas.setHeight(0);
@@ -377,7 +376,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
         }
     }
 
-    public void render(Canvas canvas, RendererCanvas rendererCanvas) {
+    public void render(Canvas canvas, MainRendererCanvas rendererCanvas) {
         if (!rendererCanvas.isValid()) return;
         canvas.save();
         rendererCanvas.render(canvas);
@@ -497,7 +496,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
     }
 
     @Nullable
-    public RendererCanvas getRenderCanvas(@Position int position) {
+    public MainRendererCanvas getRenderCanvas(@Position int position) {
         if (position == POSITION_LEFT) {
             return mHorizontalCanvas[0];
         }
@@ -518,7 +517,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
     public void addRenderCanvas(MainRendererCanvas canvas, @Position int position) {
         if (canvas == null) {
-            throw new NullPointerException("RendererCanvas cannot be null!");
+            throw new NullPointerException("MainRendererCanvas cannot be null!");
         }
         if (position == POSITION_LEFT) {
             mHorizontalCanvas[0] = canvas;

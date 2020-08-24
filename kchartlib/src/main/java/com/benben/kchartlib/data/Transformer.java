@@ -2,7 +2,7 @@ package com.benben.kchartlib.data;
 
 import androidx.annotation.NonNull;
 
-import com.benben.kchartlib.adapter.IAdapter;
+import com.benben.kchartlib.adapter.BaseKChartAdapter;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IMainCanvasPort;
 import com.benben.kchartlib.index.IEntity;
@@ -124,6 +124,7 @@ public class Transformer {
 
     /**
      * 可绘制区域x坐标转成转换坐标x
+     * 其中左边界传0，右边界传可绘制区域总宽度
      */
     private float xToTranslateX(float x) {
         return mDataProvider.getScalePointWidth() * getItemCount() - mDataProvider.getScroll() + x - mDataProvider.getMainCanvasPort().getMainCanvasWidth();
@@ -161,7 +162,7 @@ public class Transformer {
      *
      * @param adapter
      */
-    private void calcMinMax(IAdapter adapter) {
+    private void calcMinMax(BaseKChartAdapter adapter) {
         Collection<IndexRange> values = mIndexMap.values();
         for (IndexRange value : values) {
             value.calcExtendedData();

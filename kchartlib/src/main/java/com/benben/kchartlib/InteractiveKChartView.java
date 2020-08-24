@@ -10,14 +10,16 @@ import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.benben.kchartlib.adapter.IAdapter;
+import com.benben.kchartlib.adapter.BaseKChartAdapter;
 import com.benben.kchartlib.animation.AnimationManager;
 import com.benben.kchartlib.buffer.IsFullScreenBuffer;
 import com.benben.kchartlib.buffer.MaxScrollXBuffer;
 import com.benben.kchartlib.buffer.PointWidthBuffer;
 import com.benben.kchartlib.buffer.ScalePointWidthBuffer;
+import com.benben.kchartlib.canvas.IRendererCanvas;
 import com.benben.kchartlib.data.AdapterDataObserver;
 import com.benben.kchartlib.data.Transformer;
+import com.benben.kchartlib.drawing.IDrawing;
 import com.benben.kchartlib.impl.IMainCanvasPort;
 import com.benben.kchartlib.render.BackgroundRenderer;
 import com.benben.kchartlib.render.ForegroundRenderer;
@@ -40,7 +42,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private MaxScrollXBuffer mMaxScrollXBuffer = new MaxScrollXBuffer();
 
     private int mDataLength;                // 视图总长度
-    private IAdapter mAdapter;              // 数据适配器
+    private BaseKChartAdapter mAdapter;     // 数据适配器
 
     private Transformer mTransformer;
     private AnimationManager mAnimationManager;
@@ -240,7 +242,8 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     /**
-     * 更新子布局
+     * 在添加或更新{@link IRendererCanvas}和{@link IDrawing}时
+     * 使布局参数生效
      */
     public void updateRenderPortLayout() {
         if (!mCanUpdateLayout) return;
@@ -345,7 +348,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         }
     }
 
-    public void setAdapter(IAdapter adapter) {
+    public void setAdapter(@Nullable BaseKChartAdapter adapter) {
         if (mAdapter != null) {
             mAdapter.unregisterDataSetObserver(mDataObserver);
         }
@@ -357,7 +360,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     @Override
-    public IAdapter getAdapter() {
+    public BaseKChartAdapter getAdapter() {
         return mAdapter;
     }
 

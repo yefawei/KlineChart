@@ -31,7 +31,7 @@ public abstract class BaseKChartAdapter<T extends IEntity> implements IAdapter<T
     }
 
     /**
-     * 添加头部数据
+     * 头部数据有添加
      *
      * @param itemCount 添加的数量
      */
@@ -41,7 +41,7 @@ public abstract class BaseKChartAdapter<T extends IEntity> implements IAdapter<T
     }
 
     /**
-     * 更新末尾数据
+     * 末尾数据有更新
      */
     @Override
     public void notifyLastUpdated() {
@@ -49,7 +49,7 @@ public abstract class BaseKChartAdapter<T extends IEntity> implements IAdapter<T
     }
 
     /**
-     * 添加尾部数据
+     * 尾部数据有添加
      *
      * @param itemCount 添加的数量
      */

@@ -7,7 +7,7 @@ import android.util.Log;
 import androidx.annotation.CallSuper;
 import androidx.annotation.IntDef;
 
-import com.benben.kchartlib.adapter.IAdapter;
+import com.benben.kchartlib.adapter.BaseKChartAdapter;
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IParentPortLayout;
@@ -431,7 +431,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
 
     @Override
     public void render(Canvas canvas) {
-        IAdapter adapter = mDataProvider.getAdapter();
+        BaseKChartAdapter adapter = mDataProvider.getAdapter();
         if (adapter == null || adapter.getCount() == 0) {
             renderEmpty(canvas);
         } else {
