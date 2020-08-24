@@ -265,7 +265,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             return mIsFullScreenBuffer.mIsFullScreen;
         }
         mIsFullScreenBuffer.mScaleX = mScaleX;
-        mIsFullScreenBuffer.mIsFullScreen = mDataLength * mScaleX >= mMainRenderer.getMainCanvasWidth();
+        mIsFullScreenBuffer.mIsFullScreen = mDataLength * mScaleX > mMainRenderer.getMainCanvasWidth();
         return mIsFullScreenBuffer.mIsFullScreen;
     }
 
@@ -338,12 +338,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             inScreenPercent = 1.0f;
         }
         int targetScrollX = mTransformer.getScrollXForIndex(index, inScreenPercent);
-        int maxScrollX = getMaxScrollX();
-        int targetScroll = Math.min(targetScrollX, maxScrollX);
         if (anim) {
             animScroll(targetScrollX);
         } else {
-            setScroll(targetScroll);
+            setScroll(targetScrollX);
         }
     }
 
