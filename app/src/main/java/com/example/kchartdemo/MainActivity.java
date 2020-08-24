@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void pre10(View view) {
         ArrayList<KlineInfo> list = new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 10; i++) {
             list.add(mDataProvider.mData.get(startIndex - 10 + i));
         }
         mAdapter.addDatas(list);

@@ -130,7 +130,7 @@ public class DefaultKChartAdapter extends BaseKChartAdapter<IEntity> {
         } else if (startTime < mStartTime && endTime <= mEndTime) {
             int endIndex = 0;
             for (int i = 0; i < datas.length; i++) {
-                if (datas[i].getDatatime() >= mEndTime) {
+                if (datas[i].getDatatime() >= mStartTime) {
                     break;
                 }
                 endIndex = i;
@@ -170,7 +170,7 @@ public class DefaultKChartAdapter extends BaseKChartAdapter<IEntity> {
         } else if (startTime < mStartTime && endTime <= mEndTime) {
             int endIndex = 0;
             for (int i = 0; i < datas.size(); i++) {
-                if (datas.get(i).getDatatime() >= mEndTime) {
+                if (datas.get(i).getDatatime() >= mStartTime) {
                     break;
                 }
                 endIndex = i;
