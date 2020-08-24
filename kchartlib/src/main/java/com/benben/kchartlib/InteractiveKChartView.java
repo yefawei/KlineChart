@@ -116,11 +116,11 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     @Override
     int getMaxScrollX() {
         if (isFullScreen()) {
-            if (mMaxScrollXBuffer.mScaleX == getScaleX()) {
+            if (mMaxScrollXBuffer.mScaleX == mScaleX) {
                 return mMaxScrollXBuffer.mMaxScrollX;
             }
-            mMaxScrollXBuffer.mScaleX = getScaleX();
-            mMaxScrollXBuffer.mMaxScrollX = Math.round(mDataLength * getScaleX() - mMainRenderer.getMainCanvasWidth());
+            mMaxScrollXBuffer.mScaleX = mScaleX;
+            mMaxScrollXBuffer.mMaxScrollX = Math.round(mDataLength * mScaleX - mMainRenderer.getMainCanvasWidth());
             return mMaxScrollXBuffer.mMaxScrollX;
         }
         return 0;
@@ -262,11 +262,11 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     public boolean isFullScreen() {
-        if (mIsFullScreenBuffer.mScaleX == getScaleX()) {
+        if (mIsFullScreenBuffer.mScaleX == mScaleX) {
             return mIsFullScreenBuffer.mIsFullScreen;
         }
-        mIsFullScreenBuffer.mScaleX = getScaleX();
-        mIsFullScreenBuffer.mIsFullScreen = mDataLength * getScaleX() >= mMainRenderer.getMainCanvasWidth();
+        mIsFullScreenBuffer.mScaleX = mScaleX;
+        mIsFullScreenBuffer.mIsFullScreen = mDataLength * mScaleX >= mMainRenderer.getMainCanvasWidth();
         return mIsFullScreenBuffer.mIsFullScreen;
     }
 
@@ -294,11 +294,11 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
      */
     @Override
     public float getScalePointWidth() {
-        if (mScalePointWidthBuffer.mScaleX == getScaleX()) {
+        if (mScalePointWidthBuffer.mScaleX == mScaleX) {
             return mScalePointWidthBuffer.mScalePointWidth;
         }
-        mScalePointWidthBuffer.mScalePointWidth = getPointWidth() * getScaleX();
-        mScalePointWidthBuffer.mScaleX = getScaleX();
+        mScalePointWidthBuffer.mScalePointWidth = getPointWidth() * mScaleX;
+        mScalePointWidthBuffer.mScaleX = mScaleX;
         return mScalePointWidthBuffer.mScalePointWidth;
     }
 
@@ -381,6 +381,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     private void notifyLastInserted(int itemCount) {
+        //TODO 快速且多次添加数据，此时动画未结束，会出现目标值偏移
         mDataLength = getPointWidth() * mAdapter.getCount();
         resetBuffer();
         if (!isFullScreen()) {
