@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.OverScroller;
 
+import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.GestureDetectorCompat;
@@ -131,7 +132,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             if (mOnTouch || !mScrollEnable) {
                 mScroller.forceFinished(true);
             } else {
-                scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+                scrollTo(mScroller.getCurrX(), 0);
             }
         }
     }
@@ -244,8 +245,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public boolean onScale(ScaleGestureDetectorCompat detector) {
         if (mScaleEnable) {
-            float scale = mScaleX * detector.getScaleFactor();
-            setScale(scale, detector.getFocusX(), detector.getFocusY());
+            float scaleX = mScaleX * detector.getScaleFactor();
+            setScaleX(scaleX, detector.getFocusX(), detector.getFocusY());
             return true;
         }
         return false;
@@ -312,24 +313,38 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     /**
      * 设置当前缩放值
      */
-    public void setScaleX(float scale) {
-        setScale(scale, -1, -1);
+    public void setScaleX(float scaleX) {
+        setScaleX(scaleX, 0.5f);
     }
 
-    private void setScale(float scale, float focusX, float focusY) {
-        if (scale < mScaleXMin) {
-            scale = mScaleXMin;
-        } else if (scale > mScaleXMax) {
-            scale = mScaleXMax;
-        }
-        if (scale != mScaleX) {
+    /**
+     * @param inScreenPercent 缩放焦点所在的屏幕位置百分比
+     */
+    public void setScaleX(float scaleX, @FloatRange(from = 0, to = 1.0) float inScreenPercent) {
+        setScaleX(scaleX, getWidth() / inScreenPercent, -1);
+    }
+
+    private void setScaleX(float scaleX, float focusX, float focusY) {
+        scaleX = getFixScaleX(scaleX);
+        if (scaleX != mScaleX) {
             float oldScale = mScaleX;
-            mScaleX = scale;
+            mScaleX = scaleX;
             int scrollX = onScaleChanged(mScaleX, oldScale, focusX, focusY);
             mScrollX = getFixScrollX(scrollX);
-            //TODO 这里需要判断最左最右边界
             invalidate();
         }
+    }
+
+    /**
+     * 获取修正后的缩放值
+     */
+    protected float getFixScaleX(float scaleX) {
+        if (scaleX < mScaleXMin) {
+            return mScaleXMin;
+        } else if (scaleX > mScaleXMax) {
+            return mScaleXMax;
+        }
+        return scaleX;
     }
 
     /**
@@ -439,7 +454,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
     /**
-     * 滚动辅助函数，如果处于动画滚动状态的目标滚动值，否则返回当前滚动值
+     * 滚动辅助函数，如果处于动画滚动状态，返回目标滚动值，否则返回当前滚动值
      */
     protected final int getFinalScroll() {
         if (mScroller.isFinished()) {
