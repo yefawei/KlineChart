@@ -331,6 +331,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             mScaleX = scaleX;
             int scrollX = onScaleChanged(mScaleX, oldScale, focusX, focusY);
             mScrollX = getFixScrollX(scrollX);
+            //TODO 这里要判断是否到达边界回调
             invalidate();
         }
     }
