@@ -154,8 +154,13 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             //TODO 到达最大值,即最左边
             mScroller.forceFinished(true);
         }
-        if (!mScroller.isFinished() || mScrollX != oldX) {
-            onScrollChanged(mScrollX, oldX);
+        if (!mScroller.isFinished()) {
+            onScrollChanged(mScrollX, 0, oldX, 0);
+            postInvalidateOnAnimation();
+            return;
+        }
+        if (mScrollX != oldX) {
+            onScrollChanged(mScrollX, 0, oldX, 0);
             invalidate();
         }
     }
@@ -514,11 +519,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * 获取内容可滚动的最大值
      */
     abstract int getMaxScrollX();
-
-    /**
-     * 滚动值有变化
-     */
-    abstract void onScrollChanged(int newScrollX, int oldScrollX);
 
     /**
      * 缩放值有变化

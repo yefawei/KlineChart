@@ -128,11 +128,6 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     @Override
-    void onScrollChanged(int newScrollX, int oldScrollX) {
-
-    }
-
-    @Override
     int onScaleChanged(float scale, float oldScale, float focusX, float focusY) {
         float width = mMainRenderer.getMainCanvasWidth();
         float left = mMainRenderer.getMainCanvasLeft();
