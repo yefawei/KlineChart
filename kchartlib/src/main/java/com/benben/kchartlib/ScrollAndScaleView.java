@@ -143,17 +143,17 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public void scrollTo(int x, int y) {
-        int oldX = mScrollX;
-        mScrollX = x;
-        if (mScrollX < getMinScrollX()) {
-            mScrollX = getMinScrollX();
+        if (x < getMinScrollX()) {
+            x = getMinScrollX();
             //TODO 到达最小值,即最右边
             mScroller.forceFinished(true);
-        } else if (mScrollX > getMaxScrollX()) {
-            mScrollX = getMaxScrollX();
+        } else if (x > getMaxScrollX()) {
+            x = getMaxScrollX();
             //TODO 到达最大值,即最左边
             mScroller.forceFinished(true);
         }
+        int oldX = mScrollX;
+        mScrollX = x;
         if (!mScroller.isFinished()) {
             onScrollChanged(mScrollX, 0, oldX, 0);
             postInvalidateOnAnimation();
@@ -244,19 +244,19 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public boolean onScale(ScaleGestureDetectorCompat detector) {
         if (mScaleEnable) {
-            float oldScale = mScaleX;
-            mScaleX *= detector.getScaleFactor();
-            if (mScaleX < mScaleXMin) {
-                mScaleX = mScaleXMin;
-            } else if (mScaleX > mScaleXMax) {
-                mScaleX = mScaleXMax;
+            float scale = mScaleX * detector.getScaleFactor();
+            if (scale < mScaleXMin) {
+                scale = mScaleXMin;
+            } else if (scale > mScaleXMax) {
+                scale = mScaleXMax;
             }
-            if (oldScale != mScaleX) {
+            if (scale != mScaleX) {
+                float oldScale = mScaleX;
+                mScaleX = scale;
                 float focusX = detector.getFocusX();
                 float focusY = detector.getFocusY();
                 int scrollX = onScaleChanged(mScaleX, oldScale, focusX, focusY);
-                mScrollX = getFixScrollX(scrollX);
-                invalidate();
+                setScroll(scrollX);
             }
             return true;
         }
@@ -325,17 +325,16 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * 设置当前缩放值
      */
     public void setScaleX(float scale) {
-        float oldScale = mScaleX;
-        mScaleX = scale;
-        if (mScaleX < mScaleXMin) {
-            mScaleX = mScaleXMin;
-        } else if (mScaleX > mScaleXMax) {
-            mScaleX = mScaleXMax;
+        if (scale < mScaleXMin) {
+            scale = mScaleXMin;
+        } else if (scale > mScaleXMax) {
+            scale = mScaleXMax;
         }
-        if (mScaleX != oldScale) {
+        if (scale != mScaleX) {
+            float oldScale = mScaleX;
+            mScaleX = scale;
             int scrollX = onScaleChanged(mScaleX, oldScale, -1, -1);
-            mScrollX = getFixScrollX(scrollX);
-            invalidate();
+            setScroll(scrollX);
         }
     }
 
@@ -405,8 +404,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * @param targetScrollX 目标滚动值
      */
     public void animScroll(int targetScrollX, int duration) {
-        if (mOnTouch || targetScrollX == mScrollX) return;
         targetScrollX = getFixScrollX(targetScrollX);
+        if (mOnTouch || targetScrollX == mScrollX) return;
         mScroller.startScroll(mScrollX, 0, targetScrollX - mScrollX, 0, duration);
         invalidate();
     }
@@ -424,16 +423,13 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * @param targetScrollX 目标滚动值
      */
     public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX, int duration) {
-        newScrollX = getFixScrollX(newScrollX);
-        targetScrollX = getFixScrollX(targetScrollX);
         if (mOnTouch || newScrollX == targetScrollX) {
             if (newScrollX == mScrollX) return;
-            mScrollX = newScrollX;
-            invalidate();
-            return;
+            setScroll(newScrollX);
+        } else {
+            mScrollX = getFixScrollX(newScrollX);
+            animScroll(targetScrollX, duration);
         }
-        mScrollX = newScrollX;
-        animScroll(targetScrollX, duration);
     }
 
     /**
