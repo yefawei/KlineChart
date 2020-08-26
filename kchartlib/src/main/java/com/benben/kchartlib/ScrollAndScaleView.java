@@ -245,19 +245,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     public boolean onScale(ScaleGestureDetectorCompat detector) {
         if (mScaleEnable) {
             float scale = mScaleX * detector.getScaleFactor();
-            if (scale < mScaleXMin) {
-                scale = mScaleXMin;
-            } else if (scale > mScaleXMax) {
-                scale = mScaleXMax;
-            }
-            if (scale != mScaleX) {
-                float oldScale = mScaleX;
-                mScaleX = scale;
-                float focusX = detector.getFocusX();
-                float focusY = detector.getFocusY();
-                int scrollX = onScaleChanged(mScaleX, oldScale, focusX, focusY);
-                setScroll(scrollX);
-            }
+            setScale(scale, detector.getFocusX(), detector.getFocusY());
             return true;
         }
         return false;
@@ -325,6 +313,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * 设置当前缩放值
      */
     public void setScaleX(float scale) {
+        setScale(scale, -1, -1);
+    }
+
+    private void setScale(float scale, float focusX, float focusY) {
         if (scale < mScaleXMin) {
             scale = mScaleXMin;
         } else if (scale > mScaleXMax) {
@@ -333,8 +325,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         if (scale != mScaleX) {
             float oldScale = mScaleX;
             mScaleX = scale;
-            int scrollX = onScaleChanged(mScaleX, oldScale, -1, -1);
-            setScroll(scrollX);
+            int scrollX = onScaleChanged(mScaleX, oldScale, focusX, focusY);
+            mScrollX = getFixScrollX(scrollX);
+            //TODO 这里需要判断最左最右边界
+            invalidate();
         }
     }
 
