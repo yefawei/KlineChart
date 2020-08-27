@@ -40,6 +40,11 @@ public class VolumeDrawing extends Drawing {
     }
 
     @Override
+    public void drawEmpty(Canvas canvas) {
+        canvas.drawColor(Color.argb(48, 0, 255, 255));
+    }
+
+    @Override
     public void drawData(Canvas canvas) {
         canvas.drawColor(Color.argb(48, 0, 255, 255));
         float width = mDataProvider.getScalePointWidth();

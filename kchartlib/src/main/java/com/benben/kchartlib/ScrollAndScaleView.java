@@ -14,7 +14,6 @@ import androidx.core.view.GestureDetectorCompat;
 
 import com.benben.kchartlib.compat.GestureMoveActionCompat;
 import com.benben.kchartlib.compat.ScaleGestureDetectorCompat;
-import com.benben.kchartlib.data.PaddingHelper;
 import com.benben.kchartlib.impl.IDataProvider;
 
 /**
@@ -40,7 +39,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     protected int mScrollX = 0;                 // 当前滚动值
     protected float mTouchX;                    // 当前点击的X坐标
     protected float mTouchY;                    // 当前点击的Y坐标
-    protected PaddingHelper mPaddingHelper;     // 边界辅助类
 
     private GestureMoveActionCompat mGestureMoveActionCompat;
     private GestureDetectorCompat mGestureDetectorCompat;
@@ -58,7 +56,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     public ScrollAndScaleView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setClickable(true);
-        mPaddingHelper = new PaddingHelper();
         mGestureMoveActionCompat = new GestureMoveActionCompat(context);
         mGestureDetectorCompat = new GestureDetectorCompat(context, this);
         mScroller = new OverScroller(context);
@@ -146,17 +143,17 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     public void scrollTo(int x, int y) {
         if (x < getMinScrollX()) {
             x = getMinScrollX();
-            //TODO 到达最小值,即最右边
             mScroller.forceFinished(true);
         } else if (x > getMaxScrollX()) {
             x = getMaxScrollX();
-            //TODO 到达最大值,即最左边
             mScroller.forceFinished(true);
         }
         int oldX = mScrollX;
         mScrollX = x;
         if (!mScroller.isFinished()) {
-            onScrollChanged(mScrollX, 0, oldX, 0);
+            if (mScrollX != oldX) {
+                onScrollChanged(mScrollX, 0, oldX, 0);
+            }
             postInvalidateOnAnimation();
             return;
         }
@@ -259,7 +256,11 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     public void reset(boolean invalidate) {
         mScaleX = 1;
-        mScrollX = 0;
+        int oldX = mScrollX;
+        mScrollX = getMinScrollX();
+        if (mScrollX != oldX) {
+            onScrollChanged(mScrollX, 0, oldX, 0);
+        }
         if (invalidate) {
             invalidate();
         }
@@ -330,8 +331,11 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             float oldScale = mScaleX;
             mScaleX = scaleX;
             int scrollX = onScaleChanged(mScaleX, oldScale, focusX, focusY);
-            mScrollX = getFixScrollX(scrollX);
-            //TODO 这里要判断是否到达边界回调
+            int newScrollX = getFixScrollX(scrollX);
+            if (mScrollX != newScrollX) {
+                onScrollChanged(newScrollX, 0, mScrollX, 0);
+                mScrollX = newScrollX;
+            }
             invalidate();
         }
     }
@@ -437,7 +441,11 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             if (newScrollX == mScrollX) return;
             setScroll(newScrollX);
         } else {
-            mScrollX = getFixScrollX(newScrollX);
+            newScrollX = getFixScrollX(newScrollX);
+            if (mScrollX != newScrollX) {
+                onScrollChanged(newScrollX, 0, mScrollX, 0);
+                mScrollX = newScrollX;
+            }
             animScroll(targetScrollX, duration);
         }
     }
@@ -504,11 +512,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public boolean isOnLongPress() {
         return mOnLongPress;
-    }
-
-    @Override
-    public PaddingHelper getPaddingHelper() {
-        return mPaddingHelper;
     }
 
     /**

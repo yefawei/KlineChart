@@ -27,6 +27,13 @@ public class DefaultKChartAdapter extends BaseKChartAdapter<IEntity> {
         return mKlineInfos.get(position);
     }
 
+    public void clear() {
+        mKlineInfos = null;
+        mStartTime = -1;
+        mEndTime = -1;
+        notifyDataSetChanged();
+    }
+
     public void addData(IEntity data) {
         if (data == null) return;
         if (mKlineInfos == null) {

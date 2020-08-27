@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.adapter.BaseKChartAdapter;
-import com.benben.kchartlib.data.IDataSizeChangeHandler;
 import com.benben.kchartlib.animation.AnimationManager;
 import com.benben.kchartlib.buffer.IsFullScreenBuffer;
 import com.benben.kchartlib.buffer.MaxScrollXBuffer;
@@ -19,6 +18,8 @@ import com.benben.kchartlib.buffer.PointWidthBuffer;
 import com.benben.kchartlib.buffer.ScalePointWidthBuffer;
 import com.benben.kchartlib.canvas.IRendererCanvas;
 import com.benben.kchartlib.data.AdapterDataObserver;
+import com.benben.kchartlib.data.IDataSizeChangeHandler;
+import com.benben.kchartlib.data.PaddingHelper;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.IDrawing;
 import com.benben.kchartlib.impl.IMainCanvasPort;
@@ -39,13 +40,14 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private int mPointModeValue = 6;        // 固定数量：值为数量值 固定点宽度：值为单点宽度
     private PointWidthBuffer mPointWidthBuffer = new PointWidthBuffer();
     private ScalePointWidthBuffer mScalePointWidthBuffer = new ScalePointWidthBuffer();
-    private IsFullScreenBuffer mIsFullScreenBuffer = new IsFullScreenBuffer();
     private MaxScrollXBuffer mMaxScrollXBuffer = new MaxScrollXBuffer();
+    private IsFullScreenBuffer mIsFullScreenBuffer = new IsFullScreenBuffer();
 
     private int mDataLength;                // 视图总长度
     private BaseKChartAdapter mAdapter;     // 数据适配器
     private IDataSizeChangeHandler mDataSizeChangeHandler;
 
+    protected PaddingHelper mPaddingHelper;     // 边界辅助类
     private Transformer mTransformer;
     private AnimationManager mAnimationManager;
 
@@ -68,6 +70,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     public InteractiveKChartView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mMainRenderer = new MainRenderer(this);
+        mPaddingHelper = new PaddingHelper();
         mTransformer = new Transformer(this);
         mAnimationManager = new AnimationManager(this);
     }
@@ -108,6 +111,9 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     int getMinScrollX() {
+        if (isFullScreen()) {
+            return -mPaddingHelper.getRightExtPadding(mScaleX);
+        }
         return 0;
     }
 
@@ -125,6 +131,12 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             return mMaxScrollXBuffer.mMaxScrollX;
         }
         return 0;
+    }
+
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+        //TODO 这里要做到达边界判断逻辑
     }
 
     @Override
@@ -262,8 +274,16 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             return mIsFullScreenBuffer.mIsFullScreen;
         }
         mIsFullScreenBuffer.mScaleX = mScaleX;
-        mIsFullScreenBuffer.mIsFullScreen = mDataLength * mScaleX > mMainRenderer.getMainCanvasWidth();
+        mIsFullScreenBuffer.mIsFullScreen = canFullScreen(mDataLength);
         return mIsFullScreenBuffer.mIsFullScreen;
+    }
+
+    /**
+     * 该数据量是否能填满屏幕
+     */
+    public boolean canFullScreen(int dataLength) {
+        return dataLength * mScaleX > (mMainRenderer.getMainCanvasWidth()
+                - mPaddingHelper.getRightExtPadding(mScaleX));
     }
 
     /**
@@ -361,23 +381,56 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     @Override
+    public PaddingHelper getPaddingHelper() {
+        return mPaddingHelper;
+    }
+
+    @Override
     public BaseKChartAdapter getAdapter() {
         return mAdapter;
     }
 
     private void requestDraw() {
         resetBuffer();
+        int oldDataLength = mDataLength;
         if (mAdapter == null) {
             mDataLength = 0;
         } else {
             mDataLength = getPointWidth() * mAdapter.getCount();
         }
-        int oldScrollX = mScrollX;
-        int fixScrollX = getFixScrollX(oldScrollX);
-        if (fixScrollX == oldScrollX) {
-            invalidate();
+        if (oldDataLength == 0 && mDataLength == 0) {
+            return;
+        }
+        if (oldDataLength == 0) {
+            // 从无数据到有数据
+            if (isFullScreen()) {
+                setScroll(getMinScrollX());
+            } else {
+                invalidate();
+            }
+        } else if (mDataLength == 0) {
+            // 从有数据到无数据
+            if (mScrollX == 0) {
+                invalidate();
+            } else {
+                setScroll(0);
+            }
         } else {
-            setScroll(fixScrollX);
+            // 更新数据
+            boolean oldFullStatus = canFullScreen(oldDataLength);
+            boolean fullScreen = isFullScreen();
+            if (!oldFullStatus && fullScreen) {
+                // 非满屏 到 满屏
+                setScroll(getMinScrollX());
+            } else {
+                int oldScrollX = mScrollX;
+                int fixScrollX = getFixScrollX(oldScrollX);
+                if (fixScrollX == oldScrollX) {
+                    invalidate();
+                } else {
+                    setScroll(fixScrollX);
+                }
+            }
         }
     }
 
@@ -397,13 +450,18 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
         @Override
         public void onFirstInserted(int itemCount) {
-            mDataLength = getPointWidth() * mAdapter.getCount();
+            if (!isFullScreen()) {
+                // 原有数据并没有铺满屏幕
+                requestDraw();
+                return;
+            }
             resetBuffer();
+            mDataLength = getPointWidth() * mAdapter.getCount();
             if (mDataSizeChangeHandler == null) {
                 invalidate();
                 return;
             }
-            if (!mDataSizeChangeHandler.onFirstInserted(InteractiveKChartView.this,
+            if (!mDataSizeChangeHandler.onFullFirstInserted(InteractiveKChartView.this,
                     itemCount, mScrollX, getFinalScroll())) {
                 invalidate();
             }
@@ -416,13 +474,18 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
         @Override
         public void onLastInserted(int itemCount) {
-            mDataLength = getPointWidth() * mAdapter.getCount();
+            if (!isFullScreen()) {
+                // 原有数据并没有铺满屏幕
+                requestDraw();
+                return;
+            }
             resetBuffer();
+            mDataLength = getPointWidth() * mAdapter.getCount();
             if (mDataSizeChangeHandler == null) {
                 invalidate();
                 return;
             }
-            if (!mDataSizeChangeHandler.onLastInserted(InteractiveKChartView.this,
+            if (!mDataSizeChangeHandler.onFullLastInserted(InteractiveKChartView.this,
                     itemCount, mScrollX, getFinalScroll())) {
                 invalidate();
             }

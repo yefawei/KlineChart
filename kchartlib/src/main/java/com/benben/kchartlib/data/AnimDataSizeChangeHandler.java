@@ -9,15 +9,12 @@ import com.benben.kchartlib.InteractiveKChartView;
 public class AnimDataSizeChangeHandler implements IDataSizeChangeHandler {
 
     @Override
-    public boolean onFirstInserted(InteractiveKChartView view, int itemCount, int currScroll, int finalScroll) {
+    public boolean onFullFirstInserted(InteractiveKChartView view, int itemCount, int currScroll, int finalScroll) {
         return false;
     }
 
     @Override
-    public boolean onLastInserted(InteractiveKChartView view, int itemCount, int currScroll, int finalScroll) {
-        if (!view.isFullScreen()) {
-            return false;
-        }
+    public boolean onFullLastInserted(InteractiveKChartView view, int itemCount, int currScroll, int finalScroll) {
         int scrollRange = Math.round(view.getScalePointWidth() * itemCount);
         view.setScrollerThenAnimScroll(currScroll + scrollRange, finalScroll);
         return true;

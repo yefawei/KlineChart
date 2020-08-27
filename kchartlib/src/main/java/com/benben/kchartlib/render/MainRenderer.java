@@ -614,8 +614,8 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
         /**
          * 比例权重
-         * 在水平方向如果{@link CanvasLayoutParams#mWidth}不为0则不起作用
-         * 在垂直方向如果{@link CanvasLayoutParams#mHeight}不为0则不起作用
+         * 在水平方向(左->主->右)如果{@link CanvasLayoutParams#mWidth}不为0则不起作用
+         * 在垂直方向(顶->主->底)如果{@link CanvasLayoutParams#mHeight}不为0则不起作用
          */
         public void setWeight(int weight) {
             if (weight < 0) weight = 0;

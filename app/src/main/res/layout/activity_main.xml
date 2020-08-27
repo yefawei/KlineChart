@@ -51,6 +51,17 @@
             android:text="add10"
             android:textAllCaps="false"
             app:layout_constraintLeft_toRightOf="@+id/center_add"
+            app:layout_constraintRight_toLeftOf="@+id/add100"
+            app:layout_constraintTop_toBottomOf="@+id/k_chart" />
+
+        <Button
+            android:id="@+id/add100"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="add100"
+            android:text="add100"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toRightOf="@+id/add10"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/k_chart" />
 
@@ -78,13 +89,24 @@
             app:layout_constraintTop_toBottomOf="@+id/center_add" />
 
         <Button
+            android:id="@+id/clear_data"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="clearData"
+            android:text="clearData"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/reset"
+            app:layout_constraintTop_toBottomOf="@+id/candle" />
+
+        <Button
             android:id="@+id/reset"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:onClick="reset"
             android:text="reset"
             android:textAllCaps="false"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/clear_data"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/candle" />
 

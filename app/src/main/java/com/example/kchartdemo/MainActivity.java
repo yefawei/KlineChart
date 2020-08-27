@@ -16,6 +16,7 @@ import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.utils.ConvertUtils;
 import com.example.kchartdemo.Drawing.CandleDrawing;
+import com.example.kchartdemo.Drawing.RightPaddingDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
 import com.example.kchartdemo.data.DragonKLineDataProvider;
 import com.example.kchartdemo.data.KlineInfo;
@@ -38,18 +39,24 @@ public class MainActivity extends AppCompatActivity {
 
         mKChart.setPointWidth(ConvertUtils.dp2px(this, 8));
         mKChart.setDataSizeChangeHandler(new AnimDataSizeChangeHandler());
+        mKChart.getPaddingHelper().setRightExtPadding(100, false);
 
         MainRenderer viewRender = mKChart.getMainRenderer();
 
         MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, ConvertUtils.dp2px(this, 340), 1);
         MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
-
         RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
         mainRenderCanvas.addDrawing(new CandleDrawing(layoutParams), true);
-        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
-        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, ConvertUtils.dp2px(this, 90), 1);
 
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        layoutParams.setWidth(100);
+        layoutParams.setHorizontalPosition(RendererCanvas.DrawingLayoutParams.POSITION_RIGHT);
+        mainRenderCanvas.addDrawing(new RightPaddingDrawing(layoutParams));
+        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
+
+        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, ConvertUtils.dp2px(this, 90), 1);
         mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
@@ -90,12 +97,28 @@ public class MainActivity extends AppCompatActivity {
         endIndex += 10;
     }
 
+    public void add100(View view) {
+        ArrayList<KlineInfo> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            list.add(mDataProvider.mData.get(endIndex + i));
+        }
+        mAdapter.addDatas(list);
+        showToast("add100: " + (endIndex) + "-" + (endIndex + 99));
+        endIndex += 100;
+    }
+
     public void line(View view) {
 
     }
 
     public void candle(View view) {
 
+    }
+
+    public void clearData(View view) {
+        startIndex = 100;
+        endIndex = 100;
+        mAdapter.clear();
     }
 
     public void reset(View view) {
