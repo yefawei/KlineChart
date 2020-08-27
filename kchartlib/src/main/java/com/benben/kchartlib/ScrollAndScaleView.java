@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.OverScroller;
 
 import androidx.annotation.FloatRange;
@@ -58,7 +59,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         setClickable(true);
         mGestureMoveActionCompat = new GestureMoveActionCompat(context);
         mGestureDetectorCompat = new GestureDetectorCompat(context, this);
-        mScroller = new OverScroller(context);
+        mScroller = new OverScroller(context, new DecelerateInterpolator());
         mScaleGestureDetector = new ScaleGestureDetectorCompat(context, this);
     }
 
