@@ -221,13 +221,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
-        boolean result = false;
-        if (mScaleGestureDetector.isQuickScaleEnabled()) {
-            mScaleGestureDetector.setOnDoubleTapEvent(e);
-            result = true;
-        }
         //TODO 双击回调
-        return result;
+        return false;
     }
 
     @Override
