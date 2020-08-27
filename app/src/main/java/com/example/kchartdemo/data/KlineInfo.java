@@ -7,7 +7,7 @@ import com.benben.kchartlib.index.IVolume;
  * @日期 : 2020/8/5
  * @描述 :
  */
-public class KlineInfo implements IEntity, IVolume {
+public class KlineInfo extends IEntity implements IVolume {
 
     /**
      * timestamp : 1511712000

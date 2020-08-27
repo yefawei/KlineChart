@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.benben.kchartlib.InteractiveKChartView;
+import com.benben.kchartlib.ScrollAndScaleView;
 import com.benben.kchartlib.adapter.DefaultKChartAdapter;
 import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
@@ -40,6 +41,20 @@ public class MainActivity extends AppCompatActivity {
         mKChart.setPointWidth(ConvertUtils.dp2px(this, 8));
         mKChart.setDataSizeChangeHandler(new AnimDataSizeChangeHandler());
         mKChart.getPaddingHelper().setRightExtPadding(100, false);
+
+        mKChart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,"onClick",Toast.LENGTH_LONG).show();
+            }
+        });
+
+        mKChart.setOnDoubleClickListener(new ScrollAndScaleView.OnDoubleClickListener() {
+            @Override
+            public void onDoubleClick(View v) {
+                Toast.makeText(MainActivity.this,"onDoubleClick",Toast.LENGTH_LONG).show();
+            }
+        });
 
         MainRenderer viewRender = mKChart.getMainRenderer();
 

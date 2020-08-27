@@ -38,13 +38,15 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     private float mScaleXMin = 0.5f;            // 缩放的最小值
     protected float mScaleX = 1.0f;             // 当前缩放值
     protected int mScrollX = 0;                 // 当前滚动值
-    protected float mTouchX;                    // 当前点击的X坐标
-    protected float mTouchY;                    // 当前点击的Y坐标
+    protected float mLongTouchX;                // 当前点击的X坐标
+    protected float mLongTouchY;                // 当前点击的Y坐标
 
     private GestureMoveActionCompat mGestureMoveActionCompat;
     private GestureDetectorCompat mGestureDetectorCompat;
     private OverScroller mScroller;
     private ScaleGestureDetectorCompat mScaleGestureDetector;
+
+    private OnDoubleClickListener mDoubleClickListener;
 
     public ScrollAndScaleView(@NonNull Context context) {
         this(context, null);
@@ -192,8 +194,9 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     public void onLongPress(MotionEvent e) {
         if (mLongEnable) {
             mOnLongPress = true;
-            mTouchX = e.getX();
-            mTouchY = e.getY();
+            mLongTouchX = e.getX();
+            mLongTouchY = e.getY();
+            //TODO 这里要回出去
             invalidate();
         }
     }
@@ -212,7 +215,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
         if (isClickable()) {
-            //TODO 这里要判断是否会被自己消费掉
+            //TODO 这里要回出去
+            //TODO 这里要判断是否会被消耗掉
             performClick();
             return true;
         }
@@ -221,7 +225,11 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
-        //TODO 双击回调
+        //TODO 这里要回出去
+        if (mDoubleClickListener != null) {
+            mDoubleClickListener.onDoubleClick(this);
+            return true;
+        }
         return false;
     }
 
@@ -477,13 +485,13 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
     @Override
-    public float getTouchY() {
-        return mTouchY;
+    public float getLongTouchY() {
+        return mLongTouchY;
     }
 
     @Override
-    public float getTouchX() {
-        return mTouchX;
+    public float getLongTouchX() {
+        return mLongTouchX;
     }
 
     /**
@@ -510,6 +518,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         return mOnLongPress;
     }
 
+    public void setOnDoubleClickListener(OnDoubleClickListener listener) {
+        mDoubleClickListener = listener;
+    }
+
     /**
      * 正在调用Invalidate
      */
@@ -531,4 +543,9 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * @return 缩放后的滚动值
      */
     abstract int onScaleChanged(float scale, float oldScale, float focusX, float focusY);
+
+    public interface OnDoubleClickListener {
+
+        void onDoubleClick(View v);
+    }
 }

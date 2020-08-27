@@ -23,9 +23,9 @@ public interface IDataProvider {
 
     float getScaleX();
 
-    float getTouchX();
+    float getLongTouchX();
 
-    float getTouchY();
+    float getLongTouchY();
 
     PaddingHelper getPaddingHelper();
 
