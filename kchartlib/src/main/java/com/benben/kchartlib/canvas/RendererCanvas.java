@@ -10,6 +10,7 @@ import androidx.annotation.IntDef;
 import com.benben.kchartlib.adapter.BaseKChartAdapter;
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.impl.IDataProvider;
+import com.benben.kchartlib.impl.IDispatchSingleTapParent;
 import com.benben.kchartlib.impl.IParentPortLayout;
 import com.benben.kchartlib.impl.IViewPort;
 
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  * @日期 : 2020/7/1
  * @描述 : 画板
  */
-public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IViewPort {
+public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IViewPort, IDispatchSingleTapParent {
 
     private int mWidth;
     private int mHeight;
@@ -383,7 +384,6 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     }
 
 
-
     @Override
     public void addDrawing(Drawing drawing) {
         addDrawing(drawing, false);
@@ -420,6 +420,22 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         if (mParentPortLayout != null) {
             drawing.detachedParentPortLayout();
         }
+    }
+
+    @Override
+    public boolean inDispatchRange(int x, int y) {
+        return mViewPort.contains(x, y);
+    }
+
+    @Override
+    public boolean dispatchSingleTap(int x, int y) {
+        for (int i = mDrawings.size() - 1; i >= 0; i--) {
+            Drawing drawing = mDrawings.get(i);
+            if (drawing.canSingleTap() && drawing.inDispatchRange(x, y) && drawing.onSingleTap(x, y)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

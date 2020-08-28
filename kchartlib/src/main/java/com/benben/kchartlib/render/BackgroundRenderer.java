@@ -35,6 +35,16 @@ public class BackgroundRenderer extends Renderer {
     }
 
     @Override
+    public boolean inDispatchRange(int x, int y) {
+        return mViewPort.contains(x, y);
+    }
+
+    @Override
+    public boolean dispatchSingleTap(int x, int y) {
+        return mRenderCanvas.inDispatchRange(x, y) && mRenderCanvas.dispatchSingleTap(x, y);
+    }
+
+    @Override
     public void preCalcDataValue() {
         mRenderCanvas.preCalcDataValue();
     }
@@ -55,5 +65,9 @@ public class BackgroundRenderer extends Renderer {
             canvas.attachedParentPortLayout(this, mDataProvider);
         }
         mRenderCanvas = canvas;
+    }
+
+    public RendererCanvas getRenderCanvas() {
+        return mRenderCanvas;
     }
 }

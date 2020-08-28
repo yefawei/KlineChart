@@ -35,6 +35,9 @@ public interface IDrawing {
      */
     void setDrawInViewPort(boolean in);
 
+    /**
+     * 获取指标范围计算类
+     */
     IndexRange getIndexRange();
 
     void preCalcDataValue();

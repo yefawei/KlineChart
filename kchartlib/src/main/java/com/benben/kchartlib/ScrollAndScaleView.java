@@ -232,9 +232,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
         if (isClickable()) {
-            //TODO 这里要判断是否会被消耗掉
-            onSingleTap(e.getX(), e.getY());
-            performClick();
+            if (!dispatchSingleTap(Math.round(e.getX()), Math.round(e.getY()))) {
+                onSingleTap(e.getX(), e.getY());
+                performClick();
+            }
             return true;
         }
         return false;
@@ -569,6 +570,12 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * @return 缩放后的滚动值
      */
     abstract int onScaleChanged(float scale, float oldScale, float focusX, float focusY);
+
+    /**
+     * 分发单次点击
+     * @return 点击事件由绘制处理则为true
+     */
+    abstract boolean dispatchSingleTap(int x, int y);
 
     /**
      * 单次点击

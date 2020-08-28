@@ -155,6 +155,17 @@
             app:layout_constraintTop_toBottomOf="@+id/btn_show_view_port" />
 
         <Button
+            android:id="@+id/add_click_tag"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="addClickTag"
+            android:text="addClickTag"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toCenter"/>
+
+        <Button
             android:id="@+id/toRight"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

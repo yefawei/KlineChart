@@ -176,6 +176,21 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     @Override
+    boolean dispatchSingleTap(int x, int y) {
+        boolean handled = false;
+        if (mIsRenderForeground && mForegroundRenderer.inDispatchRange(x, y)) {
+            handled = mForegroundRenderer.dispatchSingleTap(x, y);
+        }
+        if (!handled && mMainRenderer.inDispatchRange(x, y)) {
+            handled = mMainRenderer.dispatchSingleTap(x, y);
+        }
+        if (!handled && mIsRenderBackground && mBackgroundRenderer.inDispatchRange(x, y)) {
+            handled = mBackgroundRenderer.dispatchSingleTap(x, y);
+        }
+        return handled;
+    }
+
+    @Override
     void onSingleTap(float x, float y) {
         // TODO 待完善
     }

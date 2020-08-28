@@ -339,6 +339,31 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
     }
 
     @Override
+    public boolean inDispatchRange(int x, int y) {
+        return mViewPort.contains(x, y);
+    }
+
+    @Override
+    public boolean dispatchSingleTap(int x, int y) {
+        if (mHorizontalCanvas[0] != null && mHorizontalCanvas[0].inDispatchRange(x, y)) {
+            return mHorizontalCanvas[0].dispatchSingleTap(x, y);
+        }
+        if (mHorizontalCanvas[1] != null && mHorizontalCanvas[1].inDispatchRange(x, y)) {
+            return mHorizontalCanvas[1].dispatchSingleTap(x, y);
+        }
+        if (mHorizontalCanvas[2] != null && mHorizontalCanvas[2].inDispatchRange(x, y)) {
+            return mHorizontalCanvas[2].dispatchSingleTap(x, y);
+        }
+        if (mVerticalCanvas[0] != null && mVerticalCanvas[0].inDispatchRange(x, y)) {
+            return mVerticalCanvas[0].dispatchSingleTap(x, y);
+        }
+        if (mVerticalCanvas[2] != null && mVerticalCanvas[2].inDispatchRange(x, y)) {
+            return mVerticalCanvas[2].dispatchSingleTap(x, y);
+        }
+        return false;
+    }
+
+    @Override
     public void preCalcDataValue() {
         if (mHorizontalCanvas[0] != null) {
             mHorizontalCanvas[0].preCalcDataValue();

@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.impl.IDataProvider;
+import com.benben.kchartlib.impl.IDispatchSingleTapChild;
 import com.benben.kchartlib.impl.IParentPortLayout;
 import com.benben.kchartlib.impl.IViewPort;
 import com.benben.kchartlib.index.range.IndexRange;
@@ -17,7 +18,7 @@ import com.benben.kchartlib.index.range.IndexRange;
  * @日期 : 2020/7/10
  * @描述 : 普通绘制
  */
-public abstract class Drawing implements IDrawing, IViewPort {
+public abstract class Drawing implements IDrawing, IViewPort, IDispatchSingleTapChild {
 
     protected IndexRange mIndexRange;
     private RendererCanvas.DrawingLayoutParams mLayoutParams;
@@ -191,6 +192,21 @@ public abstract class Drawing implements IDrawing, IViewPort {
         } else {
             return mViewPort.bottom - (value - mIndexRange.getMinValue()) * mScaleValueY;
         }
+    }
+
+    @Override
+    public boolean canSingleTap() {
+        return false;
+    }
+
+    @Override
+    public boolean inDispatchRange(int x, int y) {
+        return mViewPort.contains(x, y);
+    }
+
+    @Override
+    public boolean onSingleTap(int x, int y) {
+        return false;
     }
 
     @Override

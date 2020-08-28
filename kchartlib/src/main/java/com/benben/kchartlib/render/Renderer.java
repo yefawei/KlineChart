@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import androidx.annotation.CallSuper;
 
 import com.benben.kchartlib.impl.IDataProvider;
+import com.benben.kchartlib.impl.IDispatchSingleTapParent;
 import com.benben.kchartlib.impl.IParentPortLayout;
 import com.benben.kchartlib.impl.IViewPort;
 
@@ -12,7 +13,7 @@ import com.benben.kchartlib.impl.IViewPort;
  * @日期 : 2020/7/1
  * @描述 : 渲染类
  */
-public abstract class Renderer implements IRenderer, IParentPortLayout, IViewPort {
+public abstract class Renderer implements IRenderer, IParentPortLayout, IViewPort, IDispatchSingleTapParent {
 
     protected IDataProvider mDataProvider;
 

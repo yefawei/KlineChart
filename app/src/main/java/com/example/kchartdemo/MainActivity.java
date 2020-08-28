@@ -17,6 +17,7 @@ import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.utils.ConvertUtils;
 import com.example.kchartdemo.Drawing.CandleDrawing;
+import com.example.kchartdemo.Drawing.ClickDrawing;
 import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
 import com.example.kchartdemo.Drawing.RightPaddingDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
@@ -177,5 +178,67 @@ public class MainActivity extends AppCompatActivity {
 
     public void toRight(View view) {
         mKChart.scrollToIndex(mAdapter.getCount() - 1, 1f, true);
+    }
+
+    ClickDrawing mOneDrawing = new ClickDrawing("One", new ClickDrawing.OnClickListener() {
+        @Override
+        public void onClick() {
+            MainRenderer mainRenderer = mKChart.getMainRenderer();
+            mainRenderer.getRenderCanvas(MainRenderer.POSITION_MAIN).removeDrawing(mOneDrawing);
+            mKChart.updateRenderPortLayout();
+        }
+    });
+
+    ClickDrawing mTwoDrawing = new ClickDrawing("Two", new ClickDrawing.OnClickListener() {
+        @Override
+        public void onClick() {
+            MainRenderer mainRenderer = mKChart.getMainRenderer();
+            mainRenderer.getRenderCanvas(MainRenderer.POSITION_MAIN).removeDrawing(mTwoDrawing);
+            mKChart.updateRenderPortLayout();
+        }
+    });
+
+    ClickDrawing mThreeDrawing = new ClickDrawing("Three", new ClickDrawing.OnClickListener() {
+        @Override
+        public void onClick() {
+            MainRenderer mainRenderer = mKChart.getMainRenderer();
+            mainRenderer.getRenderCanvas(MainRenderer.POSITION_MAIN).removeDrawing(mThreeDrawing);
+            mKChart.updateRenderPortLayout();
+        }
+    });
+
+    public void addClickTag(View view) {
+        MainRenderer mainRenderer = mKChart.getMainRenderer();
+        MainRendererCanvas renderCanvas = mainRenderer.getRenderCanvas(MainRenderer.POSITION_MAIN);
+        if (mOneDrawing.getLayoutParams() == null) {
+            RendererCanvas.DrawingLayoutParams params = new RendererCanvas.DrawingLayoutParams();
+            params.setWidth(100);
+            params.setHeight(100);
+            params.setVerticalPosition(RendererCanvas.DrawingLayoutParams.POSITION_TOP);
+            params.setHorizontalPosition(RendererCanvas.DrawingLayoutParams.POSITION_LEFT);
+            mOneDrawing.setLayoutParams(params);
+        }
+        renderCanvas.addDrawing(mOneDrawing);
+
+        if (mTwoDrawing.getLayoutParams() == null) {
+            RendererCanvas.DrawingLayoutParams params = new RendererCanvas.DrawingLayoutParams();
+            params.setWidth(100);
+            params.setHeight(100);
+            params.setVerticalPosition(RendererCanvas.DrawingLayoutParams.POSITION_CENTER);
+            params.setHorizontalPosition(RendererCanvas.DrawingLayoutParams.POSITION_CENTER);
+            mTwoDrawing.setLayoutParams(params);
+        }
+        renderCanvas.addDrawing(mTwoDrawing);
+
+        if (mThreeDrawing.getLayoutParams() == null) {
+            RendererCanvas.DrawingLayoutParams params = new RendererCanvas.DrawingLayoutParams();
+            params.setWidth(100);
+            params.setHeight(100);
+            params.setVerticalPosition(RendererCanvas.DrawingLayoutParams.POSITION_BOTTOM);
+            params.setHorizontalPosition(RendererCanvas.DrawingLayoutParams.POSITION_RIGHT);
+            mThreeDrawing.setLayoutParams(params);
+        }
+        renderCanvas.addDrawing(mThreeDrawing);
+        mKChart.updateRenderPortLayout();
     }
 }
