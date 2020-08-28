@@ -129,7 +129,8 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
                 return mMaxScrollXBuffer.mMaxScrollX;
             }
             mMaxScrollXBuffer.mScaleX = mScaleX;
-            mMaxScrollXBuffer.mMaxScrollX = Math.round(mDataLength * mScaleX - mMainRenderer.getMainCanvasWidth());
+            mMaxScrollXBuffer.mMaxScrollX = Math.round(mDataLength * mScaleX - mMainRenderer.getMainCanvasWidth())
+                    + mPaddingHelper.getLeftExtPadding(mScaleX);
             return mMaxScrollXBuffer.mMaxScrollX;
         }
         return 0;
@@ -149,8 +150,9 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             // 非满屏
             return 0;
         }
-        if (!isFullScreen) {
-            // 非满屏 到 满屏
+        if (!isFullScreen && mScrollX == 0) {
+            // 缩放非满屏 到 满屏
+            // 判断mScrollX == 0是因为从无数据到到有数据且是满屏数据，则用户有滑动过不进入该代码块
             return getMinScrollX();
         }
         float width = mMainRenderer.getMainCanvasWidth();

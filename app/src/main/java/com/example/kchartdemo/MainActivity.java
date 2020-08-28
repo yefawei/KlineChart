@@ -17,6 +17,7 @@ import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.utils.ConvertUtils;
 import com.example.kchartdemo.Drawing.CandleDrawing;
+import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
 import com.example.kchartdemo.Drawing.RightPaddingDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
 import com.example.kchartdemo.data.DragonKLineDataProvider;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         mKChart.setPointWidth(ConvertUtils.dp2px(this, 8));
         mKChart.setDataSizeChangeHandler(new AnimDataSizeChangeHandler());
         mKChart.getPaddingHelper().setRightExtPadding(100, false);
+        mKChart.getPaddingHelper().setLeftExtPadding(100, false);
 
         mKChart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +71,12 @@ public class MainActivity extends AppCompatActivity {
         RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
         mainRenderCanvas.addDrawing(new CandleDrawing(layoutParams), true);
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        layoutParams.setWidth(100);
+        layoutParams.setHorizontalPosition(RendererCanvas.DrawingLayoutParams.POSITION_LEFT);
+        mainRenderCanvas.addDrawing(new LeftPaddingDrawing(layoutParams));
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
