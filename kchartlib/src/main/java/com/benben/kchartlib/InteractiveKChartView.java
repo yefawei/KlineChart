@@ -177,22 +177,22 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     void onSingleTap(float x, float y) {
-
+        // TODO 待完善
     }
 
     @Override
     void onDoubleTap(float x, float y) {
-
+        // TODO 待完善
     }
 
     @Override
     void onLongTap(float x, float y) {
-
+        // TODO 待完善
     }
 
     @Override
     void removeTap() {
-
+        // TODO 待完善
     }
 
     // for performance tracking
@@ -217,6 +217,11 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         totalTime += drawtime;
         drawCycles++;
         long average = totalTime / drawCycles;
+        if (drawtime > 10_000_000) {
+            Log.e("Drawtime", "Drawtime error: " + drawtime);
+        } else if (drawtime > 5_000_000) {
+            Log.w("Drawtime", "Drawtime warn: " + drawtime);
+        }
         Log.i("Drawtime", "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
         mAnimationManager.animUpdate();
     }
