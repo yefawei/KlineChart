@@ -38,6 +38,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     private float mScaleXMin = 0.5f;            // 缩放的最小值
     protected float mScaleX = 1.0f;             // 当前缩放值
     protected int mScrollX = 0;                 // 当前滚动值
+    private int mPreviousScrollX = 0;                  // 备份上一次滚动值
     protected float mLongTouchX;                // 当前点击的X坐标
     protected float mLongTouchY;                // 当前点击的Y坐标
 
@@ -161,17 +162,17 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             x = getMaxScrollX();
             mScroller.forceFinished(true);
         }
-        int oldX = mScrollX;
+        mPreviousScrollX = mScrollX;
         mScrollX = x;
         if (!mScroller.isFinished()) {
-            if (mScrollX != oldX) {
-                onScrollChanged(mScrollX, 0, oldX, 0);
+            if (mScrollX != mPreviousScrollX) {
+                onScrollChanged(mScrollX, 0, mPreviousScrollX, 0);
             }
             postInvalidateOnAnimation();
             return;
         }
-        if (mScrollX != oldX) {
-            onScrollChanged(mScrollX, 0, oldX, 0);
+        if (mScrollX != mPreviousScrollX) {
+            onScrollChanged(mScrollX, 0, mPreviousScrollX, 0);
             invalidate();
         }
     }
@@ -276,10 +277,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     public void reset(boolean invalidate) {
         mScaleX = 1;
-        int oldX = mScrollX;
+        mPreviousScrollX = mScrollX;
         mScrollX = getMinScrollX();
-        if (mScrollX != oldX) {
-            onScrollChanged(mScrollX, 0, oldX, 0);
+        if (mScrollX != mPreviousScrollX) {
+            onScrollChanged(mScrollX, 0, mPreviousScrollX, 0);
         }
         if (invalidate) {
             invalidate();
@@ -350,11 +351,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         if (scaleX != mScaleX) {
             float oldScale = mScaleX;
             mScaleX = scaleX;
-            int scrollX = onScaleChanged(mScaleX, oldScale, focusX, focusY);
-            int newScrollX = getFixScrollX(scrollX);
-            if (mScrollX != newScrollX) {
-                onScrollChanged(newScrollX, 0, mScrollX, 0);
-                mScrollX = newScrollX;
+            mPreviousScrollX = mScrollX;
+            mScrollX = onScaleChanged(mScaleX, oldScale, focusX, focusY);
+            if (mScrollX != mPreviousScrollX) {
+                onScrollChanged(mScrollX, 0, mPreviousScrollX, 0);
             }
             invalidate();
         }
@@ -461,10 +461,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             if (newScrollX == mScrollX) return;
             setScroll(newScrollX);
         } else {
-            newScrollX = getFixScrollX(newScrollX);
-            if (mScrollX != newScrollX) {
-                onScrollChanged(newScrollX, 0, mScrollX, 0);
-                mScrollX = newScrollX;
+            mPreviousScrollX = mScrollX;
+            mScrollX = getFixScrollX(newScrollX);
+            if (mScrollX != mPreviousScrollX) {
+                onScrollChanged(mScrollX, 0, mPreviousScrollX, 0);
             }
             animScroll(targetScrollX, duration);
         }

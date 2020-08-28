@@ -43,6 +43,8 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private MaxScrollXBuffer mMaxScrollXBuffer = new MaxScrollXBuffer();
     private IsFullScreenBuffer mIsFullScreenBuffer = new IsFullScreenBuffer();
 
+    private boolean mPreviousIsFullScreen;  // 备份上一次是否满屏
+    private int mPreviousDataLength;        // 备份上一次数据长度
     private int mDataLength;                // 视图总长度
     private BaseKChartAdapter mAdapter;     // 数据适配器
     private IDataSizeChangeHandler mDataSizeChangeHandler;
@@ -141,6 +143,16 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     int onScaleChanged(float scale, float oldScale, float focusX, float focusY) {
+        boolean isFullScreen = mPreviousIsFullScreen;
+        mPreviousIsFullScreen = isFullScreen();
+        if (!mPreviousIsFullScreen) {
+            // 非满屏
+            return 0;
+        }
+        if (!isFullScreen) {
+            // 非满屏 到 满屏
+            return getMinScrollX();
+        }
         float width = mMainRenderer.getMainCanvasWidth();
         float left = mMainRenderer.getMainCanvasLeft();
         float right = mMainRenderer.getMainCanvasRight();
@@ -158,7 +170,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         }
         // 使得以缩放手势中心点进行缩放
         float changeSpace = (width - x) * scale / oldScale - (width - x);
-        return Math.round(mScrollX * scale / oldScale + changeSpace);
+        return getFixScrollX(Math.round(mScrollX * scale / oldScale + changeSpace));
     }
 
     @Override
@@ -294,16 +306,9 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             return mIsFullScreenBuffer.mIsFullScreen;
         }
         mIsFullScreenBuffer.mScaleX = mScaleX;
-        mIsFullScreenBuffer.mIsFullScreen = canFullScreen(mDataLength);
-        return mIsFullScreenBuffer.mIsFullScreen;
-    }
-
-    /**
-     * 该数据量是否能填满屏幕
-     */
-    public boolean canFullScreen(int dataLength) {
-        return dataLength * mScaleX > (mMainRenderer.getMainCanvasWidth()
+        mIsFullScreenBuffer.mIsFullScreen = mDataLength * mScaleX > (mMainRenderer.getMainCanvasWidth()
                 - mPaddingHelper.getRightExtPadding(mScaleX));
+        return mIsFullScreenBuffer.mIsFullScreen;
     }
 
     /**
@@ -411,17 +416,20 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     private void requestDraw() {
+        // 备份上一次数据
+        mPreviousIsFullScreen = isFullScreen();
+        mPreviousDataLength = mDataLength;
+
         resetBuffer();
-        int oldDataLength = mDataLength;
         if (mAdapter == null) {
             mDataLength = 0;
         } else {
             mDataLength = getPointWidth() * mAdapter.getCount();
         }
-        if (oldDataLength == 0 && mDataLength == 0) {
+        if (mPreviousDataLength == 0 && mDataLength == 0) {
             return;
         }
-        if (oldDataLength == 0) {
+        if (mPreviousDataLength == 0) {
             // 从无数据到有数据
             if (isFullScreen()) {
                 setScroll(getMinScrollX());
@@ -437,9 +445,8 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             }
         } else {
             // 更新数据
-            boolean oldFullStatus = canFullScreen(oldDataLength);
             boolean fullScreen = isFullScreen();
-            if (!oldFullStatus && fullScreen) {
+            if (!mPreviousIsFullScreen && fullScreen) {
                 // 非满屏 到 满屏
                 setScroll(getMinScrollX());
             } else {
