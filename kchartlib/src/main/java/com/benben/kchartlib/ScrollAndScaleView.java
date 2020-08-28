@@ -47,6 +47,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     private ScaleGestureDetectorCompat mScaleGestureDetector;
 
     private OnDoubleClickListener mDoubleClickListener;
+    private OnPressChangeListener mPressChangeListener;
 
     public ScrollAndScaleView(@NonNull Context context) {
         this(context, null);
@@ -108,6 +109,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 mOnTouch = true;
+                removeTap();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mOnLongPress && !mOnMultipleTouch) {
@@ -117,13 +119,21 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mOnTouch = false;
-                mOnLongPress = false;
+                cancelLongPress();
                 mOnMultipleTouch = false;
                 break;
         }
         mScaleGestureDetector.onTouchEvent(event);
         mGestureDetectorCompat.onTouchEvent(event);
         return true;
+    }
+
+    @Override
+    public void cancelLongPress() {
+        if (mOnLongPress && mPressChangeListener != null) {
+            mPressChangeListener.onPressChange(this, false);
+        }
+        mOnLongPress = false;
     }
 
     @Override
@@ -193,10 +203,16 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public void onLongPress(MotionEvent e) {
         if (mLongEnable) {
+            if (!mOnLongPress) {
+                performLongClick();
+                if (mPressChangeListener != null) {
+                    mPressChangeListener.onPressChange(this, true);
+                }
+            }
             mOnLongPress = true;
             mLongTouchX = e.getX();
             mLongTouchY = e.getY();
-            //TODO 这里要回出去
+            onLongTap(mLongTouchX, mLongTouchY);
             invalidate();
         }
     }
@@ -215,8 +231,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
         if (isClickable()) {
-            //TODO 这里要回出去
             //TODO 这里要判断是否会被消耗掉
+            onSingleTap(e.getX(), e.getY());
             performClick();
             return true;
         }
@@ -225,7 +241,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
-        //TODO 这里要回出去
+        onDoubleTap(e.getX(), e.getY());
         if (mDoubleClickListener != null) {
             mDoubleClickListener.onDoubleClick(this);
             return true;
@@ -276,7 +292,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     public void setLongEnable(boolean enable) {
         mLongEnable = enable;
         if (!enable) {
-            mOnLongPress = false;
+            cancelLongPress();
         }
     }
 
@@ -518,8 +534,18 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         return mOnLongPress;
     }
 
+    /**
+     * 双击监听
+     */
     public void setOnDoubleClickListener(OnDoubleClickListener listener) {
         mDoubleClickListener = listener;
+    }
+
+    /**
+     * 长按状态变更监听
+     */
+    public void setOnPressChangeListener(OnPressChangeListener listener) {
+        mPressChangeListener = listener;
     }
 
     /**
@@ -544,8 +570,33 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      */
     abstract int onScaleChanged(float scale, float oldScale, float focusX, float focusY);
 
+    /**
+     * 单次点击
+     */
+    abstract void onSingleTap(float x, float y);
+
+    /**
+     * 双击
+     */
+    abstract void onDoubleTap(float x, float y);
+
+    /**
+     * 长按
+     */
+    abstract void onLongTap(float x, float y);
+
+    /**
+     * 移除所有触控Tap
+     */
+    abstract void removeTap();
+
     public interface OnDoubleClickListener {
 
         void onDoubleClick(View v);
+    }
+
+    public interface OnPressChangeListener {
+
+        void onPressChange(View v, boolean onLongpress);
     }
 }

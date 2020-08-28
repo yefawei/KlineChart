@@ -161,6 +161,26 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         return Math.round(mScrollX * scale / oldScale + changeSpace);
     }
 
+    @Override
+    void onSingleTap(float x, float y) {
+
+    }
+
+    @Override
+    void onDoubleTap(float x, float y) {
+
+    }
+
+    @Override
+    void onLongTap(float x, float y) {
+
+    }
+
+    @Override
+    void removeTap() {
+
+    }
+
     // for performance tracking
     private long totalTime = 0;
     private long drawCycles = 0;

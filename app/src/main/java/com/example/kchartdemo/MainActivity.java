@@ -45,14 +45,20 @@ public class MainActivity extends AppCompatActivity {
         mKChart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this,"onClick",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "onClick", Toast.LENGTH_LONG).show();
             }
         });
 
         mKChart.setOnDoubleClickListener(new ScrollAndScaleView.OnDoubleClickListener() {
             @Override
             public void onDoubleClick(View v) {
-                Toast.makeText(MainActivity.this,"onDoubleClick",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "onDoubleClick", Toast.LENGTH_LONG).show();
+            }
+        });
+        mKChart.setOnPressChangeListener(new ScrollAndScaleView.OnPressChangeListener() {
+            @Override
+            public void onPressChange(View v, boolean onLongpress) {
+                Toast.makeText(MainActivity.this, "onPressChange: " + onLongpress, Toast.LENGTH_LONG).show();
             }
         });
 
