@@ -36,7 +36,7 @@ public class BackgroundRenderer extends Renderer {
 
     @Override
     public void preCalcDataValue() {
-
+        mRenderCanvas.preCalcDataValue();
     }
 
     @Override
