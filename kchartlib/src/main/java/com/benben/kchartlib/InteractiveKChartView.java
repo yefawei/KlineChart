@@ -99,7 +99,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     void preInvalidate() {
-        if (mAdapter == null || !mMainRenderer.mainCanvasValid()) return;
+        if (mAdapter == null || !mMainRenderer.mainCanvasValid()) {
+            mTransformer.resetBounds();
+            return;
+        }
 
         mTransformer.updateBounds();
         if (mIsRenderBackground) {
@@ -193,16 +196,22 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     @Override
     void onSingleTap(float x, float y) {
         // TODO 待完善
+        int index = mTransformer.getIndexByScreenX(x);
+        Log.e("IndexByScreenX","onSingleTap index: " + index);
     }
 
     @Override
     void onDoubleTap(float x, float y) {
         // TODO 待完善
+        int index = mTransformer.getIndexByScreenX(x);
+        Log.e("IndexByScreenX","onDoubleTap index: " + index);
     }
 
     @Override
     void onLongTap(float x, float y) {
         // TODO 待完善
+        int index = mTransformer.getIndexByScreenX(x);
+        Log.e("IndexByScreenX","onLongTap index: " + index);
     }
 
     @Override
@@ -385,15 +394,15 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     /**
      * 指定屏幕位置到达指定索引
      *
-     * @param index           需要滚动的索引
+     * @param index              需要滚动的索引
      * @param inItemWidthPercent 在item的什么位置计算滚动值
      *                           以item的左侧为锚点，inItemWidthPercent = 0.0f
      *                           以item的中间为锚点，inItemWidthPercent = 0.5f
      *                           以item的右侧为锚点，inItemWidthPercent = 1.0f
-     * @param inScreenPercent X轴方向主视窗{@link IMainCanvasPort#getMainCanvasWidth()}所在百分比位置，
-     *                        需要滚动到视窗左侧，inScreenPercent = 0.0f
-     *                        需要滚动到视窗中间，inScreenPercent = 0.5f
-     *                        需要滚动到视窗右侧，inScreenPercent = 1.0f
+     * @param inScreenPercent    X轴方向主视窗{@link IMainCanvasPort#getMainCanvasWidth()}所在百分比位置，
+     *                           需要滚动到视窗左侧，inScreenPercent = 0.0f
+     *                           需要滚动到视窗中间，inScreenPercent = 0.5f
+     *                           需要滚动到视窗右侧，inScreenPercent = 1.0f
      */
     public void scrollToIndex(int index, @FloatRange(from = 0, to = 1.0) float inItemWidthPercent,
                               @FloatRange(from = 0, to = 1.0) float inScreenPercent, boolean anim) {

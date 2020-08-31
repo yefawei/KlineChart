@@ -19,12 +19,14 @@ import java.util.HashMap;
  */
 public class Transformer {
 
+    private static final float[] sEmptyPointXBuffer = new float[]{};
+
     private IDataProvider mDataProvider;
 
     private float mStartPointX;             // 起始绘制点的中心X坐标(已包含主画板左侧距离)
-    private float[] mPointXBuffer = new float[]{};
-    private int mStartIndex;                // 当前内容的开始坐标
-    private int mStopIndex;                 // 当前内容的结束坐标
+    private float[] mPointXBuffer = sEmptyPointXBuffer;
+    private int mStartIndex = -1;           // 当前内容的开始坐标
+    private int mStopIndex = -1;            // 当前内容的结束坐标
 
     private HashMap<String, Integer> mIndexCount = new HashMap<>();
     private HashMap<String, IndexRange> mIndexMap = new HashMap<>();
@@ -36,15 +38,15 @@ public class Transformer {
     /**
      * 获取该索引在屏幕上的ScrollX值
      *
-     * @param index           需要滚动的索引
+     * @param index              需要滚动的索引
      * @param inItemWidthPercent 在item的什么位置计算滚动值
      *                           以item的左侧为锚点，inItemWidthPercent = 0.0f
      *                           以item的中间为锚点，inItemWidthPercent = 0.5f
      *                           以item的右侧为锚点，inItemWidthPercent = 1.0f
-     * @param inScreenPercent 需要滚动到主视窗{@link IMainCanvasPort#getMainCanvasWidth()}所在百分比位置，
-     *                        需要滚动到视窗左侧，inScreenPercent = 0.0f
-     *                        需要滚动到视窗中间，inScreenPercent = 0.5f
-     *                        需要滚动到视窗右侧，inScreenPercent = 1.0f
+     * @param inScreenPercent    需要滚动到主视窗{@link IMainCanvasPort#getMainCanvasWidth()}所在百分比位置，
+     *                           需要滚动到视窗左侧，inScreenPercent = 0.0f
+     *                           需要滚动到视窗中间，inScreenPercent = 0.5f
+     *                           需要滚动到视窗右侧，inScreenPercent = 1.0f
      */
     public int getScrollXForIndex(int index, @FloatRange(from = 0, to = 1.0) float inItemWidthPercent,
                                   @FloatRange(from = 0, to = 1.0) float inScreenPercent) {
@@ -75,13 +77,39 @@ public class Transformer {
     }
 
     /**
-     * 获取该索引此时的X位置
+     * 根据屏幕的X坐标获取索引
      */
-    public float getPointXByIndex(int index) {
+    public int getIndexByScreenX(float screenX) {
+        if (mStartIndex == -1) {
+            return -1;
+        }
+        if (screenX <= mStartPointX) {
+            return mStartIndex;
+        }
+        if (screenX >= mPointXBuffer[mStopIndex - mStartIndex]) {
+            return mStopIndex;
+        }
+        return (int) ((screenX - mStartPointX) / mDataProvider.getScalePointWidth() + 0.5f) + mStartIndex;
+    }
+
+    /**
+     * 获取指定索引此时在屏幕中的位置
+     */
+    public float getPointInScreenXByIndex(int index) {
         if (index >= mStartIndex && index <= mStopIndex) {
             return mPointXBuffer[index - mStartIndex];
         }
         return (index - mStartIndex) * mDataProvider.getScalePointWidth() + mStartPointX;
+    }
+
+    /**
+     * 重置数据边界
+     */
+    public void resetBounds() {
+        mPointXBuffer = sEmptyPointXBuffer;
+        mStartPointX = 0;
+        mStartIndex = -1;
+        mStopIndex = -1;
     }
 
     /**
@@ -101,8 +129,8 @@ public class Transformer {
         int size = mStopIndex - mStartIndex + 1;
         if (mPointXBuffer.length < size) {
             mPointXBuffer = new float[size];
-        } else if (mPointXBuffer.length - size > 30) {
-            // buffer差距超30个缩减buffer长度
+        } else if (mPointXBuffer.length - size > 20) {
+            // buffer差距超20个缩减buffer长度
             mPointXBuffer = new float[size];
         }
         for (int i = 0; i < mPointXBuffer.length; i++) {

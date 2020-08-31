@@ -29,7 +29,7 @@ public class FontCalculateUtils {
     /**
      * 计算baseline到字体左上角的偏移距离,含字体padding
      */
-    public static float getLeftTopPointYOffset(Paint paint) {
+    public static float getFontTopYOffset(Paint paint) {
         paint.getFontMetrics(mFontMetrics);
         return Math.abs(mFontMetrics.top);
     }
@@ -37,7 +37,7 @@ public class FontCalculateUtils {
     /**
      * 获取字体高度
      */
-    public static float getTextHeight(Paint paint) {
+    public static float getFontHeight(Paint paint) {
         paint.getFontMetrics(mFontMetrics);
         return mFontMetrics.bottom - mFontMetrics.top;
     }

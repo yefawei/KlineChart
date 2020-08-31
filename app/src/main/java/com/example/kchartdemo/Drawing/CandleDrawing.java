@@ -9,6 +9,7 @@ import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
+import com.benben.kchartlib.utils.FontCalculateUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,12 +40,12 @@ public class CandleDrawing extends Drawing {
         Transformer transformer = mDataProvider.getTransformer();
         for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
             IEntity item = mDataProvider.getAdapter().getItem(i);
-            float limit = transformer.getPointXByIndex(i);
-            drawCandle(canvas, item, width, limit);
+            float limit = transformer.getPointInScreenXByIndex(i);
+            drawCandle(canvas, item, width, limit, i);
         }
     }
 
-    private void drawCandle(Canvas canvas, IEntity entity, float width, float center) {
+    private void drawCandle(Canvas canvas, IEntity entity, float width, float center, int position) {
         if (entity.getOpenPrice() > entity.getClosePrice()) { // 跌
             mPaint.setColor(Color.RED);
         } else {
@@ -72,5 +73,10 @@ public class CandleDrawing extends Drawing {
         mPaint.setColor(Color.WHITE);
         float v = mPaint.measureText(format);
         canvas.drawText(format, center - v / 2, heighY, mPaint);
+
+        String pos = position + "";
+        v = mPaint.measureText(pos);
+        float offset = FontCalculateUtils.getFontTopYOffset(mPaint);
+        canvas.drawText(pos, center - v / 2, lowY + offset, mPaint);
     }
 }

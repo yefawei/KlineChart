@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
         mKChart.setPointWidth(ConvertUtils.dp2px(this, 8));
         mKChart.setDataSizeChangeHandler(new AnimDataSizeChangeHandler());
+        mKChart.setMaxScaleX(6);
         mKChart.getPaddingHelper().setRightExtPadding(100, false);
         mKChart.getPaddingHelper().setLeftExtPadding(100, false);
-
         mKChart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

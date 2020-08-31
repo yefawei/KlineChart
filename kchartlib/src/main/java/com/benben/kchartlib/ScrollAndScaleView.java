@@ -34,8 +34,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     private boolean mOnMultipleTouch = false;   // 是否在多点触控
     private boolean mOnLongPress = false;       // 是否在长按
 
-    private float mScaleXMax = 2f;              // 缩放的最大值
-    private float mScaleXMin = 0.5f;            // 缩放的最小值
+    private float mMaxScaleX = 2f;              // 缩放的最大值
+    private float mMinScaleX = 0.5f;            // 缩放的最小值
     protected float mScaleX = 1.0f;             // 当前缩放值
     protected int mScrollX = 0;                 // 当前滚动值
     private int mPreviousScrollX = 0;                  // 备份上一次滚动值
@@ -365,10 +365,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * 获取修正后的缩放值
      */
     protected float getFixScaleX(float scaleX) {
-        if (scaleX < mScaleXMin) {
-            return mScaleXMin;
-        } else if (scaleX > mScaleXMax) {
-            return mScaleXMax;
+        if (scaleX < mMinScaleX) {
+            return mMinScaleX;
+        } else if (scaleX > mMaxScaleX) {
+            return mMaxScaleX;
         }
         return scaleX;
     }
@@ -384,41 +384,41 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     /**
      * 设置允许缩小的值
      */
-    public void setScaleXMin(float scaleXMin) {
-        if (scaleXMin >= 1.0f || scaleXMin <= 0.0f) {
+    public void setMinScaleX(float minScaleX) {
+        if (minScaleX >= 1.0f || minScaleX <= 0.0f) {
             return;
         }
-        mScaleXMin = scaleXMin;
-        if (mScaleX < mScaleXMin) {
-            setScaleX(mScaleXMin);
+        mMinScaleX = minScaleX;
+        if (mScaleX < mMinScaleX) {
+            setScaleX(mMinScaleX);
         }
     }
 
     /**
      * 获取允许缩小的值
      */
-    public float getScaleXMin() {
-        return mScaleXMin;
+    public float getMinScaleX() {
+        return mMinScaleX;
     }
 
     /**
      * 设置允许放大的值
      */
-    public void setScaleXMax(float scaleXMax) {
-        if (scaleXMax <= 1.0f) {
+    public void setMaxScaleX(float maxScaleX) {
+        if (maxScaleX <= 1.0f) {
             return;
         }
-        mScaleXMax = scaleXMax;
-        if (mScaleX > mScaleXMax) {
-            setScaleX(mScaleXMax);
+        mMaxScaleX = maxScaleX;
+        if (mScaleX > mMaxScaleX) {
+            setScaleX(mMaxScaleX);
         }
     }
 
     /**
      * 获取允许放大的值
      */
-    public float getScaleXMax() {
-        return mScaleXMax;
+    public float getMaxScaleX() {
+        return mMaxScaleX;
     }
 
     /**

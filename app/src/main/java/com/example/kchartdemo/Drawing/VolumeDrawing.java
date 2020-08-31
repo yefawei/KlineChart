@@ -51,7 +51,7 @@ public class VolumeDrawing extends Drawing {
         Transformer transformer = mDataProvider.getTransformer();
         for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
             IVolume item = (IVolume) mDataProvider.getAdapter().getItem(i);
-            float limit = transformer.getPointXByIndex(i);
+            float limit = transformer.getPointInScreenXByIndex(i);
 
             float y = getCoordinateY(item.getVolume());
             float y2 = getCoordinateY(0);
