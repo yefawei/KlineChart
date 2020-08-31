@@ -6,6 +6,7 @@ import com.benben.kchartlib.adapter.BaseKChartAdapter;
 import com.benben.kchartlib.animation.AnimationManager;
 import com.benben.kchartlib.data.PaddingHelper;
 import com.benben.kchartlib.data.Transformer;
+import com.benben.kchartlib.overlay.OverlayManager;
 
 /**
  * @日期 : 2020/7/7
@@ -37,6 +38,8 @@ public interface IDataProvider {
     float getScalePointWidth();
 
     boolean isFullScreen();
+
+    OverlayManager getOverlayManager();
 
     Transformer getTransformer();
 

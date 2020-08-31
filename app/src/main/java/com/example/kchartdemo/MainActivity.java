@@ -13,14 +13,17 @@ import com.benben.kchartlib.adapter.DefaultKChartAdapter;
 import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.AnimDataSizeChangeHandler;
+import com.benben.kchartlib.index.range.CandleIndexRange;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.utils.ConvertUtils;
 import com.example.kchartdemo.Drawing.CandleDrawing;
 import com.example.kchartdemo.Drawing.ClickDrawing;
+import com.example.kchartdemo.Drawing.HighlightDrawing;
 import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
 import com.example.kchartdemo.Drawing.RightPaddingDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
+import com.example.kchartdemo.Drawing.VolumeHighlightDrawing;
 import com.example.kchartdemo.data.DragonKLineDataProvider;
 import com.example.kchartdemo.data.KlineInfo;
 
@@ -66,12 +69,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         MainRenderer viewRender = mKChart.getMainRenderer();
+        CandleIndexRange candleIndexRange = new CandleIndexRange();
+        VolumeIndexRange volumeIndexRange = new VolumeIndexRange();
+
 
         MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, ConvertUtils.dp2px(this, 340), 1);
         MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
-        mainRenderCanvas.addDrawing(new CandleDrawing(layoutParams), true);
+        mainRenderCanvas.addDrawing(new CandleDrawing(candleIndexRange, layoutParams), true);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
@@ -84,13 +90,21 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.setWidth(100);
         layoutParams.setHorizontalPosition(RendererCanvas.DrawingLayoutParams.POSITION_RIGHT);
         mainRenderCanvas.addDrawing(new RightPaddingDrawing(layoutParams));
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
 
         canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, ConvertUtils.dp2px(this, 90), 1);
         mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
-        mainRenderCanvas.addDrawing(new VolumeDrawing(new VolumeIndexRange(), layoutParams));
+        mainRenderCanvas.addDrawing(new VolumeDrawing(volumeIndexRange, layoutParams), true);
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        mainRenderCanvas.addDrawing(new VolumeHighlightDrawing(volumeIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
 
         mAdapter = new DefaultKChartAdapter();
@@ -173,11 +187,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toCenter(View view) {
-        mKChart.scrollToIndex(mAdapter.getCount() / 2, 0, 0.5f, true);
+        mKChart.scrollToIndex(mAdapter.getCount() / 2, 0.5f, 0.5f, true);
     }
 
     public void toRight(View view) {
-        mKChart.scrollToIndex(mAdapter.getCount() - 1, 0, 1f, true);
+        mKChart.scrollToIndex(mAdapter.getCount() - 1, 1f, 1f, true);
     }
 
     ClickDrawing mOneDrawing = new ClickDrawing("One", new ClickDrawing.OnClickListener() {

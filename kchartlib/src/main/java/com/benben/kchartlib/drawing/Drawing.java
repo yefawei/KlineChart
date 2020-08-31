@@ -185,6 +185,9 @@ public abstract class Drawing implements IDrawing, IViewPort, IDispatchSingleTap
         }
     }
 
+    /**
+     * 根据数值获取当前所在Y坐标
+     */
     protected final float getCoordinateY(float value) {
         if (mIndexRange == null) return -1;
         if (mIndexRange.isReverse()) {

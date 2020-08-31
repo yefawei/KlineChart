@@ -26,8 +26,8 @@ public class CandleDrawing extends Drawing {
 
     private final Paint mPaint;
 
-    public CandleDrawing(RendererCanvas.DrawingLayoutParams params) {
-        super(new CandleIndexRange(), params);
+    public CandleDrawing(CandleIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+        super(indexRange, params);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(3);

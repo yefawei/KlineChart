@@ -2,6 +2,7 @@ package com.benben.kchartlib;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -117,6 +118,9 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
                     onLongPress(event);
                 }
                 break;
+            case MotionEvent.ACTION_POINTER_UP:
+                invalidate();
+                break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mOnTouch = false;
@@ -189,6 +193,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
+        Log.e("TapMarkerOptions","onSingleTapUp");
         return false;
     }
 
@@ -231,10 +236,12 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
+        Log.e("TapMarkerOptions","onSingleTapConfirmed");
         if (isClickable()) {
             if (!dispatchSingleTap(Math.round(e.getX()), Math.round(e.getY()))) {
                 onSingleTap(e.getX(), e.getY());
                 performClick();
+                invalidate();
             }
             return true;
         }
@@ -243,7 +250,9 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
+        Log.e("TapMarkerOptions","onDoubleTap");
         onDoubleTap(e.getX(), e.getY());
+        invalidate();
         if (mDoubleClickListener != null) {
             mDoubleClickListener.onDoubleClick(this);
             return true;
@@ -593,7 +602,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     abstract void onLongTap(float x, float y);
 
     /**
-     * 移除所有触控Tap
+     * 按下的那一刻
      */
     abstract void removeTap();
 

@@ -12,7 +12,7 @@ import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.index.IVolume;
-import com.benben.kchartlib.index.range.IndexRange;
+import com.benben.kchartlib.index.range.VolumeIndexRange;
 
 /**
  * @日期 : 2020/8/12
@@ -22,7 +22,7 @@ public class VolumeDrawing extends Drawing {
 
     private final Paint mPaint;
 
-    public VolumeDrawing(@Nullable IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public VolumeDrawing(@Nullable VolumeIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);

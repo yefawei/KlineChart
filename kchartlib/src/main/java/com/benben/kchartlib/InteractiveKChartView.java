@@ -23,6 +23,7 @@ import com.benben.kchartlib.data.PaddingHelper;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.IDrawing;
 import com.benben.kchartlib.impl.IMainCanvasPort;
+import com.benben.kchartlib.overlay.OverlayManager;
 import com.benben.kchartlib.render.BackgroundRenderer;
 import com.benben.kchartlib.render.ForegroundRenderer;
 import com.benben.kchartlib.render.MainRenderer;
@@ -52,6 +53,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     protected PaddingHelper mPaddingHelper;     // 边界辅助类
     private Transformer mTransformer;
     private AnimationManager mAnimationManager;
+    private OverlayManager mOverlayManager;
 
     private boolean mCanUpdateLayout;
     private Rect mViewPort = new Rect();    // 视图可绘制区域
@@ -75,6 +77,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mPaddingHelper = new PaddingHelper();
         mTransformer = new Transformer(this);
         mAnimationManager = new AnimationManager(this);
+        mOverlayManager = new OverlayManager(this);
     }
 
     @Override
@@ -99,7 +102,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     void preInvalidate() {
-        if (mAdapter == null || !mMainRenderer.mainCanvasValid()) {
+        if (mAdapter == null || mAdapter.getCount() == 0 || !mMainRenderer.mainCanvasValid()) {
             mTransformer.resetBounds();
             return;
         }
@@ -195,28 +198,37 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     void onSingleTap(float x, float y) {
-        // TODO 待完善
         int index = mTransformer.getIndexByScreenX(x);
-        Log.e("IndexByScreenX","onSingleTap index: " + index);
+        if (index == -1) {
+            removeTap();
+            return;
+        }
+        mOverlayManager.onSingleTapInfo(x, y, index, mAdapter.getItem(index));
     }
 
     @Override
     void onDoubleTap(float x, float y) {
-        // TODO 待完善
         int index = mTransformer.getIndexByScreenX(x);
-        Log.e("IndexByScreenX","onDoubleTap index: " + index);
+        if (index == -1) {
+            removeTap();
+            return;
+        }
+        mOverlayManager.onDoubleTapInfo(x, y, index, mAdapter.getItem(index));
     }
 
     @Override
     void onLongTap(float x, float y) {
-        // TODO 待完善
         int index = mTransformer.getIndexByScreenX(x);
-        Log.e("IndexByScreenX","onLongTap index: " + index);
+        if (index == -1) {
+            removeTap();
+            return;
+        }
+        mOverlayManager.onLongTapInfo(x, y, index, mAdapter.getItem(index));
     }
 
     @Override
     void removeTap() {
-        // TODO 待完善
+        mOverlayManager.removeTapInfo();
     }
 
     // for performance tracking
@@ -340,6 +352,11 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mIsFullScreenBuffer.mIsFullScreen = mDataLength * mScaleX > (mMainRenderer.getMainCanvasWidth()
                 - mPaddingHelper.getRightExtPadding(mScaleX));
         return mIsFullScreenBuffer.mIsFullScreen;
+    }
+
+    @Override
+    public OverlayManager getOverlayManager() {
+        return mOverlayManager;
     }
 
     /**
@@ -469,6 +486,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             }
         } else if (mDataLength == 0) {
             // 从有数据到无数据
+            removeTap();
             if (mScrollX == 0) {
                 invalidate();
             } else {
@@ -477,6 +495,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         } else {
             // 更新数据
             boolean fullScreen = isFullScreen();
+            mOverlayManager.updateClickTapInfo();
             if (!mPreviousIsFullScreen && fullScreen) {
                 // 非满屏 到 满屏
                 setScroll(getMinScrollX());
@@ -515,6 +534,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             }
             resetBuffer();
             mDataLength = getPointWidth() * mAdapter.getCount();
+            mOverlayManager.updateTapIndexOffset(-itemCount);
             if (mDataSizeChangeHandler == null) {
                 invalidate();
                 return;
