@@ -385,23 +385,24 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     /**
      * 指定屏幕位置到达指定索引
      *
+     * @param index           需要滚动的索引
+     * @param inItemWidthPercent 在item的什么位置计算滚动值
+     *                           以item的左侧为锚点，inItemWidthPercent = 0.0f
+     *                           以item的中间为锚点，inItemWidthPercent = 0.5f
+     *                           以item的右侧为锚点，inItemWidthPercent = 1.0f
      * @param inScreenPercent X轴方向主视窗{@link IMainCanvasPort#getMainCanvasWidth()}所在百分比位置，
-     *                        视窗左侧，inScreenPercent = 0.0f
-     *                        视窗中间，inScreenPercent = 0.5f
-     *                        视窗右侧，inScreenPercent = 1.0f
+     *                        需要滚动到视窗左侧，inScreenPercent = 0.0f
+     *                        需要滚动到视窗中间，inScreenPercent = 0.5f
+     *                        需要滚动到视窗右侧，inScreenPercent = 1.0f
      */
-    public void scrollToIndex(int index, @FloatRange(from = 0, to = 1.0) float inScreenPercent, boolean anim) {
+    public void scrollToIndex(int index, @FloatRange(from = 0, to = 1.0) float inItemWidthPercent,
+                              @FloatRange(from = 0, to = 1.0) float inScreenPercent, boolean anim) {
         if (index < 0 || mAdapter == null) {
             index = 0;
         } else if (index >= mAdapter.getCount()) {
             index = mAdapter.getCount() - 1;
         }
-        if (inScreenPercent < 0) {
-            inScreenPercent = 0;
-        } else if (inScreenPercent > 1.0f) {
-            inScreenPercent = 1.0f;
-        }
-        int targetScrollX = mTransformer.getScrollXForIndex(index, inScreenPercent);
+        int targetScrollX = mTransformer.getScrollXForIndex(index, inItemWidthPercent, inScreenPercent);
         if (anim) {
             animScroll(targetScrollX);
         } else {

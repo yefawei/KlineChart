@@ -1,5 +1,6 @@
 package com.benben.kchartlib.data;
 
+import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 
 import com.benben.kchartlib.adapter.BaseKChartAdapter;
@@ -35,11 +36,19 @@ public class Transformer {
     /**
      * 获取该索引在屏幕上的ScrollX值
      *
-     * @param index           当前索引
-     * @param inScreenPercent X轴方向主视窗{@link IMainCanvasPort#getMainCanvasWidth()}所在百分比位置
+     * @param index           需要滚动的索引
+     * @param inItemWidthPercent 在item的什么位置计算滚动值
+     *                           以item的左侧为锚点，inItemWidthPercent = 0.0f
+     *                           以item的中间为锚点，inItemWidthPercent = 0.5f
+     *                           以item的右侧为锚点，inItemWidthPercent = 1.0f
+     * @param inScreenPercent 需要滚动到主视窗{@link IMainCanvasPort#getMainCanvasWidth()}所在百分比位置，
+     *                        需要滚动到视窗左侧，inScreenPercent = 0.0f
+     *                        需要滚动到视窗中间，inScreenPercent = 0.5f
+     *                        需要滚动到视窗右侧，inScreenPercent = 1.0f
      */
-    public int getScrollXForIndex(int index, float inScreenPercent) {
-        float scrollx = (getItemCount() - index - inScreenPercent) * mDataProvider.getScalePointWidth()
+    public int getScrollXForIndex(int index, @FloatRange(from = 0, to = 1.0) float inItemWidthPercent,
+                                  @FloatRange(from = 0, to = 1.0) float inScreenPercent) {
+        float scrollx = (getItemCount() - index - inItemWidthPercent) * mDataProvider.getScalePointWidth()
                 - mDataProvider.getMainCanvasPort().getMainCanvasWidth() * (1.0f - inScreenPercent);
         return Math.round(Math.max(scrollx, 0));
     }

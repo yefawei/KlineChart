@@ -169,15 +169,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void toLeft(View view) {
-        mKChart.scrollToIndex(0, 0, true);
+        mKChart.scrollToIndex(0, 0, 0, true);
     }
 
     public void toCenter(View view) {
-        mKChart.scrollToIndex(mAdapter.getCount() / 2, 0.5f, true);
+        mKChart.scrollToIndex(mAdapter.getCount() / 2, 0, 0.5f, true);
     }
 
     public void toRight(View view) {
-        mKChart.scrollToIndex(mAdapter.getCount() - 1, 1f, true);
+        mKChart.scrollToIndex(mAdapter.getCount() - 1, 0, 1f, true);
     }
 
     ClickDrawing mOneDrawing = new ClickDrawing("One", new ClickDrawing.OnClickListener() {
