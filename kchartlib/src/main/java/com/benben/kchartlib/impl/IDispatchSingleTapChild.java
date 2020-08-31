@@ -16,5 +16,10 @@ public interface IDispatchSingleTapChild {
      */
     boolean inDispatchRange(int x, int y);
 
+    /**
+     * 单次点击事件
+     *
+     * @return 如果自身处理则返回true
+     */
     boolean onSingleTap(int x, int y);
 }

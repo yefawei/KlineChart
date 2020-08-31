@@ -11,5 +11,10 @@ public interface IDispatchSingleTapParent {
      */
     boolean inDispatchRange(int x, int y);
 
+    /**
+     * 分发单次点击
+     *
+     * @return 点击事件由绘制处理则为true
+     */
     boolean dispatchSingleTap(int x, int y);
 }

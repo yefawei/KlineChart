@@ -449,9 +449,8 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             mDataLength = getPointWidth() * mAdapter.getCount();
         }
         if (mPreviousDataLength == 0 && mDataLength == 0) {
-            return;
-        }
-        if (mPreviousDataLength == 0) {
+            invalidate();
+        } else if (mPreviousDataLength == 0) {
             // 从无数据到有数据
             if (isFullScreen()) {
                 setScroll(getMinScrollX());
