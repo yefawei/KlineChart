@@ -16,7 +16,19 @@ public class AnimDataSizeChangeHandler implements IDataSizeChangeHandler {
     @Override
     public boolean onFullLastInserted(InteractiveKChartView view, int itemCount, int currScroll, int finalScroll) {
         int scrollRange = Math.round(view.getScalePointWidth() * itemCount);
-        view.setScrollerThenAnimScroll(currScroll + scrollRange, finalScroll);
+        view.setScrollThenAnimScroll(currScroll + scrollRange, finalScroll, getDuration(itemCount));
         return true;
+    }
+
+    private int getDuration(int itemCount) {
+        if (itemCount == 1) {
+            return 400;
+        } else if (itemCount == 2) {
+            return 600;
+        } else if (itemCount == 3) {
+            return 700;
+        } else {
+            return 800;
+        }
     }
 }

@@ -455,8 +455,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
 
-    public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX) {
-        setScrollerThenAnimScroll(newScrollX, targetScrollX, 400);
+    public void setScrollThenAnimScroll(int newScrollX, int targetScrollX) {
+        setScrollThenAnimScroll(newScrollX, targetScrollX, 400);
     }
 
     /**
@@ -466,7 +466,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * @param newScrollX    新滚动值
      * @param targetScrollX 目标滚动值
      */
-    public void setScrollerThenAnimScroll(int newScrollX, int targetScrollX, int duration) {
+    public void setScrollThenAnimScroll(int newScrollX, int targetScrollX, int duration) {
         if (mOnTouch || newScrollX == targetScrollX) {
             if (newScrollX == mScrollX) return;
             setScroll(newScrollX);
