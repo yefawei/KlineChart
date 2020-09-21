@@ -1,6 +1,7 @@
 package com.benben.kchartlib;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -73,11 +74,32 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     public InteractiveKChartView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        limitBackgroundAndForeground(context, attrs, defStyleAttr);
         mMainRenderer = new MainRenderer(this);
         mPaddingHelper = new PaddingHelper();
         mTransformer = new Transformer(this);
         mAnimationManager = new AnimationManager(this);
         mOverlayManager = new OverlayManager(this);
+    }
+
+    /**
+     * 出于性能考虑,不要在此View设置背景和前景
+     * 由于此View刷新频繁，会连同背景和前景也一并重绘
+     * 将背景和前景放置在其它View上，在硬件加速下不会触发背景和前景的重绘
+     */
+    private void limitBackgroundAndForeground(Context context, AttributeSet attrs, int defStyleAttr) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.InteractiveKChartView, defStyleAttr, 0);
+        int indexCount = typedArray.getIndexCount();
+        for (int i = 0; i < indexCount; i++) {
+            int index = typedArray.getIndex(i);
+            if (index == R.styleable.InteractiveKChartView_android_background) {
+                throw new IllegalArgumentException("For performance reasons, do not set the background in KChartView.");
+            }
+            if (index == R.styleable.InteractiveKChartView_android_foreground) {
+                throw new IllegalArgumentException("For performance reasons, do not set the foreground in KChartView.");
+            }
+        }
+        typedArray.recycle();
     }
 
     @Override
