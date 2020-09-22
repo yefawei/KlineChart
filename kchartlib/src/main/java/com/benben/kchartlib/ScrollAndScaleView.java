@@ -606,11 +606,17 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      */
     abstract void removeTap();
 
+    /**
+     * 双击监听
+     */
     public interface OnDoubleClickListener {
 
         void onDoubleClick(View v);
     }
 
+    /**
+     * 长按状态变更监听
+     */
     public interface OnPressChangeListener {
 
         void onPressChange(View v, boolean onLongpress);
