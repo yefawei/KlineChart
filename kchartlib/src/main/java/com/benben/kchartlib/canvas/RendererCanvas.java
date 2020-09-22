@@ -363,7 +363,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
 
     @Override
     public String toViewPortString() {
-        StringBuilder vps = new StringBuilder("--------" + this.getClass().getSimpleName() +
+        StringBuilder vps = new StringBuilder(this.getClass().getSimpleName() +
                 "--ViewPort: " +
                 "[width: " + getWidth() + ", height: " + getHeight() + "]" +
                 "[left: " + getLeft() + "]" +

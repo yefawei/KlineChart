@@ -57,6 +57,12 @@ public class ForegroundRenderer extends Renderer {
         canvas.restore();
     }
 
+    @Override
+    public String toViewPortString() {
+        return super.toViewPortString() +
+                "\n--------" + mRenderCanvas.toViewPortString() + "\n";
+    }
+
     public void setRenderCanvas(RendererCanvas canvas) {
         if (mRenderCanvas != null) {
             mRenderCanvas.detachedParentPortLayout();

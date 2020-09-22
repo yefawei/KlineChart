@@ -466,22 +466,32 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
         StringBuilder vps = new StringBuilder(super.toViewPortString());
         vps.append("\n");
         if (mHorizontalCanvas[0] != null) {
+            vps.append("--------");
+            vps.append("left----");
             vps.append(mHorizontalCanvas[0].toViewPortString());
             vps.append("\n");
         }
         if (mHorizontalCanvas[1] != null) {
+            vps.append("--------");
+            vps.append("center--");
             vps.append(mHorizontalCanvas[1].toViewPortString());
             vps.append("\n");
         }
         if (mHorizontalCanvas[2] != null) {
+            vps.append("--------");
+            vps.append("right---");
             vps.append(mHorizontalCanvas[2].toViewPortString());
             vps.append("\n");
         }
         if (mVerticalCanvas[0] != null) {
+            vps.append("--------");
+            vps.append("top-----");
             vps.append(mVerticalCanvas[0].toViewPortString());
             vps.append("\n");
         }
         if (mVerticalCanvas[2] != null) {
+            vps.append("--------");
+            vps.append("bottom--");
             vps.append(mVerticalCanvas[2].toViewPortString());
             vps.append("\n");
         }
