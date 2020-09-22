@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         VolumeIndexRange volumeIndexRange = new VolumeIndexRange();
 
 
-        MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, ConvertUtils.dp2px(this, 340), 1);
+        MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1, 4);
         MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
 
-        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, ConvertUtils.dp2px(this, 90), 1);
+        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1, 1);
         mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
