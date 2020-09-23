@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         mKChart = findViewById(R.id.k_chart);
         mScrollView = findViewById(R.id.scroll_view);
         mDataProvider = new DragonKLineDataProvider();
-
         mKChart.setPointWidth(ConvertUtils.dp2px(this, 8));
         mKChart.setDataSizeChangeHandler(new AnimDataSizeChangeHandler());
         mKChart.setMaxScaleX(6);
@@ -72,8 +71,13 @@ public class MainActivity extends AppCompatActivity {
         });
         mKChart.setOnScrollChangeListener(new ScrollAndScaleView.OnScrollChangeListener() {
             @Override
+            public void onScrollXChange(int scrollX, int oldScrollX) {
+                Log.e("OnScrollChangeListener","onScrollChange: " + scrollX + " -- " + oldScrollX);
+            }
+
+            @Override
             public void onScrollStateChanged(int state) {
-                Log.e("testtest","onScrollStateChanged: " + state);
+                Log.e("OnScrollChangeListener","onScrollStateChanged: " + state);
             }
         });
 

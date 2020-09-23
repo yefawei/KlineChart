@@ -179,6 +179,14 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
     @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        super.onScrollChanged(l, t, oldl, oldt);
+        if (mOnScrollChangeListener != null) {
+            mOnScrollChangeListener.onScrollXChange(l, oldl);
+        }
+    }
+
+    @Override
     public void scrollTo(int x, int y) {
         if (x < getMinScrollX()) {
             x = getMinScrollX();
@@ -674,6 +682,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
     public interface OnScrollChangeListener {
+
+        void onScrollXChange(int scrollX, int oldScrollX);
 
         /**
          * @param state 当前滚动状态
