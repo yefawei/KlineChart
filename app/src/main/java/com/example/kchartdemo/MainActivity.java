@@ -14,6 +14,7 @@ import com.benben.kchartlib.adapter.DefaultKChartAdapter;
 import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.AnimDataSizeChangeHandler;
+import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.index.range.CandleIndexRange;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
@@ -78,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrollStateChanged(int state) {
                 Log.e("OnScrollChangeListener","onScrollStateChanged: " + state);
+            }
+        });
+        mKChart.getTransformer().setOnViewIndexListener(new Transformer.OnViewIndexListener() {
+            @Override
+            public void viewIndex(int startIndex, int endIndex) {
+                Log.e("OnViewIndexListener","viewIndex: " + startIndex + " -- " + endIndex);
             }
         });
 

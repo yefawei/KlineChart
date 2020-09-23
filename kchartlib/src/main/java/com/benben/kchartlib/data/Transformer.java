@@ -31,6 +31,8 @@ public class Transformer {
     private HashMap<String, Integer> mIndexCount = new HashMap<>();
     private HashMap<String, IndexRange> mIndexMap = new HashMap<>();
 
+    private OnViewIndexListener mViewIndexListener;
+
     public Transformer(IDataProvider dataProvider) {
         mDataProvider = dataProvider;
     }
@@ -106,16 +108,23 @@ public class Transformer {
      * 重置数据边界
      */
     public void resetBounds() {
+        int oldStartIndex = mStartIndex;
+        int oldStopIndex = mStopIndex;
         mPointXBuffer = sEmptyPointXBuffer;
         mStartPointX = 0;
         mStartIndex = -1;
         mStopIndex = -1;
+        if (mViewIndexListener != null && (mStartIndex != oldStartIndex || mStopIndex != oldStopIndex)) {
+            mViewIndexListener.viewIndex(mStartIndex, mStopIndex);
+        }
     }
 
     /**
      * 更新数据的边界，边界以{@link IMainCanvasPort}提供的数据为准
      */
     public void updateBounds() {
+        int oldStartIndex = mStartIndex;
+        int oldStopIndex = mStopIndex;
         if (mDataProvider.isFullScreen()) {
             mStartIndex = indexOfTranslateX(getItemCount() - 1, xToTranslateX(0));
             mStopIndex = indexOfTranslateX(getItemCount() - 1, xToTranslateX(mDataProvider.getMainCanvasPort().getMainCanvasWidth()));
@@ -141,6 +150,9 @@ public class Transformer {
         }
         if (getItemCount() > 0) {
             calcMinMax(mDataProvider.getAdapter());
+        }
+        if (mViewIndexListener != null && (mStartIndex != oldStartIndex || mStopIndex != oldStopIndex)) {
+            mViewIndexListener.viewIndex(mStartIndex, mStopIndex);
         }
     }
 
@@ -248,5 +260,13 @@ public class Transformer {
         if (remove instanceof IndexRangeSet) {
             ((IndexRangeSet) remove).setCanChangeIndex(true);
         }
+    }
+
+    public void setOnViewIndexListener(OnViewIndexListener listener) {
+        mViewIndexListener = listener;
+    }
+
+    public interface OnViewIndexListener {
+        void viewIndex(int startIndex, int endIndex);
     }
 }

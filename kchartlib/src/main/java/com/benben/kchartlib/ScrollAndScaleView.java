@@ -138,8 +138,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         }
         mScaleGestureDetector.onTouchEvent(event);
         mGestureDetectorCompat.onTouchEvent(event);
-        if (!mIsScrollerStarted && action == MotionEvent.ACTION_UP
-                || action == MotionEvent.ACTION_CANCEL) {
+        if (!mIsScrollerStarted && (action == MotionEvent.ACTION_UP
+                || action == MotionEvent.ACTION_CANCEL)) {
             setScrollState(SCROLL_STATE_IDLE);
         }
         return true;
