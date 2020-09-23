@@ -123,7 +123,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (mOnLongPress && !mOnMultipleTouch) {
-                    onLongPress(event);
+                    onLongActionMove(event);
                 }
                 break;
             case MotionEvent.ACTION_POINTER_UP:
@@ -162,7 +162,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             if (mOnTouch || !mScrollEnable) {
                 mIsScrollerStarted = false;
                 mScroller.forceFinished(true);
-                setScrollState(SCROLL_STATE_IDLE);
                 return;
             }
             scrollTo(mScroller.getCurrX(), 0);
@@ -233,19 +232,28 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public void onLongPress(MotionEvent e) {
+        setScrollState(SCROLL_STATE_IDLE);
         if (mLongEnable) {
-            if (!mOnLongPress) {
-                performLongClick();
-                if (mPressChangeListener != null) {
-                    mPressChangeListener.onPressChange(this, true);
-                }
-            }
             mOnLongPress = true;
             mLongTouchX = e.getX();
             mLongTouchY = e.getY();
             onLongTap(mLongTouchX, mLongTouchY);
+            performLongClick();
+            if (mPressChangeListener != null) {
+                mPressChangeListener.onPressChange(this, true);
+            }
             invalidate();
         }
+    }
+
+    /**
+     * 长按且移动
+     */
+    private void onLongActionMove(MotionEvent e) {
+        mLongTouchX = e.getX();
+        mLongTouchY = e.getY();
+        onLongTap(mLongTouchX, mLongTouchY);
+        invalidate();
     }
 
     @Override
