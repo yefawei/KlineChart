@@ -8,8 +8,8 @@ import android.util.Log;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.index.range.CandleIndexRange;
-import com.benben.kchartlib.overlay.TouchTapManager;
-import com.benben.kchartlib.overlay.TapMarkerOptions;
+import com.benben.kchartlib.touch.TouchTapManager;
+import com.benben.kchartlib.touch.TapMarkerOptions;
 
 /**
  * @日期 : 2020/8/31

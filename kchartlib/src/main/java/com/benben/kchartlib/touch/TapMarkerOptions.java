@@ -1,4 +1,4 @@
-package com.benben.kchartlib.overlay;
+package com.benben.kchartlib.touch;
 
 import com.benben.kchartlib.index.IEntity;
 
@@ -6,7 +6,7 @@ import com.benben.kchartlib.index.IEntity;
  * @日期 : 2020/8/31
  * @描述 : 点击标记物
  */
-public class TapMarkerOptions extends MarkerOptions {
+public class TapMarkerOptions {
 
     private float mX;
     private float mY;

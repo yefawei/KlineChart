@@ -6,7 +6,7 @@ import com.benben.kchartlib.adapter.BaseKChartAdapter;
 import com.benben.kchartlib.animation.AnimationManager;
 import com.benben.kchartlib.data.PaddingHelper;
 import com.benben.kchartlib.data.Transformer;
-import com.benben.kchartlib.overlay.TouchTapManager;
+import com.benben.kchartlib.touch.TouchTapManager;
 
 /**
  * @日期 : 2020/7/7
