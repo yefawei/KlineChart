@@ -3,13 +3,12 @@ package com.example.kchartdemo.Drawing;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.index.range.CandleIndexRange;
-import com.benben.kchartlib.touch.TouchTapManager;
 import com.benben.kchartlib.touch.TapMarkerOptions;
+import com.benben.kchartlib.touch.TouchTapManager;
 
 /**
  * @日期 : 2020/8/31
@@ -46,13 +45,11 @@ public class HighlightDrawing extends Drawing {
         TouchTapManager touchTapManager = mDataProvider.getTouchTapManager();
         TapMarkerOptions singleTapMarker = touchTapManager.getSingleTapMarker();
         if (singleTapMarker != null) {
-            Log.e("TapMarkerOptions", "singleTapMarker: " + singleTapMarker.getIndex());
             drawHighlight(canvas, singleTapMarker);
             return;
         }
         TapMarkerOptions longTapMarker = touchTapManager.getLongTapMarker();
         if (longTapMarker == null) return;
-        Log.e("TapMarkerOptions", "longTapMarker: " + longTapMarker.getIndex());
         drawFixHighlight(canvas, longTapMarker);
     }
 
