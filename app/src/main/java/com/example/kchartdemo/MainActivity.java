@@ -87,6 +87,17 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("OnViewIndexListener","viewIndex: " + startIndex + " -- " + endIndex);
             }
         });
+        mKChart.setOnMarginListener(new InteractiveKChartView.OnMarginListener() {
+            @Override
+            public void onRightMargin() {
+                Toast.makeText(MainActivity.this, "onRightMargin", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onLeftMargin() {
+                Toast.makeText(MainActivity.this, "onLeftMargin", Toast.LENGTH_LONG).show();
+            }
+        });
 
         MainRenderer viewRender = mKChart.getMainRenderer();
         CandleIndexRange candleIndexRange = new CandleIndexRange();

@@ -38,7 +38,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     private float mMinScaleX = 0.5f;            // 缩放的最小值
     protected float mScaleX = 1.0f;             // 当前缩放值
     protected int mScrollX = 0;                 // 当前滚动值
-    private int mPreviousScrollX = 0;                  // 备份上一次滚动值
+    private int mPreviousScrollX = 0;           // 备份上一次滚动值
     protected float mLongTouchX;                // 当前点击的X坐标
     protected float mLongTouchY;                // 当前点击的Y坐标
 
@@ -191,9 +191,11 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         if (x < getMinScrollX()) {
             x = getMinScrollX();
             mScroller.forceFinished(true);
+            onRightMargin();
         } else if (x > getMaxScrollX()) {
             x = getMaxScrollX();
             mScroller.forceFinished(true);
+            onLeftMargin();
         }
         mPreviousScrollX = mScrollX;
         mScrollX = x;
@@ -637,6 +639,16 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      * @return 缩放后的滚动值
      */
     abstract int onScaleChanged(float scale, float oldScale, float focusX, float focusY);
+
+    /**
+     * 滑到了最右边
+     */
+    abstract public void onRightMargin();
+
+    /**
+     * 滑到了最左边
+     */
+    abstract public void onLeftMargin();
 
     /**
      * 分发单次点击

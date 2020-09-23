@@ -24,7 +24,7 @@ import com.benben.kchartlib.data.PaddingHelper;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.IDrawing;
 import com.benben.kchartlib.impl.IMainCanvasPort;
-import com.benben.kchartlib.overlay.TouchTapManager;
+import com.benben.kchartlib.touch.TouchTapManager;
 import com.benben.kchartlib.render.BackgroundRenderer;
 import com.benben.kchartlib.render.ForegroundRenderer;
 import com.benben.kchartlib.render.MainRenderer;
@@ -63,6 +63,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private MainRenderer mMainRenderer;
     private boolean mIsRenderForeground = false;
     private ForegroundRenderer mForegroundRenderer;
+
+    private boolean mInRightBound;
+    private boolean mInLeftBound;
+    private OnMarginListener mOnMarginListener;
 
     public InteractiveKChartView(@NonNull Context context) {
         this(context, null);
@@ -167,7 +171,14 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        //TODO 这里要做到达边界判断逻辑
+        if (mInRightBound) {
+            // 到达了右边界再滑动的
+            mInRightBound = false;
+        }
+        if (mInLeftBound) {
+            // 到达了左边界再滑动的
+            mInLeftBound = false;
+        }
     }
 
     @Override
@@ -201,6 +212,22 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         // 使得以缩放手势中心点进行缩放
         float changeSpace = (width - x) * scale / oldScale - (width - x);
         return getFixScrollX(Math.round(mScrollX * scale / oldScale + changeSpace));
+    }
+
+    @Override
+    public void onRightMargin() {
+        if (!mInRightBound && mOnMarginListener != null) {
+            mOnMarginListener.onRightMargin();
+        }
+        mInRightBound = true;
+    }
+
+    @Override
+    public void onLeftMargin() {
+        if (!mInLeftBound && mOnMarginListener != null) {
+            mOnMarginListener.onLeftMargin();
+        }
+        mInLeftBound = true;
     }
 
     @Override
@@ -540,6 +567,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mMaxScrollXBuffer.mScaleX = 0;
     }
 
+    public void setOnMarginListener(OnMarginListener listener) {
+        mOnMarginListener = listener;
+    }
+
     private AdapterDataObserver mDataObserver = new AdapterDataObserver() {
 
         @Override
@@ -591,4 +622,16 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             }
         }
     };
+
+    public interface OnMarginListener {
+        /**
+         * 到达右边界会触发该函数，
+         */
+        void onRightMargin();
+
+        /**
+         * 到达左边界会触发该函数，
+         */
+        void onLeftMargin();
+    }
 }
