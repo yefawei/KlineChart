@@ -2,7 +2,6 @@ package com.benben.kchartlib;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,8 +47,16 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     private OverScroller mScroller;
     private ScaleGestureDetectorCompat mScaleGestureDetector;
 
+    public static final int SCROLL_STATE_IDLE = 0;      // 闲置
+    public static final int SCROLL_STATE_DRAGGING = 1;  // 拖拽中
+    public static final int SCROLL_STATE_SETTLING = 2;  // 自行滑动中
+
+    private boolean mIsScrollerStarted;
+    private int mScrollState = SCROLL_STATE_IDLE;
+
     private OnDoubleClickListener mDoubleClickListener;
     private OnPressChangeListener mPressChangeListener;
+    private OnScrollChangeListener mOnScrollChangeListener;
 
     public ScrollAndScaleView(@NonNull Context context) {
         this(context, null);
@@ -108,7 +115,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             return super.onTouchEvent(event);
         }
         mOnMultipleTouch = event.getPointerCount() > 1;
-        switch (event.getActionMasked()) {
+        int action = event.getActionMasked();
+        switch (action) {
             case MotionEvent.ACTION_DOWN:
                 mOnTouch = true;
                 removeTap();
@@ -130,6 +138,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         }
         mScaleGestureDetector.onTouchEvent(event);
         mGestureDetectorCompat.onTouchEvent(event);
+        if (!mIsScrollerStarted && action == MotionEvent.ACTION_UP
+                || action == MotionEvent.ACTION_CANCEL) {
+            setScrollState(SCROLL_STATE_IDLE);
+        }
         return true;
     }
 
@@ -143,11 +155,21 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public void computeScroll() {
+        if (!mIsScrollerStarted) {
+            return;
+        }
         if (mScroller.computeScrollOffset()) {
             if (mOnTouch || !mScrollEnable) {
+                mIsScrollerStarted = false;
                 mScroller.forceFinished(true);
-            } else {
-                scrollTo(mScroller.getCurrX(), 0);
+                setScrollState(SCROLL_STATE_IDLE);
+                return;
+            }
+            scrollTo(mScroller.getCurrX(), 0);
+
+            if (mScroller.isFinished()) {
+                mIsScrollerStarted = false;
+                setScrollState(SCROLL_STATE_IDLE);
             }
         }
     }
@@ -170,12 +192,16 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         mScrollX = x;
         if (!mScroller.isFinished()) {
             if (mScrollX != mPreviousScrollX) {
+                setScrollState(SCROLL_STATE_SETTLING);
                 onScrollChanged(mScrollX, 0, mPreviousScrollX, 0);
             }
             postInvalidateOnAnimation();
             return;
         }
         if (mScrollX != mPreviousScrollX) {
+            if (mOnTouch) {
+                setScrollState(SCROLL_STATE_DRAGGING);
+            }
             onScrollChanged(mScrollX, 0, mPreviousScrollX, 0);
             invalidate();
         }
@@ -193,7 +219,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        Log.e("TapMarkerOptions","onSingleTapUp");
         return false;
     }
 
@@ -228,6 +253,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         if (mScrollEnable) {
             mScroller.fling(mScrollX, 0, (int) velocityX, 0,
                     Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
+            mIsScrollerStarted = true;
             invalidate();
             return true;
         }
@@ -236,7 +262,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
-        Log.e("TapMarkerOptions","onSingleTapConfirmed");
         if (isClickable()) {
             if (!dispatchSingleTap(Math.round(e.getX()), Math.round(e.getY()))) {
                 onSingleTap(e.getX(), e.getY());
@@ -250,7 +275,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
-        Log.e("TapMarkerOptions","onDoubleTap");
         onDoubleTap(e.getX(), e.getY());
         invalidate();
         if (mDoubleClickListener != null) {
@@ -283,6 +307,16 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public void onScaleEnd(ScaleGestureDetectorCompat detector) {
 
+    }
+
+    private void setScrollState(int newState) {
+        if (mScrollState == newState) {
+            return;
+        }
+        mScrollState = newState;
+        if (mOnScrollChangeListener != null) {
+            mOnScrollChangeListener.onScrollStateChanged(newState);
+        }
     }
 
     public void reset(boolean invalidate) {
@@ -451,6 +485,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         targetScrollX = getFixScrollX(targetScrollX);
         if (mOnTouch || targetScrollX == mScrollX) return;
         mScroller.startScroll(mScrollX, 0, targetScrollX - mScrollX, 0, duration);
+        mIsScrollerStarted = true;
         invalidate();
     }
 
@@ -559,6 +594,13 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     }
 
     /**
+     * 设置滚动监听
+     */
+    public void setOnScrollChangeListener(OnScrollChangeListener listener) {
+        mOnScrollChangeListener = listener;
+    }
+
+    /**
      * 正在调用Invalidate
      */
     abstract void preInvalidate();
@@ -582,6 +624,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     /**
      * 分发单次点击
+     *
      * @return 点击事件由绘制处理则为true
      */
     abstract boolean dispatchSingleTap(int x, int y);
@@ -620,5 +663,16 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     public interface OnPressChangeListener {
 
         void onPressChange(View v, boolean onLongpress);
+    }
+
+    public interface OnScrollChangeListener {
+
+        /**
+         * @param state 当前滚动状态
+         * @see ScrollAndScaleView#SCROLL_STATE_IDLE
+         * @see ScrollAndScaleView#SCROLL_STATE_DRAGGING
+         * @see ScrollAndScaleView#SCROLL_STATE_SETTLING
+         */
+        void onScrollStateChanged(int state);
     }
 }

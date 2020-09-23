@@ -3,6 +3,7 @@ package com.example.kchartdemo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DragonKLineDataProvider mDataProvider;
     private InteractiveKChartView mKChart;
+    private ScrollView mScrollView;
     private DefaultKChartAdapter mAdapter;
 
     @Override
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mKChart = findViewById(R.id.k_chart);
+        mScrollView = findViewById(R.id.scroll_view);
         mDataProvider = new DragonKLineDataProvider();
 
         mKChart.setPointWidth(ConvertUtils.dp2px(this, 8));
@@ -65,6 +68,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPressChange(View v, boolean onLongpress) {
                 Toast.makeText(MainActivity.this, "onPressChange: " + onLongpress, Toast.LENGTH_LONG).show();
+            }
+        });
+        mKChart.setOnScrollChangeListener(new ScrollAndScaleView.OnScrollChangeListener() {
+            @Override
+            public void onScrollStateChanged(int state) {
+                Log.e("testtest","onScrollStateChanged: " + state);
             }
         });
 
