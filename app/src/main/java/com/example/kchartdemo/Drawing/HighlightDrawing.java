@@ -8,7 +8,7 @@ import android.util.Log;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.index.range.CandleIndexRange;
-import com.benben.kchartlib.overlay.OverlayManager;
+import com.benben.kchartlib.overlay.TouchTapManager;
 import com.benben.kchartlib.overlay.TapMarkerOptions;
 
 /**
@@ -19,6 +19,8 @@ public class HighlightDrawing extends Drawing {
 
     private final Paint mPaint;
 
+    private boolean mLastTapIsLongTap;
+
     public HighlightDrawing(CandleIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -28,21 +30,27 @@ public class HighlightDrawing extends Drawing {
     }
 
     @Override
+    public void preCalcDataValue() {
+        super.preCalcDataValue();
+        if (mLastTapIsLongTap && !mDataProvider.getTouchTapManager().hasLongTap()) {
+            // 如果上一次是长按，那么此次非长按则清空点击信息，模仿OK交互
+            mLastTapIsLongTap = false;
+            mDataProvider.getTouchTapManager().removeAllTapInfo();
+            return;
+        }
+        mLastTapIsLongTap = mDataProvider.getTouchTapManager().hasLongTap();
+    }
+
+    @Override
     public void drawData(Canvas canvas) {
-        OverlayManager overlayManager = mDataProvider.getOverlayManager();
-        TapMarkerOptions singleTapMarker = overlayManager.getSingleTapMarker();
+        TouchTapManager touchTapManager = mDataProvider.getTouchTapManager();
+        TapMarkerOptions singleTapMarker = touchTapManager.getSingleTapMarker();
         if (singleTapMarker != null) {
             Log.e("TapMarkerOptions", "singleTapMarker: " + singleTapMarker.getIndex());
             drawHighlight(canvas, singleTapMarker);
             return;
         }
-        TapMarkerOptions doubleTapMarker = overlayManager.getDoubleTapMarker();
-        if (doubleTapMarker != null) {
-            Log.e("TapMarkerOptions", "doubleTapMarker: " + doubleTapMarker.getIndex());
-            drawHighlight(canvas, doubleTapMarker);
-            return;
-        }
-        TapMarkerOptions longTapMarker = overlayManager.getLongTapMarker();
+        TapMarkerOptions longTapMarker = touchTapManager.getLongTapMarker();
         if (longTapMarker == null) return;
         Log.e("TapMarkerOptions", "longTapMarker: " + longTapMarker.getIndex());
         drawFixHighlight(canvas, longTapMarker);

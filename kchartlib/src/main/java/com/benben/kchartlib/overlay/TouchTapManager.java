@@ -8,9 +8,11 @@ import com.benben.kchartlib.index.IEntity;
 
 /**
  * @日期 : 2020/8/31
- * @描述 : 覆盖物管理者
+ * @描述 : 点击管理者
+ * 保存着【单次点击】【双击】【长按】的对应item信息
+ * 注意，三者同一时刻只有一个有信息
  */
-public class OverlayManager {
+public class TouchTapManager {
 
     private IDataProvider mDataProvider;
 
@@ -18,7 +20,7 @@ public class OverlayManager {
     private TapMarkerOptions mDoubleTapOptions = new TapMarkerOptions();    // 双击
     private TapMarkerOptions mLongTapOptions = new TapMarkerOptions();      // 长按
 
-    public OverlayManager(IDataProvider dataProvider) {
+    public TouchTapManager(IDataProvider dataProvider) {
         mDataProvider = dataProvider;
     }
 
@@ -58,7 +60,7 @@ public class OverlayManager {
     /**
      * 移除所有点击信息
      */
-    public void removeTapInfo() {
+    public void removeAllTapInfo() {
         mSingleTapOptions.reset();
         mDoubleTapOptions.reset();
         mLongTapOptions.reset();
@@ -106,6 +108,11 @@ public class OverlayManager {
         options.reset();
     }
 
+
+    public boolean hasSingleTap() {
+        return mSingleTapOptions.isClick();
+    }
+
     /**
      * 获取单次点击信息
      * @return 如果没点击信息会返回空
@@ -118,6 +125,10 @@ public class OverlayManager {
         return null;
     }
 
+    public boolean hasDoubleTap() {
+        return mDoubleTapOptions.isClick();
+    }
+
     /**
      * 获取双击信息
      * @return 如果没点击信息会返回空
@@ -128,6 +139,13 @@ public class OverlayManager {
             return mDoubleTapOptions;
         }
         return null;
+    }
+
+    /**
+     *
+     */
+    public boolean hasLongTap() {
+        return mLongTapOptions.isClick();
     }
 
     /**

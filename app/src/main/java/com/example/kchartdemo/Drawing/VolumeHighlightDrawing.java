@@ -8,7 +8,7 @@ import android.util.Log;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
-import com.benben.kchartlib.overlay.OverlayManager;
+import com.benben.kchartlib.overlay.TouchTapManager;
 import com.benben.kchartlib.overlay.TapMarkerOptions;
 
 /**
@@ -29,20 +29,14 @@ public class VolumeHighlightDrawing extends Drawing {
 
     @Override
     public void drawData(Canvas canvas) {
-        OverlayManager overlayManager = mDataProvider.getOverlayManager();
-        TapMarkerOptions singleTapMarker = overlayManager.getSingleTapMarker();
+        TouchTapManager touchTapManager = mDataProvider.getTouchTapManager();
+        TapMarkerOptions singleTapMarker = touchTapManager.getSingleTapMarker();
         if (singleTapMarker != null) {
             Log.e("TapMarkerOptions", "singleTapMarker: " + singleTapMarker.getIndex());
             drawHighlight(canvas, singleTapMarker);
             return;
         }
-        TapMarkerOptions doubleTapMarker = overlayManager.getDoubleTapMarker();
-        if (doubleTapMarker != null) {
-            Log.e("TapMarkerOptions", "doubleTapMarker: " + doubleTapMarker.getIndex());
-            drawHighlight(canvas, doubleTapMarker);
-            return;
-        }
-        TapMarkerOptions longTapMarker = overlayManager.getLongTapMarker();
+        TapMarkerOptions longTapMarker = touchTapManager.getLongTapMarker();
         if (longTapMarker == null) return;
         Log.e("TapMarkerOptions", "longTapMarker: " + longTapMarker.getIndex());
         drawFixHighlight(canvas, longTapMarker);

@@ -24,7 +24,7 @@ import com.benben.kchartlib.data.PaddingHelper;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.IDrawing;
 import com.benben.kchartlib.impl.IMainCanvasPort;
-import com.benben.kchartlib.overlay.OverlayManager;
+import com.benben.kchartlib.overlay.TouchTapManager;
 import com.benben.kchartlib.render.BackgroundRenderer;
 import com.benben.kchartlib.render.ForegroundRenderer;
 import com.benben.kchartlib.render.MainRenderer;
@@ -54,7 +54,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     protected PaddingHelper mPaddingHelper;     // 边界辅助类
     private Transformer mTransformer;
     private AnimationManager mAnimationManager;
-    private OverlayManager mOverlayManager;
+    private TouchTapManager mTouchTapManager;
 
     private boolean mCanUpdateLayout;
     private Rect mViewPort = new Rect();    // 视图可绘制区域
@@ -79,7 +79,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mPaddingHelper = new PaddingHelper();
         mTransformer = new Transformer(this);
         mAnimationManager = new AnimationManager(this);
-        mOverlayManager = new OverlayManager(this);
+        mTouchTapManager = new TouchTapManager(this);
     }
 
     /**
@@ -225,7 +225,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             removeTap();
             return;
         }
-        mOverlayManager.onSingleTapInfo(x, y, index, mAdapter.getItem(index));
+        mTouchTapManager.onSingleTapInfo(x, y, index, mAdapter.getItem(index));
     }
 
     @Override
@@ -235,7 +235,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             removeTap();
             return;
         }
-        mOverlayManager.onDoubleTapInfo(x, y, index, mAdapter.getItem(index));
+        mTouchTapManager.onDoubleTapInfo(x, y, index, mAdapter.getItem(index));
     }
 
     @Override
@@ -245,12 +245,12 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             removeTap();
             return;
         }
-        mOverlayManager.onLongTapInfo(x, y, index, mAdapter.getItem(index));
+        mTouchTapManager.onLongTapInfo(x, y, index, mAdapter.getItem(index));
     }
 
     @Override
     void removeTap() {
-        mOverlayManager.removeTapInfo();
+        mTouchTapManager.removeAllTapInfo();
     }
 
     // for performance tracking
@@ -377,8 +377,8 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     @Override
-    public OverlayManager getOverlayManager() {
-        return mOverlayManager;
+    public TouchTapManager getTouchTapManager() {
+        return mTouchTapManager;
     }
 
     /**
@@ -517,7 +517,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         } else {
             // 更新数据
             boolean fullScreen = isFullScreen();
-            mOverlayManager.updateClickTapInfo();
+            mTouchTapManager.updateClickTapInfo();
             if (!mPreviousIsFullScreen && fullScreen) {
                 // 非满屏 到 满屏
                 setScroll(getMinScrollX());
@@ -556,7 +556,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             }
             resetBuffer();
             mDataLength = getPointWidth() * mAdapter.getCount();
-            mOverlayManager.updateTapIndexOffset(-itemCount);
+            mTouchTapManager.updateTapIndexOffset(-itemCount);
             if (mDataSizeChangeHandler == null) {
                 invalidate();
                 return;
