@@ -87,15 +87,26 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("OnViewIndexListener","viewIndex: " + startIndex + " -- " + endIndex);
             }
         });
+        mKChart.setOnPaddingListener(new InteractiveKChartView.OnPaddingListener() {
+            @Override
+            public void rightPadding(boolean inRightPadding) {
+                Log.e("OnPaddingListener", "rightPadding: " + inRightPadding);
+            }
+
+            @Override
+            public void leftPadding(boolean inLeftPadding) {
+                Log.e("OnPaddingListener", "leftPadding: " + inLeftPadding);
+            }
+        });
         mKChart.setOnMarginListener(new InteractiveKChartView.OnMarginListener() {
             @Override
             public void onRightMargin() {
-                Toast.makeText(MainActivity.this, "onRightMargin", Toast.LENGTH_LONG).show();
+                Log.e("OnMarginListener", "onRightMargin");
             }
 
             @Override
             public void onLeftMargin() {
-                Toast.makeText(MainActivity.this, "onLeftMargin", Toast.LENGTH_LONG).show();
+                Log.e("OnMarginListener", "onLeftMargin");
             }
         });
 

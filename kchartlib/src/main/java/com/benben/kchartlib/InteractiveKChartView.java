@@ -64,8 +64,11 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private boolean mIsRenderForeground = false;
     private ForegroundRenderer mForegroundRenderer;
 
-    private boolean mInRightBound;
-    private boolean mInLeftBound;
+    private boolean mInRightPadding;
+    private boolean mInLeftPadding;
+    private OnPaddingListener mOnPaddingListener;
+    private boolean mInRightMargin;
+    private boolean mInLeftMargin;
     private OnMarginListener mOnMarginListener;
 
     public InteractiveKChartView(@NonNull Context context) {
@@ -171,13 +174,38 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        if (mInRightBound) {
+        if (mInRightMargin) {
             // 到达了右边界再滑动的
-            mInRightBound = false;
+            mInRightMargin = false;
         }
-        if (mInLeftBound) {
+        if (mInLeftMargin) {
             // 到达了左边界再滑动的
-            mInLeftBound = false;
+            mInLeftMargin = false;
+        }
+        if (!isFullScreen()) {
+            if (mOnPaddingListener != null) {
+                if (mInRightPadding) mOnPaddingListener.rightPadding(false);
+                if (mInLeftPadding) mOnPaddingListener.leftPadding(false);
+            }
+            mInRightPadding = false;
+            mInLeftPadding = false;
+            return;
+        }
+        if (l < 0) {
+           if (!mInRightPadding) mOnPaddingListener.rightPadding(true);
+            mInRightPadding = true;
+        } else {
+            if (mInRightPadding) mOnPaddingListener.rightPadding(false);
+            mInRightPadding = false;
+        }
+        if (mPaddingHelper.hasLeftExtPadding()) {
+            if (l > getMaxScrollX() - mPaddingHelper.getLeftExtPadding(mScaleX)) {
+                if (!mInLeftPadding) mOnPaddingListener.leftPadding(true);
+                mInLeftPadding = true;
+            } else {
+                if (mInLeftPadding) mOnPaddingListener.leftPadding(false);
+                mInLeftPadding = false;
+            }
         }
     }
 
@@ -216,18 +244,18 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     public void onRightMargin() {
-        if (!mInRightBound && mOnMarginListener != null) {
+        if (!mInRightMargin && mOnMarginListener != null) {
             mOnMarginListener.onRightMargin();
         }
-        mInRightBound = true;
+        mInRightMargin = true;
     }
 
     @Override
     public void onLeftMargin() {
-        if (!mInLeftBound && mOnMarginListener != null) {
+        if (!mInLeftMargin && mOnMarginListener != null) {
             mOnMarginListener.onLeftMargin();
         }
-        mInLeftBound = true;
+        mInLeftMargin = true;
     }
 
     @Override
@@ -567,6 +595,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mMaxScrollXBuffer.mScaleX = 0;
     }
 
+    public void setOnPaddingListener(OnPaddingListener listener) {
+        mOnPaddingListener = listener;
+    }
+
     public void setOnMarginListener(OnMarginListener listener) {
         mOnMarginListener = listener;
     }
@@ -622,6 +654,18 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             }
         }
     };
+
+    public interface OnPaddingListener {
+        /**
+         * 到达和离开右padding会触发该函数
+         */
+        void rightPadding(boolean inRightPadding);
+
+        /**
+         * 到达和离开左padding会触发该函数
+         */
+        void leftPadding(boolean inLeftPadding);
+    }
 
     public interface OnMarginListener {
         /**

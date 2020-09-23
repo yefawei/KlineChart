@@ -25,6 +25,9 @@ public class PaddingHelper {
     }
 
     public void setRightExtPadding(int rightExtPadding, boolean rightExtPaddingFollowScale) {
+        if (rightExtPadding < 0) {
+            rightExtPadding = 0;
+        }
         mRightExtPadding = rightExtPadding;
         mRightExtPaddingFollowScale = rightExtPaddingFollowScale;
     }
@@ -49,6 +52,9 @@ public class PaddingHelper {
     }
 
     public void setLeftExtPadding(int leftExtPadding, boolean leftExtPaddingFollowScale) {
+        if (leftExtPadding < 0) {
+            leftExtPadding = 0;
+        }
         mLeftExtPadding = leftExtPadding;
         mLeftExtPaddingFollowScale = leftExtPaddingFollowScale;
     }
