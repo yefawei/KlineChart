@@ -331,11 +331,12 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         drawCycles++;
         long average = totalTime / drawCycles;
         if (drawtime > 10_000_000) {
-            Log.e("Drawtime", "Drawtime error: " + drawtime);
+            Log.e("Drawtime", "Drawtime error: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
         } else if (drawtime > 5_000_000) {
-            Log.w("Drawtime", "Drawtime warn: " + drawtime);
+            Log.w("Drawtime", "Drawtime warn: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
+        } else {
+            Log.i("Drawtime", "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
         }
-        Log.i("Drawtime", "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
         mAnimationManager.animUpdate();
     }
 
