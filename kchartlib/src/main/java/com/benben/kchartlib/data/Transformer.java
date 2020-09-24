@@ -38,9 +38,9 @@ public class Transformer {
     }
 
     /**
-     * 获取该索引在屏幕上的ScrollX值
+     * 获取滚动到该索引的滚动值
      *
-     * @param index              需要滚动的索引
+     * @param index              需要滚动到的索引
      * @param inItemWidthPercent 在item的什么位置计算滚动值
      *                           以item的左侧为锚点，inItemWidthPercent = 0.0f
      *                           以item的中间为锚点，inItemWidthPercent = 0.5f
@@ -50,8 +50,8 @@ public class Transformer {
      *                           需要滚动到视窗中间，inScreenPercent = 0.5f
      *                           需要滚动到视窗右侧，inScreenPercent = 1.0f
      */
-    public int getScrollXForIndex(int index, @FloatRange(from = 0, to = 1.0) float inItemWidthPercent,
-                                  @FloatRange(from = 0, to = 1.0) float inScreenPercent) {
+    public int getGoToIndexScrollX(int index, @FloatRange(from = 0, to = 1.0) float inItemWidthPercent,
+                                   @FloatRange(from = 0, to = 1.0) float inScreenPercent) {
         float scrollx = (getItemCount() - index - inItemWidthPercent) * mDataProvider.getScalePointWidth()
                 - mDataProvider.getMainCanvasPort().getMainCanvasWidth() * (1.0f - inScreenPercent);
         return Math.round(Math.max(scrollx, 0));

@@ -505,7 +505,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         } else if (index >= mAdapter.getCount()) {
             index = mAdapter.getCount() - 1;
         }
-        int targetScrollX = mTransformer.getScrollXForIndex(index, inItemWidthPercent, inScreenPercent);
+        int targetScrollX = mTransformer.getGoToIndexScrollX(index, inItemWidthPercent, inScreenPercent);
         if (anim) {
             animScroll(targetScrollX);
         } else {
