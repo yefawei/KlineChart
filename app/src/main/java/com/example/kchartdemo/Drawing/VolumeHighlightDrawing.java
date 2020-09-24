@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
-import com.benben.kchartlib.touch.TapMarkerOptions;
+import com.benben.kchartlib.touch.TapMarkerOption;
 import com.benben.kchartlib.touch.TouchTapManager;
 
 /**
@@ -29,17 +29,17 @@ public class VolumeHighlightDrawing extends Drawing {
     @Override
     public void drawData(Canvas canvas) {
         TouchTapManager touchTapManager = mDataProvider.getTouchTapManager();
-        TapMarkerOptions singleTapMarker = touchTapManager.getSingleTapMarker();
+        TapMarkerOption singleTapMarker = touchTapManager.getSingleTapMarker();
         if (singleTapMarker != null) {
             drawHighlight(canvas, singleTapMarker);
             return;
         }
-        TapMarkerOptions longTapMarker = touchTapManager.getLongTapMarker();
+        TapMarkerOption longTapMarker = touchTapManager.getLongTapMarker();
         if (longTapMarker == null) return;
         drawFixHighlight(canvas, longTapMarker);
     }
 
-    private void drawHighlight(Canvas canvas, TapMarkerOptions marker) {
+    private void drawHighlight(Canvas canvas, TapMarkerOption marker) {
         float x = mDataProvider.getTransformer().getPointInScreenXByIndex(marker.getIndex());
         canvas.drawLine(x, mViewPort.top, x, mViewPort.bottom, mPaint);
         float y = marker.getY();
@@ -48,7 +48,7 @@ public class VolumeHighlightDrawing extends Drawing {
         }
     }
 
-    private void drawFixHighlight(Canvas canvas, TapMarkerOptions marker) {
+    private void drawFixHighlight(Canvas canvas, TapMarkerOption marker) {
         float x = mDataProvider.getTransformer().getPointInScreenXByIndex(marker.getIndex());
         canvas.drawLine(x, mViewPort.top, x, mViewPort.bottom, mPaint);
         float y = marker.getY();

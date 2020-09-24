@@ -6,13 +6,14 @@ import com.benben.kchartlib.index.IEntity;
  * @日期 : 2020/8/31
  * @描述 : 点击标记物
  */
-public class TapMarkerOptions {
+public class TapMarkerOption {
 
     private float mX;
     private float mY;
     private int mIndex;
     private IEntity mEntity;
     private boolean mClick;
+    private boolean mCanDispatch;
 
     public float getX() {
         return mX;
@@ -35,7 +36,12 @@ public class TapMarkerOptions {
     }
 
     public void setIndex(int index) {
-        mIndex = index;
+        if (mIndex != index) {
+            mIndex = index;
+            if (mClick) {
+                mCanDispatch = true;
+            }
+        }
     }
 
     public IEntity getEntity() {
@@ -52,6 +58,15 @@ public class TapMarkerOptions {
 
     public void setClick(boolean click) {
         mClick = click;
+        mCanDispatch = click;
+    }
+
+    public boolean canDispatch() {
+        return mCanDispatch;
+    }
+
+    public void consumeDispatch() {
+        mCanDispatch = false;
     }
 
     public void reset() {
@@ -60,5 +75,6 @@ public class TapMarkerOptions {
         mIndex = 0;
         mEntity = null;
         mClick = false;
+        mCanDispatch = false;
     }
 }

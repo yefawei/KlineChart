@@ -619,7 +619,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             }
             resetBuffer();
             mDataLength = getPointWidth() * mAdapter.getCount();
-            mTouchTapManager.updateTapIndexOffset(-itemCount);
+            mTouchTapManager.updateTapIndexOffset(itemCount);
             if (mDataSizeChangeHandler == null) {
                 invalidate();
                 return;

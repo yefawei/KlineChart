@@ -15,9 +15,11 @@ import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.AnimDataSizeChangeHandler;
 import com.benben.kchartlib.data.Transformer;
+import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
+import com.benben.kchartlib.touch.TouchTapManager;
 import com.benben.kchartlib.utils.ConvertUtils;
 import com.example.kchartdemo.Drawing.CandleDrawing;
 import com.example.kchartdemo.Drawing.ClickDrawing;
@@ -107,6 +109,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLeftMargin() {
                 Log.e("OnMarginListener", "onLeftMargin");
+            }
+        });
+        mKChart.getTouchTapManager().setOnSingleSelectedChangeListener(new TouchTapManager.OnSingleSelectedChangeListener() {
+            @Override
+            public void onSingleSelectedChanged(int index, IEntity entity) {
+                Log.e("TouchTapManager","on single: " + index);
+            }
+        });
+        mKChart.getTouchTapManager().setOnDoubleSelectedChangeListener(new TouchTapManager.OnDoubleSelectedChangeListener() {
+            @Override
+            public void onDoubleSelectedChanged(int index, IEntity entity) {
+                Log.e("TouchTapManager","on double: " + index);
+            }
+        });
+        mKChart.getTouchTapManager().setOnLongSelectedChangeListener(new TouchTapManager.OnLongSelectedChangeListener() {
+            @Override
+            public void onLongleSelectedChanged(int index, IEntity entity) {
+                Log.e("TouchTapManager","on long: " + index);
             }
         });
 

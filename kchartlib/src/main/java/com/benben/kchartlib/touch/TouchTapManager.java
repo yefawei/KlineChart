@@ -16,87 +16,76 @@ public class TouchTapManager {
 
     private IDataProvider mDataProvider;
 
-    private TapMarkerOptions mSingleTapOptions = new TapMarkerOptions();    // 单次点击
-    private TapMarkerOptions mDoubleTapOptions = new TapMarkerOptions();    // 双击
-    private TapMarkerOptions mLongTapOptions = new TapMarkerOptions();      // 长按
+    private TapMarkerOption mSingleTapOption = new TapMarkerOption();    // 单次点击
+    private TapMarkerOption mDoubleTapOption = new TapMarkerOption();    // 双击
+    private TapMarkerOption mLongTapOption = new TapMarkerOption();      // 长按
+
+    private OnSingleSelectedChangeListener mOnSingleSelectedChangeListener;
+    private OnDoubleSelectedChangeListener mOnDoubleSelectedChangeListener;
+    private OnLongSelectedChangeListener mOnLongSelectedChangeListener;
 
     public TouchTapManager(IDataProvider dataProvider) {
         mDataProvider = dataProvider;
     }
 
     public void onSingleTapInfo(float x, float y, int index, IEntity entity) {
-        mSingleTapOptions.setX(x);
-        mSingleTapOptions.setY(y);
-        mSingleTapOptions.setIndex(index);
-        mSingleTapOptions.setEntity(entity);
-
-        mSingleTapOptions.setClick(true);
-        mDoubleTapOptions.setClick(false);
-        mLongTapOptions.setClick(false);
+        mSingleTapOption.setX(x);
+        mSingleTapOption.setY(y);
+        mSingleTapOption.setIndex(index);
+        mSingleTapOption.setEntity(entity);
+        updateClick(1);
+        callSingleSelectedChange();
     }
 
     public void onDoubleTapInfo(float x, float y, int index, IEntity entity) {
-        mDoubleTapOptions.setX(x);
-        mDoubleTapOptions.setY(y);
-        mDoubleTapOptions.setIndex(index);
-        mDoubleTapOptions.setEntity(entity);
-
-        mSingleTapOptions.setClick(false);
-        mDoubleTapOptions.setClick(true);
-        mLongTapOptions.setClick(false);
+        mDoubleTapOption.setX(x);
+        mDoubleTapOption.setY(y);
+        mDoubleTapOption.setIndex(index);
+        mDoubleTapOption.setEntity(entity);
+        updateClick(2);
+        callDoubleSelectedChange();
     }
 
     public void onLongTapInfo(float x, float y, int index, IEntity entity) {
-        mLongTapOptions.setX(x);
-        mLongTapOptions.setY(y);
-        mLongTapOptions.setIndex(index);
-        mLongTapOptions.setEntity(entity);
+        mLongTapOption.setX(x);
+        mLongTapOption.setY(y);
+        mLongTapOption.setIndex(index);
+        mLongTapOption.setEntity(entity);
+        updateClick(3);
+        callLongSelectedChange();
+    }
 
-        mSingleTapOptions.setClick(false);
-        mDoubleTapOptions.setClick(false);
-        mLongTapOptions.setClick(true);
+    private void updateClick(int type) {
+        mSingleTapOption.setClick(type == 1);
+        mDoubleTapOption.setClick(type == 2);
+        mLongTapOption.setClick(type == 3);
     }
 
     /**
      * 移除所有点击信息
      */
     public void removeAllTapInfo() {
-        mSingleTapOptions.reset();
-        mDoubleTapOptions.reset();
-        mLongTapOptions.reset();
+        mSingleTapOption.reset();
+        mDoubleTapOption.reset();
+        mLongTapOption.reset();
     }
 
     /**
      * 更新点击信息
      */
     public void updateClickTapInfo() {
-        if (mSingleTapOptions.isClick()) {
-            updateClickTapInfo(mSingleTapOptions);
+        if (mSingleTapOption.isClick()) {
+            updateClickTapInfo(mSingleTapOption);
         }
-        if (mDoubleTapOptions.isClick()) {
-            updateClickTapInfo(mDoubleTapOptions);
+        if (mDoubleTapOption.isClick()) {
+            updateClickTapInfo(mDoubleTapOption);
         }
-        if (mLongTapOptions.isClick()) {
-            updateClickTapInfo(mLongTapOptions);
-        }
-    }
-
-    /**
-     * 更新点击信息索引偏移量
-     */
-    public void updateTapIndexOffset(int offset) {
-        if (mSingleTapOptions.isClick()) {
-            mSingleTapOptions.setIndex(mSingleTapOptions.getIndex() + offset);
-        }
-        if (mDoubleTapOptions.isClick()) {
-            mDoubleTapOptions.setIndex(mDoubleTapOptions.getIndex() + offset);
-        }
-        if (mLongTapOptions.isClick()) {
-            mLongTapOptions.setIndex(mLongTapOptions.getIndex() + offset);
+        if (mLongTapOption.isClick()) {
+            updateClickTapInfo(mLongTapOption);
         }
     }
 
-    private void updateClickTapInfo(TapMarkerOptions options) {
+    private void updateClickTapInfo(TapMarkerOption options) {
         BaseKChartAdapter adapter = mDataProvider.getAdapter();
         if (adapter == null) return;
         for (int i = 0; i < adapter.getCount(); i++) {
@@ -108,35 +97,51 @@ public class TouchTapManager {
         options.reset();
     }
 
+    /**
+     * 更新点击信息索引偏移量
+     */
+    public void updateTapIndexOffset(int offset) {
+        if (mSingleTapOption.isClick()) {
+            mSingleTapOption.setIndex(mSingleTapOption.getIndex() + offset);
+        }
+        if (mDoubleTapOption.isClick()) {
+            mDoubleTapOption.setIndex(mDoubleTapOption.getIndex() + offset);
+        }
+        if (mLongTapOption.isClick()) {
+            mLongTapOption.setIndex(mLongTapOption.getIndex() + offset);
+        }
+    }
 
     public boolean hasSingleTap() {
-        return mSingleTapOptions.isClick();
+        return mSingleTapOption.isClick();
     }
 
     /**
      * 获取单次点击信息
+     *
      * @return 如果没点击信息会返回空
      */
     @Nullable
-    public TapMarkerOptions getSingleTapMarker() {
-        if (mSingleTapOptions.isClick()) {
-            return mSingleTapOptions;
+    public TapMarkerOption getSingleTapMarker() {
+        if (mSingleTapOption.isClick()) {
+            return mSingleTapOption;
         }
         return null;
     }
 
     public boolean hasDoubleTap() {
-        return mDoubleTapOptions.isClick();
+        return mDoubleTapOption.isClick();
     }
 
     /**
      * 获取双击信息
+     *
      * @return 如果没点击信息会返回空
      */
     @Nullable
-    public TapMarkerOptions getDoubleTapMarker() {
-        if (mDoubleTapOptions.isClick()) {
-            return mDoubleTapOptions;
+    public TapMarkerOption getDoubleTapMarker() {
+        if (mDoubleTapOption.isClick()) {
+            return mDoubleTapOption;
         }
         return null;
     }
@@ -145,18 +150,73 @@ public class TouchTapManager {
      *
      */
     public boolean hasLongTap() {
-        return mLongTapOptions.isClick();
+        return mLongTapOption.isClick();
     }
 
     /**
      * 获取长按信息
+     *
      * @return 如果没点击信息会返回空
      */
     @Nullable
-    public TapMarkerOptions getLongTapMarker() {
-        if (mLongTapOptions.isClick()) {
-            return mLongTapOptions;
+    public TapMarkerOption getLongTapMarker() {
+        if (mLongTapOption.isClick()) {
+            return mLongTapOption;
         }
         return null;
+    }
+
+    private void callSingleSelectedChange() {
+        if (mSingleTapOption.canDispatch()) {
+            mSingleTapOption.consumeDispatch();
+            if (mOnSingleSelectedChangeListener != null) {
+                mOnSingleSelectedChangeListener.onSingleSelectedChanged(
+                        mSingleTapOption.getIndex(), mSingleTapOption.getEntity());
+            }
+        }
+    }
+
+    private void callDoubleSelectedChange() {
+        if (mDoubleTapOption.canDispatch()) {
+            mDoubleTapOption.consumeDispatch();
+            if (mOnDoubleSelectedChangeListener != null) {
+                mOnDoubleSelectedChangeListener.onDoubleSelectedChanged(
+                        mDoubleTapOption.getIndex(), mDoubleTapOption.getEntity());
+            }
+        }
+    }
+
+    private void callLongSelectedChange() {
+        if (mLongTapOption.canDispatch()) {
+            mLongTapOption.consumeDispatch();
+            if (mOnLongSelectedChangeListener != null) {
+                mOnLongSelectedChangeListener.onLongleSelectedChanged(
+                        mLongTapOption.getIndex(), mLongTapOption.getEntity());
+            }
+        }
+    }
+
+    public void setOnSingleSelectedChangeListener(OnSingleSelectedChangeListener listener) {
+        mOnSingleSelectedChangeListener = listener;
+    }
+
+    public void setOnDoubleSelectedChangeListener(OnDoubleSelectedChangeListener listener) {
+        mOnDoubleSelectedChangeListener = listener;
+    }
+
+    public void setOnLongSelectedChangeListener(OnLongSelectedChangeListener listener) {
+        mOnLongSelectedChangeListener = listener;
+    }
+
+    public interface OnSingleSelectedChangeListener {
+        void onSingleSelectedChanged(int index, IEntity entity);
+    }
+
+    public interface OnDoubleSelectedChangeListener {
+        void onDoubleSelectedChanged(int index, IEntity entity);
+    }
+
+    public interface OnLongSelectedChangeListener {
+        void onLongleSelectedChanged(int index, IEntity entity);
     }
 }
