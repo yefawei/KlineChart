@@ -33,6 +33,22 @@ public class IndexRangeSet extends IndexRange {
     }
 
     @Override
+    protected float calcExtendedMaxValue(float curMaxValue, String key, Object obj) {
+        for (IndexRange i : mIndexRanges) {
+            curMaxValue = i.calcExtendedMaxValue(curMaxValue, key, obj);
+        }
+        return curMaxValue;
+    }
+
+    @Override
+    protected float calcExtendedMinValue(float curMinValue, String key, Object obj) {
+        for (IndexRange i : mIndexRanges) {
+            curMinValue = i.calcExtendedMinValue(curMinValue, key, obj);
+        }
+        return curMinValue;
+    }
+
+    @Override
     protected float calcMaxValue(int index, float curMaxValue, IEntity entity) {
         for (IndexRange i : mIndexRanges) {
             curMaxValue = i.calcMaxValue(index, curMaxValue, entity);
