@@ -13,6 +13,7 @@ import com.benben.kchartlib.index.range.IndexRangeSet;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * @日期 : 2020/7/9
@@ -264,6 +265,13 @@ public class Transformer {
         if (remove instanceof IndexRangeSet) {
             ((IndexRangeSet) remove).setCanChangeIndex(true);
         }
+    }
+
+    /**
+     * 获取当前计算的所有指标tag
+     */
+    public Set<String> getIndexTags() {
+        return mIndexCount.keySet();
     }
 
     public void setOnViewIndexListener(OnViewIndexListener listener) {

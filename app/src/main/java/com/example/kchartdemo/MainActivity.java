@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.benben.kchartlib.InteractiveKChartView;
 import com.benben.kchartlib.ScrollAndScaleView;
-import com.benben.kchartlib.adapter.DefaultKChartAdapter;
+import com.benben.kchartlib.adapter.SimpleKChartAdapter;
 import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.AnimDataSizeChangeHandler;
@@ -34,6 +34,7 @@ import com.example.kchartdemo.data.DragonKLineDataProvider;
 import com.example.kchartdemo.data.KlineInfo;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private DragonKLineDataProvider mDataProvider;
     private InteractiveKChartView mKChart;
     private ScrollView mScrollView;
-    private DefaultKChartAdapter mAdapter;
+    private SimpleKChartAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,7 +184,13 @@ public class MainActivity extends AppCompatActivity {
         mainRenderCanvas.addDrawing(new VolumeHighlightDrawing(volumeIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
 
-        mAdapter = new DefaultKChartAdapter();
+        mAdapter = new SimpleKChartAdapter() {
+
+            @Override
+            public void prepareIndexData(Set<String> indexTags) {
+                Log.e("OnPrepareIndexData", indexTags.toString());
+            }
+        };
         mKChart.setAdapter(mAdapter);
     }
 

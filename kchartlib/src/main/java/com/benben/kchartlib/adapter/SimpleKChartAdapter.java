@@ -9,9 +9,9 @@ import java.util.List;
 
 /**
  * @日期 : 2020/8/21
- * @描述 : 默认的K线适配器，内部已实现添加数据的逻辑
+ * @描述 : K线适配器，内部已实现添加数据的逻辑
  */
-public class DefaultKChartAdapter extends BaseKChartAdapter<IEntity> {
+public abstract class SimpleKChartAdapter extends BaseKChartAdapter<IEntity> {
 
     private List<IEntity> mKlineInfos;
     private long mStartTime;

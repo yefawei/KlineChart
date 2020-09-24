@@ -24,10 +24,10 @@ import com.benben.kchartlib.data.PaddingHelper;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.IDrawing;
 import com.benben.kchartlib.impl.IMainCanvasPort;
-import com.benben.kchartlib.touch.TouchTapManager;
 import com.benben.kchartlib.render.BackgroundRenderer;
 import com.benben.kchartlib.render.ForegroundRenderer;
 import com.benben.kchartlib.render.MainRenderer;
+import com.benben.kchartlib.touch.TouchTapManager;
 
 /**
  * @日期 : 2020/6/30
@@ -192,7 +192,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             return;
         }
         if (l < 0) {
-           if (!mInRightPadding) mOnPaddingListener.rightPadding(true);
+            if (!mInRightPadding) mOnPaddingListener.rightPadding(true);
             mInRightPadding = true;
         } else {
             if (mInRightPadding) mOnPaddingListener.rightPadding(false);
@@ -542,6 +542,12 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         return mAdapter;
     }
 
+    private void prepareIndexData() {
+        if (mAdapter.getCount() > 0) {
+            mAdapter.prepareIndexData(mTransformer.getIndexTags());
+        }
+    }
+
     private void requestDraw() {
         // 备份上一次数据
         mPreviousIsFullScreen = isFullScreen();
@@ -608,11 +614,13 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
         @Override
         public void onChanged() {
+            prepareIndexData();
             requestDraw();
         }
 
         @Override
         public void onFirstInserted(int itemCount) {
+            prepareIndexData();
             if (!isFullScreen()) {
                 // 原有数据并没有铺满屏幕
                 requestDraw();
@@ -633,11 +641,13 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
         @Override
         public void onLastUpdated() {
+            prepareIndexData();
             invalidate();
         }
 
         @Override
         public void onLastInserted(int itemCount) {
+            prepareIndexData();
             if (!isFullScreen()) {
                 // 原有数据并没有铺满屏幕
                 requestDraw();

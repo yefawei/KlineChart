@@ -3,6 +3,8 @@ package com.benben.kchartlib.adapter;
 import com.benben.kchartlib.data.AdapterDataObserver;
 import com.benben.kchartlib.index.IEntity;
 
+import java.util.Set;
+
 /**
  * @日期 : 2020/7/1
  * @描述 :
@@ -15,6 +17,11 @@ public interface IAdapter<T extends IEntity> {
     int getCount();
 
     T getItem(int position);
+
+    /**
+     * 准备指标数据
+     */
+    void prepareIndexData(Set<String> indexTags);
 
     /**
      * 注册一个数据观察者
