@@ -76,6 +76,14 @@ public class IndexRangeSet extends IndexRange {
     }
 
     private void generateTag() {
+        if (mIndexRanges.size() == 0) {
+            mIndexTag = "";
+            return;
+        }
+        if (mIndexRanges.size() == 1) {
+            mIndexTag = mIndexRanges.get(0).getIndexTag();
+            return;
+        }
         StringBuilder sb = new StringBuilder("Set");
         for (IndexRange indexRange : mIndexRanges) {
             sb.append("-");

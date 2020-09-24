@@ -17,6 +17,7 @@ import com.benben.kchartlib.data.AnimDataSizeChangeHandler;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
+import com.benben.kchartlib.index.range.IndexReverse;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.touch.TouchTapManager;
@@ -28,6 +29,7 @@ import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
 import com.example.kchartdemo.Drawing.RightPaddingDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
 import com.example.kchartdemo.Drawing.VolumeHighlightDrawing;
+import com.example.kchartdemo.Drawing.VolumeReverseDrawing;
 import com.example.kchartdemo.data.DragonKLineDataProvider;
 import com.example.kchartdemo.data.KlineInfo;
 
@@ -75,18 +77,18 @@ public class MainActivity extends AppCompatActivity {
         mKChart.setOnScrollChangeListener(new ScrollAndScaleView.OnScrollChangeListener() {
             @Override
             public void onScrollXChange(int scrollX, int oldScrollX) {
-                Log.e("OnScrollChangeListener","onScrollChange: " + scrollX + " -- " + oldScrollX);
+                Log.e("OnScrollChangeListener", "onScrollChange: " + scrollX + " -- " + oldScrollX);
             }
 
             @Override
             public void onScrollStateChanged(int state) {
-                Log.e("OnScrollChangeListener","onScrollStateChanged: " + state);
+                Log.e("OnScrollChangeListener", "onScrollStateChanged: " + state);
             }
         });
         mKChart.getTransformer().setOnViewIndexListener(new Transformer.OnViewIndexListener() {
             @Override
             public void viewIndex(int startIndex, int endIndex) {
-                Log.e("OnViewIndexListener","viewIndex: " + startIndex + " -- " + endIndex);
+                Log.e("OnViewIndexListener", "viewIndex: " + startIndex + " -- " + endIndex);
             }
         });
         mKChart.setOnPaddingListener(new InteractiveKChartView.OnPaddingListener() {
@@ -114,19 +116,19 @@ public class MainActivity extends AppCompatActivity {
         mKChart.getTouchTapManager().setOnSingleSelectedChangeListener(new TouchTapManager.OnSingleSelectedChangeListener() {
             @Override
             public void onSingleSelectedChanged(int index, IEntity entity) {
-                Log.e("TouchTapManager","on single: " + index);
+                Log.e("TouchTapManager", "on single: " + index);
             }
         });
         mKChart.getTouchTapManager().setOnDoubleSelectedChangeListener(new TouchTapManager.OnDoubleSelectedChangeListener() {
             @Override
             public void onDoubleSelectedChanged(int index, IEntity entity) {
-                Log.e("TouchTapManager","on double: " + index);
+                Log.e("TouchTapManager", "on double: " + index);
             }
         });
         mKChart.getTouchTapManager().setOnLongSelectedChangeListener(new TouchTapManager.OnLongSelectedChangeListener() {
             @Override
             public void onLongleSelectedChanged(int index, IEntity entity) {
-                Log.e("TouchTapManager","on long: " + index);
+                Log.e("TouchTapManager", "on long: " + index);
             }
         });
 
@@ -135,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         VolumeIndexRange volumeIndexRange = new VolumeIndexRange();
 
 
-        MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1, 4);
+        MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1, 2);
         MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
@@ -158,10 +160,22 @@ public class MainActivity extends AppCompatActivity {
         mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
 
-        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1, 1);
+        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 0, 3);
         mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
+
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
+        layoutParams.setVerticalLinear(true);
+        mainRenderCanvas.addDrawing(new VolumeDrawing(volumeIndexRange, layoutParams), true);
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        layoutParams.setVerticalLinear(true);
+        mainRenderCanvas.addDrawing(new VolumeReverseDrawing(new IndexReverse(volumeIndexRange), layoutParams), true);
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        layoutParams.setVerticalLinear(true);
         mainRenderCanvas.addDrawing(new VolumeDrawing(volumeIndexRange, layoutParams), true);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();

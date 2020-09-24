@@ -1,7 +1,8 @@
 package com.benben.kchartlib.data;
 
+import android.text.TextUtils;
+
 import androidx.annotation.FloatRange;
-import androidx.annotation.NonNull;
 
 import com.benben.kchartlib.adapter.BaseKChartAdapter;
 import com.benben.kchartlib.impl.IDataProvider;
@@ -229,7 +230,8 @@ public class Transformer {
      * 并要求已存对象与传入对象一致，防止重复计算
      */
     public void addIndexRange(IndexRange indexRange) {
-        if (indexRange == null) return;
+        if (indexRange == null || TextUtils.isEmpty(indexRange.getIndexTag())) return;
+
         if (indexRange instanceof IndexRangeSet) {
             ((IndexRangeSet) indexRange).setCanChangeIndex(false);
         }
@@ -249,7 +251,9 @@ public class Transformer {
     /**
      * 移除指标计算类，会先通过{@link IndexRange#getIndexTag()}判断计数器是否等于1，等于就移除，否则计数器-1
      */
-    public void removeIndexRange(@NonNull IndexRange indexRange) {
+    public void removeIndexRange(IndexRange indexRange) {
+        if (indexRange == null || TextUtils.isEmpty(indexRange.getIndexTag())) return;
+
         Integer count = mIndexCount.get(indexRange.getIndexTag());
         if (count == null) return;
         if (count > 1) {
