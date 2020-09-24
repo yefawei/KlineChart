@@ -76,12 +76,15 @@ public class TouchTapManager {
     public void updateClickTapInfo() {
         if (mSingleTapOption.isClick()) {
             updateClickTapInfo(mSingleTapOption);
+            callSingleSelectedChange();
         }
         if (mDoubleTapOption.isClick()) {
             updateClickTapInfo(mDoubleTapOption);
+            callDoubleSelectedChange();
         }
         if (mLongTapOption.isClick()) {
             updateClickTapInfo(mLongTapOption);
+            callLongSelectedChange();
         }
     }
 
@@ -103,12 +106,15 @@ public class TouchTapManager {
     public void updateTapIndexOffset(int offset) {
         if (mSingleTapOption.isClick()) {
             mSingleTapOption.setIndex(mSingleTapOption.getIndex() + offset);
+            callSingleSelectedChange();
         }
         if (mDoubleTapOption.isClick()) {
             mDoubleTapOption.setIndex(mDoubleTapOption.getIndex() + offset);
+            callDoubleSelectedChange();
         }
         if (mLongTapOption.isClick()) {
             mLongTapOption.setIndex(mLongTapOption.getIndex() + offset);
+            callLongSelectedChange();
         }
     }
 
@@ -209,14 +215,23 @@ public class TouchTapManager {
     }
 
     public interface OnSingleSelectedChangeListener {
+        /**
+         * 在单次点击或处于点击状态且索引有变化会触发该回调
+         */
         void onSingleSelectedChanged(int index, IEntity entity);
     }
 
     public interface OnDoubleSelectedChangeListener {
+        /**
+         * 在双击或处于双击状态且索引有变化会触发该回调
+         */
         void onDoubleSelectedChanged(int index, IEntity entity);
     }
 
     public interface OnLongSelectedChangeListener {
+        /**
+         * 在长按或处于长按状态且索引有变化会触发该回调
+         */
         void onLongleSelectedChanged(int index, IEntity entity);
     }
 }

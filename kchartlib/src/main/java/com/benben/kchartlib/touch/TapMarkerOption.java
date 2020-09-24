@@ -36,11 +36,10 @@ public class TapMarkerOption {
     }
 
     public void setIndex(int index) {
-        if (mIndex != index) {
-            mIndex = index;
-            if (mClick) {
-                mCanDispatch = true;
-            }
+        if (mIndex == index) return;
+        mIndex = index;
+        if (mClick) {
+            mCanDispatch = true;
         }
     }
 
@@ -57,6 +56,7 @@ public class TapMarkerOption {
     }
 
     public void setClick(boolean click) {
+        if (mClick) return;
         mClick = click;
         mCanDispatch = click;
     }
