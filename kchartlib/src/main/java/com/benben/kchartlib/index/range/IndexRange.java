@@ -6,7 +6,8 @@ import com.benben.kchartlib.index.IEntity;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @日期 : 2020/7/9
@@ -31,7 +32,7 @@ public abstract class IndexRange {
     private int mMaxIndex; // 屏幕内最大值的索引
     private int mMinIndex; // 屏幕内最小值的索引
 
-    private ArrayList<IEntity> mExtendedData = new ArrayList<>();
+    private Map<String, Object> mExtendedData = new HashMap<>();
 
     public IndexRange() {
         this(0);
@@ -96,8 +97,8 @@ public abstract class IndexRange {
     /**
      * 添加需要扩展计算的数据
      */
-    public void addExtendedCalcData(IEntity entity) {
-        mExtendedData.add(entity);
+    public void addExtendedCalcData(String key, Object obj) {
+        mExtendedData.put(key, obj);
     }
 
     /**
@@ -111,14 +112,14 @@ public abstract class IndexRange {
      * 计算扩展数据
      */
     public void calcExtendedData() {
-        for (IEntity entity : mExtendedData) {
+        for (Map.Entry<String, Object> entry : mExtendedData.entrySet()) {
             if (mSideMode == DOUBLE_SIDE) {
-                mMaxValue = calcMaxValue(-1, mMaxValue, entity);
-                mMinValue = calcMinValue(-1, mMinValue, entity);
+                mMaxValue = calcExtendedMaxValue(mMaxValue, entry.getKey(), entry.getValue());
+                mMinValue = calcExtendedMinValue(mMinValue, entry.getKey(), entry.getValue());
             } else if (mSideMode == UP_SIDE) {
-                mMaxValue = calcMaxValue(-1, mMaxValue, entity);
+                mMaxValue = calcExtendedMaxValue(mMaxValue, entry.getKey(), entry.getValue());
             } else {
-                mMinValue = calcMinValue(-1, mMinValue, entity);
+                mMinValue = calcExtendedMinValue(mMinValue, entry.getKey(), entry.getValue());
             }
         }
     }
@@ -198,9 +199,23 @@ public abstract class IndexRange {
     }
 
     /**
+     * 计算扩展数据最大值
+     */
+    protected float calcExtendedMaxValue(float curMaxValue, String key, Object obj) {
+        return curMaxValue;
+    }
+
+    /**
+     * 计算扩展数据最小值
+     */
+    protected float calcExtendedMinValue(float curMinValue, String key, Object obj) {
+        return curMinValue;
+    }
+
+    /**
      * 将实体与当前最大值进行最大值比较
      *
-     * @param index       当前实体的索引，如果索引为-1，则表示为扩展数据
+     * @param index       当前实体的索引
      * @param curMaxValue 当前最大值
      * @param entity      实体
      * @return 新的最大值
@@ -212,7 +227,7 @@ public abstract class IndexRange {
     /**
      * 将实体与当前最小值进行最小值比较
      *
-     * @param index       当前实体的索引，如果索引为-1，则表示为扩展数据
+     * @param index       当前实体的索引
      * @param curMinValue 当前最小值
      * @param entity      实体
      * @return 新的最小值
