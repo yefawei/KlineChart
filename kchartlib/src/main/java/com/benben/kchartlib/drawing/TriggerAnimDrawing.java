@@ -24,13 +24,14 @@ public abstract class TriggerAnimDrawing extends Drawing implements Animation {
     }
 
     @Override
-    public final boolean isAutoAnim() {
-        return false;
+    public void detachedParentPortLayout() {
+        mDataProvider.getChartAnimation().removeAnim(this);
+        super.detachedParentPortLayout();
     }
 
     @Override
-    public long AnimEndTime() {
-        return 0;
+    public final boolean isAutoAnim() {
+        return false;
     }
 
     @Override

@@ -43,7 +43,12 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
     }
 
     @Override
-    public long AnimEndTime() {
+    public final long AnimStartTime() {
+        return 0;
+    }
+
+    @Override
+    public final long AnimEndTime() {
         return 0;
     }
 

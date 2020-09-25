@@ -12,6 +12,11 @@ public interface Animation {
     boolean isAutoAnim();
 
     /**
+     * 非自动动画开始时间
+     */
+    long AnimStartTime();
+
+    /**
      * 非自动动画结束时间
      */
     long AnimEndTime();
