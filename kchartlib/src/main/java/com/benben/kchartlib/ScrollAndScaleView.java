@@ -86,6 +86,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mIsAttachedToWindow = false;
+        mScroller.forceFinished(true);
     }
 
     @Override
