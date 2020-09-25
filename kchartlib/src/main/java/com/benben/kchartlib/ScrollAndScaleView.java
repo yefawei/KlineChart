@@ -173,8 +173,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
                 mIsScrollerStarted = false;
                 if (!mOnTouch || mOnLongPress) {
                     /**
-                     * 之所有加{@link ScrollAndScaleView#mOnTouch}和{@link ScrollAndScaleView#mOnLongPress}的判断
-                     * 是因为如果是强制滚动状态结束后还在触发滚动，交由触碰逻辑走{@link ScrollAndScaleView#onScroll}
+                     * 之所有加{@link #mOnTouch}和{@link #mOnLongPress}的判断
+                     * 是因为如果是强制滚动状态结束后还在触发滚动，交由触碰逻辑走{@link #onScroll}
                      */
                     setScrollState(SCROLL_STATE_IDLE);
                 }
@@ -219,10 +219,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         if (mScrollX != mPreviousScrollX) {
             if (mOnTouch && !mOnLongPress) {
                 /**
-                 * 之所以加{@link ScrollAndScaleView#mOnTouch}判断，
+                 * 之所以加{@link #mOnTouch}判断，
                  * 是因为在滚动状态下触发{@link OverScroller#forceFinished(boolean)}进入到该逻辑
                  *
-                 * 之所以加{@link ScrollAndScaleView#mOnLongPress}判断，是因为如果是强制滚动，
+                 * 之所以加{@link #mOnLongPress}判断，是因为如果是强制滚动，
                  * 且触发了长按，此时触发{@link OverScroller#forceFinished(boolean)}进入该逻辑，会产生错误的回调
                  */
                 setScrollState(SCROLL_STATE_DRAGGING);
@@ -260,9 +260,9 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     public void onLongPress(MotionEvent e) {
         if (!mIsForceScroller) {
             /**
-             * 在滚动中触碰了屏幕，会触发{@link ScrollAndScaleView#computeScroll()}里的强制结束滚动
-             * 如果用户通过手势滚动则状态顺势从{@link ScrollAndScaleView#SCROLL_STATE_SETTLING}进入{@link ScrollAndScaleView#SCROLL_STATE_DRAGGING}
-             * 如果用户触发该函数了则将状态变更为{@link ScrollAndScaleView#SCROLL_STATE_IDLE}
+             * 在滚动中触碰了屏幕，会触发{@link #computeScroll()}里的强制结束滚动
+             * 如果用户通过手势滚动则状态顺势从{@link #SCROLL_STATE_SETTLING}进入{@link #SCROLL_STATE_DRAGGING}
+             * 如果用户触发该函数了则将状态变更为{@link #SCROLL_STATE_IDLE}
              */
             setScrollState(SCROLL_STATE_IDLE);
         }
@@ -349,6 +349,11 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     @Override
     public void onScaleEnd(ScaleGestureDetectorCompat detector) {
 
+    }
+
+    @Override
+    public int getScrollState() {
+        return mScrollState;
     }
 
     private void setScrollState(int newState) {

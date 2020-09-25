@@ -20,6 +20,8 @@ public interface IDataProvider {
 
     boolean isOnLongPress();
 
+    int getScrollState();
+
     float getScroll();
 
     float getScaleX();
