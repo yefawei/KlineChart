@@ -192,18 +192,18 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             return;
         }
         if (l < 0) {
-            if (!mInRightPadding) mOnPaddingListener.rightPadding(true);
+            if (!mInRightPadding && mOnPaddingListener != null) mOnPaddingListener.rightPadding(true);
             mInRightPadding = true;
         } else {
-            if (mInRightPadding) mOnPaddingListener.rightPadding(false);
+            if (mInRightPadding && mOnPaddingListener != null) mOnPaddingListener.rightPadding(false);
             mInRightPadding = false;
         }
         if (mPaddingHelper.hasLeftExtPadding()) {
             if (l > getMaxScrollX() - mPaddingHelper.getLeftExtPadding(mScaleX)) {
-                if (!mInLeftPadding) mOnPaddingListener.leftPadding(true);
+                if (!mInLeftPadding && mOnPaddingListener != null) mOnPaddingListener.leftPadding(true);
                 mInLeftPadding = true;
             } else {
-                if (mInLeftPadding) mOnPaddingListener.leftPadding(false);
+                if (mInLeftPadding && mOnPaddingListener != null) mOnPaddingListener.leftPadding(false);
                 mInLeftPadding = false;
             }
         }
