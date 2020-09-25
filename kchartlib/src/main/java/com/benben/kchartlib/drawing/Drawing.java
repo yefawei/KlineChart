@@ -88,6 +88,11 @@ public abstract class Drawing implements IDrawing, IViewPort, IDispatchSingleTap
     }
 
     @Override
+    public boolean isAttachedParentPortLayout() {
+        return mDataProvider != null;
+    }
+
+    @Override
     public void setWidth(int width) {
         if (mDrawingPortLayout != null && mDrawingPortLayout.inUpdateChildLayout()) {
             mWidth = width;

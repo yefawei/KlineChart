@@ -10,13 +10,17 @@ import com.benben.kchartlib.index.range.IndexRange;
 
 /**
  * @日期 : 2020/7/10
- * @描述 : 自动执行动画的绘制
+ * @描述 : 自动执行动画的绘制，适合持续性的动画
  */
 public abstract class AutoAnimDrawing extends Drawing implements Animation {
 
     private boolean mInAnim;
 
     public AutoAnimDrawing() {
+    }
+
+    public AutoAnimDrawing(RendererCanvas.DrawingLayoutParams params) {
+        super(params);
     }
 
     public AutoAnimDrawing(@Nullable IndexRange indexRange) {

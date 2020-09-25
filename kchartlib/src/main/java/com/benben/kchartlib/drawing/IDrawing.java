@@ -20,6 +20,8 @@ public interface IDrawing {
 
     void detachedParentPortLayout();
 
+    boolean isAttachedParentPortLayout();
+
     /**
      * 画板是否有效
      */
