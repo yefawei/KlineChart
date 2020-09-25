@@ -12,6 +12,8 @@ import com.benben.kchartlib.index.range.IndexRange;
  */
 public abstract class TriggerAnimDrawing extends Drawing implements Animation {
 
+    private boolean mInAnim;
+
     public TriggerAnimDrawing() {
     }
 
@@ -35,12 +37,22 @@ public abstract class TriggerAnimDrawing extends Drawing implements Animation {
     }
 
     @Override
-    public final void setInAnim(boolean inAnim) {
+    public final long AnimStartTime() {
+        return 0;
+    }
 
+    @Override
+    public final long AnimEndTime() {
+        return 0;
+    }
+
+    @Override
+    public final void setInAnim(boolean inAnim) {
+        mInAnim = inAnim;
     }
 
     @Override
     public final boolean inAnim() {
-        return false;
+        return mInAnim;
     }
 }

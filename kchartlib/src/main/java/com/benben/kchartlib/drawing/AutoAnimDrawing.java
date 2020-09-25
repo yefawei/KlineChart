@@ -14,6 +14,8 @@ import com.benben.kchartlib.index.range.IndexRange;
  */
 public abstract class AutoAnimDrawing extends Drawing implements Animation {
 
+    private boolean mInAnim;
+
     public AutoAnimDrawing() {
     }
 
@@ -54,11 +56,11 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
 
     @Override
     public final void setInAnim(boolean inAnim) {
-
+        mInAnim = inAnim;
     }
 
     @Override
     public final boolean inAnim() {
-        return false;
+        return mInAnim;
     }
 }
