@@ -44,6 +44,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     private GestureMoveActionCompat mGestureMoveActionCompat;
     private GestureDetectorCompat mGestureDetectorCompat;
+    private boolean mIsForceScroller;
     private OverScroller mScroller;
     private ScaleGestureDetectorCompat mScaleGestureDetector;
 
@@ -111,9 +112,9 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!mLongEnable && !mScrollEnable && !mScaleEnable) {
-            return super.onTouchEvent(event);
-        }
+//        if (!mLongEnable && !mScrollEnable && !mScaleEnable) {
+//            return super.onTouchEvent(event);
+//        }
         mOnMultipleTouch = event.getPointerCount() > 1;
         int action = event.getActionMasked();
         switch (action) {
@@ -159,7 +160,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             return;
         }
         if (mScroller.computeScrollOffset()) {
-            if (mOnTouch || !mScrollEnable) {
+            if ((mOnTouch && !mIsForceScroller) || !mScrollEnable) {
                 mIsScrollerStarted = false;
                 mScroller.forceFinished(true);
                 return;
@@ -167,8 +168,15 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             scrollTo(mScroller.getCurrX(), 0);
 
             if (mScroller.isFinished()) {
+                mIsForceScroller = false;
                 mIsScrollerStarted = false;
-                setScrollState(SCROLL_STATE_IDLE);
+                if (!mOnTouch || mOnLongPress) {
+                    /**
+                     * 之所有加{@link ScrollAndScaleView#mOnTouch}和{@link ScrollAndScaleView#mOnLongPress}的判断
+                     * 是因为如果是强制滚动状态结束后还在触发滚动，交由触碰逻辑走{@link ScrollAndScaleView#onScroll}
+                     */
+                    setScrollState(SCROLL_STATE_IDLE);
+                }
             }
         }
     }
@@ -208,7 +216,14 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             return;
         }
         if (mScrollX != mPreviousScrollX) {
-            if (mOnTouch) {
+            if (mOnTouch && !mOnLongPress) {
+                /**
+                 * 之所以加{@link ScrollAndScaleView#mOnTouch}判断，
+                 * 是因为在滚动状态下触发{@link OverScroller#forceFinished(boolean)}进入到该逻辑
+                 *
+                 * 之所以加{@link ScrollAndScaleView#mOnLongPress}判断，是因为如果是强制滚动，
+                 * 且触发了长按，此时触发{@link OverScroller#forceFinished(boolean)}进入该逻辑，会产生错误的回调
+                 */
                 setScrollState(SCROLL_STATE_DRAGGING);
             }
             onScrollChanged(mScrollX, 0, mPreviousScrollX, 0);
@@ -233,7 +248,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (mScrollEnable && !mOnMultipleTouch) {
+        if (mScrollEnable && !mOnMultipleTouch && !mIsForceScroller) {
             scrollBy(Math.round(distanceX), 0);
             return true;
         }
@@ -242,7 +257,14 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
 
     @Override
     public void onLongPress(MotionEvent e) {
-        setScrollState(SCROLL_STATE_IDLE);
+        if (!mIsForceScroller) {
+            /**
+             * 在滚动中触碰了屏幕，会触发{@link ScrollAndScaleView#computeScroll()}里的强制结束滚动
+             * 如果用户通过手势滚动则状态顺势从{@link ScrollAndScaleView#SCROLL_STATE_SETTLING}进入{@link ScrollAndScaleView#SCROLL_STATE_DRAGGING}
+             * 如果用户触发该函数了则将状态变更为{@link ScrollAndScaleView#SCROLL_STATE_IDLE}
+             */
+            setScrollState(SCROLL_STATE_IDLE);
+        }
         if (mLongEnable) {
             mOnLongPress = true;
             mLongTouchX = e.getX();
@@ -316,6 +338,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     public boolean onScale(ScaleGestureDetectorCompat detector) {
         if (mScaleEnable) {
             float scaleX = mScaleX * detector.getScaleFactor();
+            if (mIsForceScroller) return false;
             setScaleX(scaleX, detector.getFocusX(), detector.getFocusY());
             return true;
         }
@@ -493,23 +516,32 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
         animScroll(targetScrollX, 400);
     }
 
+    public void animScroll(int targetScrollX, int duration) {
+        animScroll(targetScrollX, duration, false);
+    }
+
     /**
      * 从当前滚动值以动画的形式滚动到目标滚动值
      * 如果处于触控状态{@link #mOnTouch}=true,则无滚动效果
      *
      * @param targetScrollX 目标滚动值
+     * @param force         是否强制滚动，如果为true，将无视手势进行滚动
      */
-    public void animScroll(int targetScrollX, int duration) {
+    public void animScroll(int targetScrollX, int duration, boolean force) {
         targetScrollX = getFixScrollX(targetScrollX);
-        if (mOnTouch || targetScrollX == mScrollX) return;
+        if (targetScrollX == mScrollX || (mOnTouch && !force)) return;
+        mIsForceScroller = force;
         mScroller.startScroll(mScrollX, 0, targetScrollX - mScrollX, 0, duration);
         mIsScrollerStarted = true;
         invalidate();
     }
 
-
     public void setScrollThenAnimScroll(int newScrollX, int targetScrollX) {
         setScrollThenAnimScroll(newScrollX, targetScrollX, 400);
+    }
+
+    public void setScrollThenAnimScroll(int newScrollX, int targetScrollX, int duration) {
+        setScrollThenAnimScroll(newScrollX, targetScrollX, duration, false);
     }
 
     /**
@@ -518,9 +550,10 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
      *
      * @param newScrollX    新滚动值
      * @param targetScrollX 目标滚动值
+     * @param force         是否强制滚动，如果为true，将无视手势进行滚动
      */
-    public void setScrollThenAnimScroll(int newScrollX, int targetScrollX, int duration) {
-        if (mOnTouch || newScrollX == targetScrollX) {
+    public void setScrollThenAnimScroll(int newScrollX, int targetScrollX, int duration, boolean force) {
+        if (newScrollX == targetScrollX || (mOnTouch && !force)) {
             if (newScrollX == mScrollX) return;
             setScroll(newScrollX);
         } else {
@@ -529,7 +562,7 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             if (mScrollX != mPreviousScrollX) {
                 onScrollChanged(mScrollX, 0, mPreviousScrollX, 0);
             }
-            animScroll(targetScrollX, duration);
+            animScroll(targetScrollX, duration, force);
         }
     }
 

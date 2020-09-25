@@ -13,7 +13,7 @@ import com.benben.kchartlib.ScrollAndScaleView;
 import com.benben.kchartlib.adapter.DefaultKChartAdapter;
 import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
-import com.benben.kchartlib.data.AnimDataSizeChangeHandler;
+import com.example.kchartdemo.data.AnimDataSizeChangeHandler;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
