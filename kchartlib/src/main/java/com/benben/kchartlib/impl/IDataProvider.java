@@ -39,6 +39,18 @@ public interface IDataProvider {
 
     boolean isFullScreen();
 
+    /**
+     * 获取内容可滚动的最小值
+     */
+    int getMinScrollX();
+
+    /**
+     * 获取内容可滚动的最大值
+     */
+    int getMaxScrollX();
+
+
+
     TouchTapManager getTouchTapManager();
 
     Transformer getTransformer();

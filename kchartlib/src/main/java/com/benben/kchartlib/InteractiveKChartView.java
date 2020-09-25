@@ -147,31 +147,6 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     @Override
-    int getMinScrollX() {
-        if (isFullScreen()) {
-            return -mPaddingHelper.getRightExtPadding(mScaleX);
-        }
-        return 0;
-    }
-
-    /**
-     * 最大可滚动值受数据量/缩放值/主视图宽度所影响
-     */
-    @Override
-    int getMaxScrollX() {
-        if (isFullScreen()) {
-            if (mMaxScrollXBuffer.mScaleX == mScaleX) {
-                return mMaxScrollXBuffer.mMaxScrollX;
-            }
-            mMaxScrollXBuffer.mScaleX = mScaleX;
-            mMaxScrollXBuffer.mMaxScrollX = Math.round(mDataLength * mScaleX - mMainRenderer.getMainCanvasWidth())
-                    + mPaddingHelper.getLeftExtPadding(mScaleX);
-            return mMaxScrollXBuffer.mMaxScrollX;
-        }
-        return 0;
-    }
-
-    @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         if (mInRightMargin) {
@@ -430,6 +405,31 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mIsFullScreenBuffer.mIsFullScreen = mDataLength * mScaleX > (mMainRenderer.getMainCanvasWidth()
                 - mPaddingHelper.getRightExtPadding(mScaleX));
         return mIsFullScreenBuffer.mIsFullScreen;
+    }
+
+    @Override
+    public int getMinScrollX() {
+        if (isFullScreen()) {
+            return -mPaddingHelper.getRightExtPadding(mScaleX);
+        }
+        return 0;
+    }
+
+    /**
+     * 最大可滚动值受数据量/缩放值/主视图宽度所影响
+     */
+    @Override
+    public int getMaxScrollX() {
+        if (isFullScreen()) {
+            if (mMaxScrollXBuffer.mScaleX == mScaleX) {
+                return mMaxScrollXBuffer.mMaxScrollX;
+            }
+            mMaxScrollXBuffer.mScaleX = mScaleX;
+            mMaxScrollXBuffer.mMaxScrollX = Math.round(mDataLength * mScaleX - mMainRenderer.getMainCanvasWidth())
+                    + mPaddingHelper.getLeftExtPadding(mScaleX);
+            return mMaxScrollXBuffer.mMaxScrollX;
+        }
+        return 0;
     }
 
     @Override

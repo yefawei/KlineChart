@@ -13,11 +13,9 @@ import com.benben.kchartlib.ScrollAndScaleView;
 import com.benben.kchartlib.adapter.DefaultKChartAdapter;
 import com.benben.kchartlib.canvas.MainRendererCanvas;
 import com.benben.kchartlib.canvas.RendererCanvas;
-import com.example.kchartdemo.data.AnimDataSizeChangeHandler;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
-import com.benben.kchartlib.index.range.IndexReverse;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.touch.TouchTapManager;
@@ -29,7 +27,7 @@ import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
 import com.example.kchartdemo.Drawing.RightPaddingDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
 import com.example.kchartdemo.Drawing.VolumeHighlightDrawing;
-import com.example.kchartdemo.Drawing.VolumeReverseDrawing;
+import com.example.kchartdemo.data.AnimDataSizeChangeHandler;
 import com.example.kchartdemo.data.DragonKLineDataProvider;
 import com.example.kchartdemo.data.KlineInfo;
 
@@ -138,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         VolumeIndexRange volumeIndexRange = new VolumeIndexRange();
 
 
-        MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1, 2);
+        MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1, 3);
         MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
@@ -161,18 +159,8 @@ public class MainActivity extends AppCompatActivity {
         mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
 
-        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 0, 3);
+        canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 0, 1);
         mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
-
-        layoutParams = new RendererCanvas.DrawingLayoutParams();
-        layoutParams.setWeight(1);
-        layoutParams.setVerticalLinear(true);
-        mainRenderCanvas.addDrawing(new VolumeDrawing(volumeIndexRange, layoutParams), true);
-
-        layoutParams = new RendererCanvas.DrawingLayoutParams();
-        layoutParams.setWeight(1);
-        layoutParams.setVerticalLinear(true);
-        mainRenderCanvas.addDrawing(new VolumeReverseDrawing(new IndexReverse(volumeIndexRange), layoutParams), true);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);

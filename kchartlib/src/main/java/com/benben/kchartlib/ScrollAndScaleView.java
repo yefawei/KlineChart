@@ -658,16 +658,6 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     abstract void preInvalidate();
 
     /**
-     * 获取内容可滚动的最小值
-     */
-    abstract int getMinScrollX();
-
-    /**
-     * 获取内容可滚动的最大值
-     */
-    abstract int getMaxScrollX();
-
-    /**
      * 缩放值有变化
      *
      * @return 缩放后的滚动值
