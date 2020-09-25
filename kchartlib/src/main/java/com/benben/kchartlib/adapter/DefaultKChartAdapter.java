@@ -1,21 +1,30 @@
 package com.benben.kchartlib.adapter;
 
+import androidx.annotation.Nullable;
+
 import com.benben.kchartlib.index.IEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @日期 : 2020/8/21
- * @描述 : K线适配器，内部已实现添加数据的逻辑
+ * @描述 : 默认K线适配器，内部已实现添加数据的逻辑
  */
-public abstract class SimpleKChartAdapter extends BaseKChartAdapter<IEntity> {
+public class DefaultKChartAdapter extends BaseKChartAdapter<IEntity> {
+
+    private OnPrepareIndexDataListener mListener;
 
     private List<IEntity> mKlineInfos;
     private long mStartTime;
     private long mEndTime;
+
+    public DefaultKChartAdapter(@Nullable OnPrepareIndexDataListener listener) {
+        mListener = listener;
+    }
 
     @Override
     public int getCount() {
@@ -25,6 +34,13 @@ public abstract class SimpleKChartAdapter extends BaseKChartAdapter<IEntity> {
     @Override
     public IEntity getItem(int position) {
         return mKlineInfos.get(position);
+    }
+
+    @Override
+    public void prepareIndexData(Set<String> indexTags) {
+        if (mListener != null) {
+            mListener.prepareIndexData(indexTags);
+        }
     }
 
     public void clear() {
@@ -194,7 +210,7 @@ public abstract class SimpleKChartAdapter extends BaseKChartAdapter<IEntity> {
                     break;
                 }
             }
-            List<? extends  IEntity> newDatas = datas.subList(startIndex, datas.size());
+            List<? extends IEntity> newDatas = datas.subList(startIndex, datas.size());
             mKlineInfos.addAll(newDatas);
             mEndTime = endTime;
             notifyLastInserted(newDatas.size());
@@ -205,5 +221,9 @@ public abstract class SimpleKChartAdapter extends BaseKChartAdapter<IEntity> {
         } else if (startTime < mStartTime && endTime > mEndTime) {
             initAndAddMultiData(datas);
         }
+    }
+
+    public interface OnPrepareIndexDataListener {
+        void prepareIndexData(Set<String> indexTags);
     }
 }
