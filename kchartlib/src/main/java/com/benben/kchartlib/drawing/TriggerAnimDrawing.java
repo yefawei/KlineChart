@@ -17,6 +17,7 @@ import com.benben.kchartlib.index.range.IndexRange;
  */
 public abstract class TriggerAnimDrawing extends Drawing implements Animation {
 
+    private boolean mInAnimationManager;
     private boolean mInAnim;
 
     private long mAnimStartTime;
@@ -43,16 +44,28 @@ public abstract class TriggerAnimDrawing extends Drawing implements Animation {
     @Override
     public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider) {
         super.attachedParentPortLayout(portLayout, dataProvider);
-        if (inAnimTime()) {
+        if (inAnimTime() && !mInAnimationManager) {
             mDataProvider.getChartAnimation().addAnim(this);
         }
     }
 
     @Override
     public void detachedParentPortLayout() {
-        mDataProvider.getChartAnimation().removeAnim(this);
+        if (mInAnimationManager) {
+            mDataProvider.getChartAnimation().removeAnim(this);
+        }
         super.detachedParentPortLayout();
     }
+
+    public boolean inAnimationManager() {
+        return mInAnimationManager;
+    }
+
+    @Override
+    public void inAnimationCall(boolean in) {
+        mInAnimationManager = in;
+    }
+
 
     @Override
     public final boolean isAutoAnim() {
@@ -93,7 +106,7 @@ public abstract class TriggerAnimDrawing extends Drawing implements Animation {
         mAnimStartTime = System.currentTimeMillis();
         mDuration = duration;
         mAnimEndTime = mAnimStartTime + duration;
-        if (isAttachedParentPortLayout()) {
+        if (isAttachedParentPortLayout() && !mInAnimationManager) {
             mDataProvider.getChartAnimation().addAnim(this);
         }
     }

@@ -7,6 +7,12 @@ package com.benben.kchartlib.animation;
 public interface Animation {
 
     /**
+     * 动画管理者添加和移除会回调该函数
+     * @param in true 被添加 false 被移除
+     */
+    void inAnimationCall(boolean in);
+
+    /**
      * 是否是自动动画
      */
     boolean isAutoAnim();

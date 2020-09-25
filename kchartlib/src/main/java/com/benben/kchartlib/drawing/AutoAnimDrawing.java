@@ -14,6 +14,7 @@ import com.benben.kchartlib.index.range.IndexRange;
  */
 public abstract class AutoAnimDrawing extends Drawing implements Animation {
 
+    private boolean mInAnimationManager;
     private boolean mInAnim;
 
     public AutoAnimDrawing() {
@@ -41,6 +42,15 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
     public void detachedParentPortLayout() {
         mDataProvider.getChartAnimation().removeAnim(this);
         super.detachedParentPortLayout();
+    }
+
+    public boolean inAnimationManager() {
+        return mInAnimationManager;
+    }
+
+    @Override
+    public void inAnimationCall(boolean in) {
+        mInAnimationManager = in;
     }
 
     @Override
