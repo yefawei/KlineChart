@@ -6,9 +6,9 @@ package com.benben.kchartlib.animation;
  */
 public interface Animation {
 
-    int RESTART = 1;    // 重新开始
-    int REVERSE = 2;    // 逆转
-
+    /**
+     * 是否在{@link AnimationManager}里
+     */
     boolean inAnimationManager();
 
     /**

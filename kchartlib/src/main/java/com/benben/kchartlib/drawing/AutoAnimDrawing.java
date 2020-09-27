@@ -1,9 +1,7 @@
 package com.benben.kchartlib.drawing;
 
-import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
-import com.benben.kchartlib.animation.Animation;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IParentPortLayout;
@@ -13,11 +11,7 @@ import com.benben.kchartlib.index.range.IndexRange;
  * @日期 : 2020/7/10
  * @描述 : 自动执行动画的绘制，适合持续性的动画
  */
-public abstract class AutoAnimDrawing extends Drawing implements Animation {
-
-    private boolean mInAnimationManager;
-    boolean mInAnim;
-    long mAnimProcessTime;
+public abstract class AutoAnimDrawing extends AbstractAnimDrawing{
 
     public AutoAnimDrawing() {
     }
@@ -47,17 +41,6 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
     }
 
     @Override
-    public boolean inAnimationManager() {
-        return mInAnimationManager;
-    }
-
-    @Override
-    @CallSuper
-    public void inAnimationCall(boolean in) {
-        mInAnimationManager = in;
-    }
-
-    @Override
     public final boolean isAutoAnim() {
         return true;
     }
@@ -73,24 +56,7 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
     }
 
     @Override
-    @CallSuper
-    public void setInAnim(boolean inAnim) {
-        mInAnim = inAnim;
-    }
-
-    @Override
-    public boolean inAnim() {
-        return mInAnim;
-    }
-
-    @Override
-    public boolean inAnimTime() {
+    public final boolean inAnimTime() {
         return true;
-    }
-
-    @Override
-    @CallSuper
-    public void updateAnimProcessTime(long time) {
-        mAnimProcessTime = time;
     }
 }

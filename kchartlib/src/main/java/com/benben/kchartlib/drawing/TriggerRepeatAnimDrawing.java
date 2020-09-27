@@ -1,12 +1,8 @@
 package com.benben.kchartlib.drawing;
 
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
-
 import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
-import com.benben.kchartlib.animation.Animation;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IParentPortLayout;
@@ -16,13 +12,7 @@ import com.benben.kchartlib.index.range.IndexRange;
  * @日期 : 2020/7/10
  * @描述 : 主动触发重复动画的绘制
  */
-public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animation {
-
-    private boolean mInAnimationManager;
-    boolean mInAnim;
-    long mAnimProcessTime;
-
-    private int mRepeatMode = RESTART;
+public abstract class TriggerRepeatAnimDrawing extends AbstractAnimDrawing{
 
     private long mAnimStartTime;
     private long mAnimEndTime;
@@ -30,8 +20,6 @@ public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animat
     private long mCycleTime = 1000;     // 单个周期时间
     private long mCycleStartTime = 0;   // 周期开始时间
     private boolean mPause;
-
-    private Interpolator mInterpolator;
 
     public TriggerRepeatAnimDrawing() {
     }
@@ -65,76 +53,31 @@ public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animat
     }
 
     @Override
-    public boolean inAnimationManager() {
-        return mInAnimationManager;
-    }
-
-    @Override
-    @CallSuper
-    public void inAnimationCall(boolean in) {
-        mInAnimationManager = in;
-    }
-
-
-    @Override
     public final boolean isAutoAnim() {
         return false;
     }
 
     @Override
-    public long getAnimStartTime() {
+    public final long getAnimStartTime() {
         return mAnimStartTime;
     }
 
     @Override
-    public long getAnimEndTime() {
+    public final long getAnimEndTime() {
         return mAnimEndTime;
     }
 
     @Override
-    @CallSuper
-    public void setInAnim(boolean inAnim) {
-        mInAnim = inAnim;
-    }
-
-    @Override
-    public boolean inAnim() {
-        return mInAnim;
-    }
-
-    @Override
-    public boolean inAnimTime() {
+    public final boolean inAnimTime() {
         return mAnimEndTime > System.currentTimeMillis();
     }
 
     @Override
     @CallSuper
     public void updateAnimProcessTime(long time) {
-        mAnimProcessTime = time;
+        super.updateAnimProcessTime(time);
         if (mCycleStartTime == 0) {
             mCycleStartTime = mAnimProcessTime;
-        }
-    }
-
-    /**
-     * @param repeatMode {@link #RESTART} or {@link #REVERSE}
-     */
-    public void setRepeatMode(int repeatMode) {
-        mRepeatMode = repeatMode;
-    }
-
-    public void setInterpolator(Interpolator i) {
-        mInterpolator = i;
-    }
-
-    public Interpolator getInterpolator() {
-        ensureInterpolator();
-        return mInterpolator;
-    }
-
-    private void ensureInterpolator() {
-        if (mInterpolator == null) {
-            mInterpolator = new LinearInterpolator();
         }
     }
 
@@ -204,7 +147,6 @@ public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animat
 
     public float getAnimProcess() {
         if (mCycleTime == 0 || !inAnimTime()) return 1.0f;
-        ensureInterpolator();
         final long time = mAnimProcessTime - mCycleStartTime;
         if (mRepeatMode == RESTART) {
             float fraction = time % mCycleTime / (float) mCycleTime;

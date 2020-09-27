@@ -1,8 +1,5 @@
 package com.benben.kchartlib.drawing;
 
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
-
 import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.canvas.RendererCanvas;
@@ -14,12 +11,8 @@ import com.benben.kchartlib.index.range.IndexRange;
  */
 public abstract class RepeatAnimDrawing extends AutoAnimDrawing {
 
-    private int mRepeatMode = RESTART;
-
     private long mCycleTime = 1000;     // 单个周期时间
     private long mCycleStartTime = 0;   // 周期开始时间
-
-    private Interpolator mInterpolator;
 
     public RepeatAnimDrawing() {
         super();
@@ -45,33 +38,11 @@ public abstract class RepeatAnimDrawing extends AutoAnimDrawing {
         }
     }
 
-    /**
-     * @param repeatMode {@link #RESTART} or {@link #REVERSE}
-     */
-    public void setRepeatMode(int repeatMode) {
-        mRepeatMode = repeatMode;
-    }
-
     public void setRepeatCycle(long cycleTime) {
         if (cycleTime < 0) {
             mCycleTime = 0;
         } else {
             mCycleTime = cycleTime;
-        }
-    }
-
-    public void setInterpolator(Interpolator i) {
-        mInterpolator = i;
-    }
-
-    public Interpolator getInterpolator() {
-        ensureInterpolator();
-        return mInterpolator;
-    }
-
-    private void ensureInterpolator() {
-        if (mInterpolator == null) {
-            mInterpolator = new LinearInterpolator();
         }
     }
 
@@ -84,7 +55,6 @@ public abstract class RepeatAnimDrawing extends AutoAnimDrawing {
 
     public float getAnimProcess() {
         if (mCycleTime == 0) return 1.0f;
-        ensureInterpolator();
         final long time = mAnimProcessTime - mCycleStartTime;
         if (mRepeatMode == RESTART) {
             float fraction = time % mCycleTime / (float) mCycleTime;

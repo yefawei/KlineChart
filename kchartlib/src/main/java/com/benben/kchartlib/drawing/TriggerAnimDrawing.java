@@ -1,12 +1,7 @@
 package com.benben.kchartlib.drawing;
 
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
-
-import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
-import com.benben.kchartlib.animation.Animation;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IParentPortLayout;
@@ -16,17 +11,11 @@ import com.benben.kchartlib.index.range.IndexRange;
  * @日期 : 2020/7/10
  * @描述 : 主动触发动画的绘制
  */
-public abstract class TriggerAnimDrawing extends Drawing implements Animation {
-
-    private boolean mInAnimationManager;
-    boolean mInAnim;
-    long mAnimProcessTime;
+public abstract class TriggerAnimDrawing extends AbstractAnimDrawing{
 
     private long mAnimStartTime;
     private long mDuration;
     private long mAnimEndTime;
-
-    private Interpolator mInterpolator;
 
     public TriggerAnimDrawing() {
     }
@@ -60,67 +49,23 @@ public abstract class TriggerAnimDrawing extends Drawing implements Animation {
     }
 
     @Override
-    public boolean inAnimationManager() {
-        return mInAnimationManager;
-    }
-
-    @Override
-    @CallSuper
-    public void inAnimationCall(boolean in) {
-        mInAnimationManager = in;
-    }
-
-
-    @Override
     public final boolean isAutoAnim() {
         return false;
     }
 
     @Override
-    public long getAnimStartTime() {
+    public final long getAnimStartTime() {
         return mAnimStartTime;
     }
 
     @Override
-    public long getAnimEndTime() {
+    public final long getAnimEndTime() {
         return mAnimEndTime;
     }
 
     @Override
-    @CallSuper
-    public void setInAnim(boolean inAnim) {
-        mInAnim = inAnim;
-    }
-
-    @Override
-    public boolean inAnim() {
-        return mInAnim;
-    }
-
-    @Override
-    public boolean inAnimTime() {
+    public final boolean inAnimTime() {
         return mAnimEndTime > System.currentTimeMillis();
-    }
-
-    @Override
-    @CallSuper
-    public void updateAnimProcessTime(long time) {
-        mAnimProcessTime = time;
-    }
-
-    public void setInterpolator(Interpolator i) {
-        mInterpolator = i;
-    }
-
-    public Interpolator getInterpolator() {
-        ensureInterpolator();
-        return mInterpolator;
-    }
-
-    private void ensureInterpolator() {
-        if (mInterpolator == null) {
-            mInterpolator = new LinearInterpolator();
-        }
     }
 
     /**
@@ -143,7 +88,6 @@ public abstract class TriggerAnimDrawing extends Drawing implements Animation {
     public float getAnimProcess() {
         if (!inAnimTime()) return 1.0f;
         float fraction = (mAnimProcessTime - mAnimStartTime) / (float) mDuration;
-        ensureInterpolator();
         return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
     }
 }
