@@ -169,6 +169,13 @@ public abstract class IndexRange {
     }
 
     /**
+     * 计算结束
+     */
+    public void calcValueEnd() {
+
+    }
+
+    /**
      * 当前页面的最大值
      * 如果是{@link IndexRange#DOUBLE_SIDE}和{@link IndexRange#UP_SIDE}则已包含预留空间
      */

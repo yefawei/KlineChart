@@ -224,6 +224,9 @@ public class Transformer {
         for (IndexRange value : mIndexMap.values()) {
             value.calcPaddingValue();
         }
+        for (IndexRange value : mIndexMap.values()) {
+            value.calcValueEnd();
+        }
     }
 
     /**
