@@ -28,6 +28,11 @@ public class HighlightDrawing extends TriggerRepeatAnimDrawing {
     }
 
     @Override
+    public boolean drawInViewPort() {
+        return false;
+    }
+
+    @Override
     public void preCalcDataValue() {
         super.preCalcDataValue();
         if (mDataProvider.getTouchTapManager().hasSingleTap()

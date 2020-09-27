@@ -1,8 +1,11 @@
 package com.benben.kchartlib.index.range;
 
+import com.benben.kchartlib.data.Transformer;
+
 /**
  * @日期 : 2020/9/24
  * @描述 :指标计算反转，用于实现同一指标不同方向的显示
+ * 注意：该类不会被{@link Transformer}所计算
  */
 public class IndexReverse extends IndexRange {
 
