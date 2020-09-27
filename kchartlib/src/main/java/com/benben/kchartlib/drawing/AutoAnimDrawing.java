@@ -1,5 +1,6 @@
 package com.benben.kchartlib.drawing;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.animation.Animation;
@@ -15,7 +16,7 @@ import com.benben.kchartlib.index.range.IndexRange;
 public abstract class AutoAnimDrawing extends Drawing implements Animation {
 
     private boolean mInAnimationManager;
-    private boolean mInAnim;
+    boolean mInAnim;
 
     public AutoAnimDrawing() {
     }
@@ -44,11 +45,13 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
         super.detachedParentPortLayout();
     }
 
+    @Override
     public boolean inAnimationManager() {
         return mInAnimationManager;
     }
 
     @Override
+    @CallSuper
     public void inAnimationCall(boolean in) {
         mInAnimationManager = in;
     }
@@ -59,22 +62,28 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
     }
 
     @Override
-    public final long AnimStartTime() {
+    public final long getAnimStartTime() {
         return 0;
     }
 
     @Override
-    public final long AnimEndTime() {
-        return 0;
+    public final long getAnimEndTime() {
+        return Long.MAX_VALUE;
     }
 
     @Override
-    public final void setInAnim(boolean inAnim) {
+    @CallSuper
+    public void setInAnim(boolean inAnim) {
         mInAnim = inAnim;
     }
 
     @Override
-    public final boolean inAnim() {
+    public boolean inAnim() {
         return mInAnim;
+    }
+
+    @Override
+    public boolean inAnimTime() {
+        return true;
     }
 }

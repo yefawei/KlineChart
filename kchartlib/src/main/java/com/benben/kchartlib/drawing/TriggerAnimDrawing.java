@@ -3,6 +3,7 @@ package com.benben.kchartlib.drawing;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.animation.Animation;
@@ -57,11 +58,13 @@ public abstract class TriggerAnimDrawing extends Drawing implements Animation {
         super.detachedParentPortLayout();
     }
 
+    @Override
     public boolean inAnimationManager() {
         return mInAnimationManager;
     }
 
     @Override
+    @CallSuper
     public void inAnimationCall(boolean in) {
         mInAnimationManager = in;
     }
@@ -73,32 +76,36 @@ public abstract class TriggerAnimDrawing extends Drawing implements Animation {
     }
 
     @Override
-    public final long AnimStartTime() {
+    public long getAnimStartTime() {
         return mAnimStartTime;
     }
 
     @Override
-    public final long AnimEndTime() {
+    public long getAnimEndTime() {
         return mAnimEndTime;
     }
 
     @Override
-    public final void setInAnim(boolean inAnim) {
+    @CallSuper
+    public void setInAnim(boolean inAnim) {
         mInAnim = inAnim;
     }
 
     @Override
-    public final boolean inAnim() {
+    public boolean inAnim() {
         return mInAnim;
     }
 
-    /**
-     * 是否在动画时间内
-     */
+    @Override
     public boolean inAnimTime() {
         return mAnimEndTime > System.currentTimeMillis();
     }
 
+    /**
+     * 开始执行动画
+     * 上一个动画没有结束的情况下调用该函数将以新的动画周期开始
+     * @param duration 执行时长
+     */
     public void startAnim(long duration) {
         if (duration <= 0) {
             return;

@@ -32,7 +32,7 @@ public class AnimationManager {
             Animation animation = mChartAnimtion.mAnimations.get(i);
             if (animation.isAutoAnim()) {
                 animation.setInAnim(true);
-            } else if (animation.AnimEndTime() > currTime) {
+            } else if (animation.getAnimEndTime() > currTime) {
                 animation.setInAnim(true);
             } else {
                 animation.setInAnim(false);

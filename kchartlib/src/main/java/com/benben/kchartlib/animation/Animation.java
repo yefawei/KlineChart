@@ -6,8 +6,11 @@ package com.benben.kchartlib.animation;
  */
 public interface Animation {
 
+
+    boolean inAnimationManager();
+
     /**
-     * 动画管理者添加和移除会回调该函数
+     * {@link AnimationManager}添加和移除会回调该函数
      * @param in true 被添加 false 被移除
      */
     void inAnimationCall(boolean in);
@@ -18,14 +21,14 @@ public interface Animation {
     boolean isAutoAnim();
 
     /**
-     * 非自动动画开始时间
+     * 动画开始时间
      */
-    long AnimStartTime();
+    long getAnimStartTime();
 
     /**
-     * 非自动动画结束时间
+     * 动画结束时间
      */
-    long AnimEndTime();
+    long getAnimEndTime();
 
     /**
      * 设置是否在动画中
@@ -36,4 +39,9 @@ public interface Animation {
      * 是否在动画中
      */
     boolean inAnim();
+
+    /**
+     * 是否在动画时间内
+     */
+    boolean inAnimTime();
 }

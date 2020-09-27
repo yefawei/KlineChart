@@ -14,7 +14,7 @@ import com.benben.kchartlib.index.range.IndexRange;
  * @日期 : 2020/9/25
  * @描述 : 重复动画的绘制,适合重复持续性动画
  */
-public class RepeatAnimDrawing extends AutoAnimDrawing {
+public abstract class RepeatAnimDrawing extends AutoAnimDrawing {
 
     public static final int RESTART = 1;    // 重新开始
     public static final int REVERSE = 2;    // 逆转
@@ -77,6 +77,13 @@ public class RepeatAnimDrawing extends AutoAnimDrawing {
         if (mInterpolator == null) {
             mInterpolator = new LinearInterpolator();
         }
+    }
+
+    /**
+     * 重新开始周期
+     */
+    public void restartCycle() {
+        mStartTime = 0;
     }
 
     public float getAnimProcess() {
