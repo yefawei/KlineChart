@@ -71,6 +71,7 @@ public class AnimationManager {
 
         public void removeAnim(Animation anim) {
             if (mAnimations.remove(anim)) {
+                anim.setInAnim(false);
                 anim.inAnimationCall(false);
             }
         }
