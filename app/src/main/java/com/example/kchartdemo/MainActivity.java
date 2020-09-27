@@ -24,7 +24,9 @@ import com.example.kchartdemo.Drawing.CandleDrawing;
 import com.example.kchartdemo.Drawing.ClickDrawing;
 import com.example.kchartdemo.Drawing.HighlightDrawing;
 import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
+import com.example.kchartdemo.Drawing.RepeatPointDrawing;
 import com.example.kchartdemo.Drawing.RightPaddingDrawing;
+import com.example.kchartdemo.Drawing.TriggerRepeatPointDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
 import com.example.kchartdemo.Drawing.VolumeHighlightDrawing;
 import com.example.kchartdemo.data.AnimDataSizeChangeHandler;
@@ -153,6 +155,10 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.setWidth(100);
         layoutParams.setHorizontalPosition(RendererCanvas.DrawingLayoutParams.POSITION_RIGHT);
         mainRenderCanvas.addDrawing(new RightPaddingDrawing(layoutParams));
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        mainRenderCanvas.addDrawing(new TriggerRepeatPointDrawing(layoutParams));
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);

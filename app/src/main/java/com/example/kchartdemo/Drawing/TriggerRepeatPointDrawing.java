@@ -1,4 +1,4 @@
-package com.example.kchartdemo;
+package com.example.kchartdemo.Drawing;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,14 +15,14 @@ import com.benben.kchartlib.utils.FontCalculateUtils;
 
 /**
  * @日期 : 2020/9/25
- * @描述 : 重复点动画
+ * @描述 : 手动触发重复点动画
  */
-public class RepeatPointDrawing extends TriggerRepeatAnimDrawing {
+public class TriggerRepeatPointDrawing extends TriggerRepeatAnimDrawing {
 
     private boolean isOpen;
     private final Paint mPaint;
 
-    public RepeatPointDrawing(RendererCanvas.DrawingLayoutParams params) {
+    public TriggerRepeatPointDrawing(RendererCanvas.DrawingLayoutParams params) {
         super(params);
         setRepeatMode(RepeatAnimDrawing.REVERSE);
         setInterpolator(new AccelerateDecelerateInterpolator());
@@ -33,13 +33,13 @@ public class RepeatPointDrawing extends TriggerRepeatAnimDrawing {
     @Override
     public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider) {
         super.attachedParentPortLayout(portLayout, dataProvider);
-        Log.e("RepeatPointDrawing", "attachedParentPortLayout");
+        Log.e("TriggerRepeatPoint", "attachedParentPortLayout");
     }
 
     @Override
     public void detachedParentPortLayout() {
         super.detachedParentPortLayout();
-        Log.e("RepeatPointDrawing", "detachedParentPortLayout");
+        Log.e("TriggerRepeatPoint", "detachedParentPortLayout");
     }
 
     @Override
@@ -117,7 +117,6 @@ public class RepeatPointDrawing extends TriggerRepeatAnimDrawing {
             canvas.drawText(stop, x, y, mPaint);
         }
         if (inAnim()) {
-            long l = System.currentTimeMillis();
             float animProcess = getAnimProcess();
             float x = mViewPort.centerX();
             float y = mViewPort.centerY();
