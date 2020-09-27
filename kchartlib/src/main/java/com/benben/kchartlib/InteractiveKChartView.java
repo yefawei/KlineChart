@@ -294,6 +294,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             return;
         }
         canvas.clipRect(mViewPort);
+        mAnimationManager.animUpdate();
         if (mIsRenderBackground) {
             mBackgroundRenderer.render(canvas);
         }
@@ -312,7 +313,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         } else {
             Log.i("Drawtime", "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
         }
-        mAnimationManager.animUpdate();
+        mAnimationManager.animCheck();
     }
 
     @Override

@@ -44,4 +44,9 @@ public interface Animation {
      * 是否在动画时间内
      */
     boolean inAnimTime();
+
+    /**
+     * 更新动画时间
+     */
+    void updateAnimProcessTime(long time);
 }

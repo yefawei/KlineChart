@@ -19,17 +19,14 @@ public class AnimationManager {
 
     private void postAnim() {
         if (inAnim) return;
-        animUpdate();
+        animCheck();
     }
 
     public void animUpdate() {
-        if (mChartAnimtion.mAnimations.isEmpty()) {
-            inAnim = false;
-            return;
-        }
         long currTime = System.currentTimeMillis();
         for (int i = 0; i < mChartAnimtion.mAnimations.size(); i++) {
             Animation animation = mChartAnimtion.mAnimations.get(i);
+            animation.updateAnimProcessTime(currTime);
             if (animation.isAutoAnim()) {
                 animation.setInAnim(true);
             } else if (animation.getAnimEndTime() > currTime) {
@@ -41,8 +38,13 @@ public class AnimationManager {
                 i--;
             }
         }
-        inAnim = true;
-        mListener.onAnimation();
+        inAnim = !mChartAnimtion.mAnimations.isEmpty();
+    }
+
+    public void animCheck() {
+        if (inAnim) {
+            mListener.onAnimation();
+        }
     }
 
     public AnimationManager.ChartAnimtion getChartAnimtion() {

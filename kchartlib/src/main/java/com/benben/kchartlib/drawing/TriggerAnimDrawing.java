@@ -19,7 +19,8 @@ import com.benben.kchartlib.index.range.IndexRange;
 public abstract class TriggerAnimDrawing extends Drawing implements Animation {
 
     private boolean mInAnimationManager;
-    private boolean mInAnim;
+    boolean mInAnim;
+    long mAnimTime;
 
     private long mAnimStartTime;
     private long mDuration;
@@ -101,6 +102,11 @@ public abstract class TriggerAnimDrawing extends Drawing implements Animation {
         return mAnimEndTime > System.currentTimeMillis();
     }
 
+    @Override
+    public final void updateAnimProcessTime(long time) {
+        mAnimTime = time;
+    }
+
     /**
      * 开始执行动画
      * 上一个动画没有结束的情况下调用该函数将以新的动画周期开始
@@ -135,7 +141,7 @@ public abstract class TriggerAnimDrawing extends Drawing implements Animation {
 
     public float getAnimProcess() {
         if (!mInAnim) return 1.0f;
-        float fraction = (System.currentTimeMillis() - mAnimStartTime) / (float) mDuration;
+        float fraction = (mAnimTime - mAnimStartTime) / (float) mDuration;
         ensureInterpolator();
         return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
     }

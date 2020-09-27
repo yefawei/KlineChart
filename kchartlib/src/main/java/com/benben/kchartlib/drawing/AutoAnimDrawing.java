@@ -17,6 +17,7 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
 
     private boolean mInAnimationManager;
     boolean mInAnim;
+    long mAnimTime;
 
     public AutoAnimDrawing() {
     }
@@ -85,5 +86,10 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
     @Override
     public boolean inAnimTime() {
         return true;
+    }
+
+    @Override
+    public final void updateAnimProcessTime(long time) {
+        mAnimTime = time;
     }
 }

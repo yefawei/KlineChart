@@ -91,10 +91,10 @@ public abstract class RepeatAnimDrawing extends AutoAnimDrawing {
         ensureInterpolator();
         final long time;
         if (mStartTime == 0) {
-            mStartTime = System.currentTimeMillis();
+            mStartTime = mAnimTime;
             time = 0;
         } else {
-            time = System.currentTimeMillis() - mStartTime;
+            time = mAnimTime - mStartTime;
         }
         if (mRepeatMode == RESTART) {
             float fraction = time % mCycle / (float) mCycle;
