@@ -156,6 +156,10 @@ public class MainActivity extends AppCompatActivity {
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
+        mainRenderCanvas.addDrawing(new RepeatPointDrawing(layoutParams));
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
         mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
 
