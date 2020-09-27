@@ -141,6 +141,7 @@ public abstract class Drawing implements IDrawing, IViewPort, IDispatchSingleTap
     }
 
     @Override
+    @CallSuper
     public void updateViewPort(int left, int top, int right, int bottom) {
         if (mDrawingPortLayout != null && mDrawingPortLayout.inUpdateChildLayout()) {
             mViewPort.set(left, top, right, bottom);

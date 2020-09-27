@@ -145,6 +145,10 @@ public abstract class TriggerRepeatAnimDrawing extends AbstractAnimDrawing{
         }
     }
 
+    public boolean isPause() {
+        return mPause;
+    }
+
     public float getAnimProcess() {
         if (mCycleTime == 0 || !inAnimTime()) return 1.0f;
         final long time = mAnimProcessTime - mCycleStartTime;
@@ -152,7 +156,7 @@ public abstract class TriggerRepeatAnimDrawing extends AbstractAnimDrawing{
             float fraction = time % mCycleTime / (float) mCycleTime;
             return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
         } else {
-            long l = time / mCycleTime / 2;
+            long l = time / mCycleTime % 2;
             if (l == 0) {
                 // 正向
                 float fraction = time % mCycleTime / (float) mCycleTime;

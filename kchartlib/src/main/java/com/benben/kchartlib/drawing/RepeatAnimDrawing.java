@@ -60,7 +60,7 @@ public abstract class RepeatAnimDrawing extends AutoAnimDrawing {
             float fraction = time % mCycleTime / (float) mCycleTime;
             return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
         } else {
-            long l = time / mCycleTime / 2;
+            long l = time / mCycleTime % 2;
             if (l == 0) {
                 // 正向
                 float fraction = time % mCycleTime / (float) mCycleTime;

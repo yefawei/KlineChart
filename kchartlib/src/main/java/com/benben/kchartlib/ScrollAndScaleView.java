@@ -307,8 +307,8 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             if (!dispatchSingleTap(Math.round(e.getX()), Math.round(e.getY()))) {
                 onSingleTap(e.getX(), e.getY());
                 performClick();
-                invalidate();
             }
+            invalidate();
             return true;
         }
         return false;
