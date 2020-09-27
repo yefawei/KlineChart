@@ -18,9 +18,6 @@ import com.benben.kchartlib.index.range.IndexRange;
  */
 public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animation {
 
-    public static final int RESTART = 1;    // 重新开始
-    public static final int REVERSE = 2;    // 逆转
-
     private boolean mInAnimationManager;
     boolean mInAnim;
     long mAnimProcessTime;
@@ -32,6 +29,7 @@ public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animat
 
     private long mCycleTime = 1000;     // 单个周期时间
     private long mCycleStartTime = 0;   // 周期开始时间
+    private boolean mPause;
 
     private Interpolator mInterpolator;
 
@@ -53,7 +51,7 @@ public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animat
     @Override
     public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider) {
         super.attachedParentPortLayout(portLayout, dataProvider);
-        if (inAnimTime() && !mInAnimationManager) {
+        if (inAnimTime() && !mInAnimationManager && !mPause) {
             mDataProvider.getChartAnimation().addAnim(this);
         }
     }
@@ -110,8 +108,12 @@ public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animat
     }
 
     @Override
-    public final void updateAnimProcessTime(long time) {
+    @CallSuper
+    public void updateAnimProcessTime(long time) {
         mAnimProcessTime = time;
+        if (mCycleStartTime == 0) {
+            mCycleStartTime = mAnimProcessTime;
+        }
     }
 
     /**
@@ -145,8 +147,9 @@ public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animat
 
     /**
      * 开始重复动画
+     *
      * @param repeatCount 重复次数
-     * @param cycleTime 单个周期时长
+     * @param cycleTime   单个周期时长
      */
     public void startRepeatAnim(int repeatCount, long cycleTime) {
         if (repeatCount <= 0 || cycleTime <= 0) {
@@ -160,8 +163,32 @@ public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animat
             mAnimEndTime = mAnimStartTime + repeatCount * cycleTime;
         }
         mCycleTime = cycleTime;
+        mPause = false;
         if (isAttachedParentPortLayout() && !mInAnimationManager) {
             mDataProvider.getChartAnimation().addAnim(this);
+        }
+    }
+
+    public void resume() {
+        if (!mPause) {
+            return;
+        }
+        mPause = false;
+        if (!inAnimTime()) {
+            return;
+        }
+        if (isAttachedParentPortLayout() && !mInAnimationManager) {
+            mDataProvider.getChartAnimation().addAnim(this);
+        }
+    }
+
+    public void pause() {
+        if (!inAnimTime()) {
+            return;
+        }
+        mPause = true;
+        if (mInAnimationManager) {
+            mDataProvider.getChartAnimation().removeAnim(this);
         }
     }
 
@@ -169,6 +196,7 @@ public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animat
         mAnimStartTime = 0;
         mAnimEndTime = 0;
         mCycleTime = 0;
+        mPause = false;
         if (mInAnimationManager) {
             mDataProvider.getChartAnimation().removeAnim(this);
         }
@@ -177,13 +205,7 @@ public abstract class TriggerRepeatAnimDrawing extends Drawing implements Animat
     public float getAnimProcess() {
         if (mCycleTime == 0 || !inAnimTime()) return 1.0f;
         ensureInterpolator();
-        final long time;
-        if (mCycleStartTime == 0) {
-            mCycleStartTime = mAnimProcessTime;
-            time = 0;
-        } else {
-            time = mAnimProcessTime - mCycleStartTime;
-        }
+        final long time = mAnimProcessTime - mCycleStartTime;
         if (mRepeatMode == RESTART) {
             float fraction = time % mCycleTime / (float) mCycleTime;
             return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));

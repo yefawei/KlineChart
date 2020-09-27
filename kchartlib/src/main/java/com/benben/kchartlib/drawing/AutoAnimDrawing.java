@@ -89,7 +89,8 @@ public abstract class AutoAnimDrawing extends Drawing implements Animation {
     }
 
     @Override
-    public final void updateAnimProcessTime(long time) {
+    @CallSuper
+    public void updateAnimProcessTime(long time) {
         mAnimProcessTime = time;
     }
 }

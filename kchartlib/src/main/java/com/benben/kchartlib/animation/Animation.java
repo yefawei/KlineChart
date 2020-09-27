@@ -6,6 +6,8 @@ package com.benben.kchartlib.animation;
  */
 public interface Animation {
 
+    int RESTART = 1;    // 重新开始
+    int REVERSE = 2;    // 逆转
 
     boolean inAnimationManager();
 

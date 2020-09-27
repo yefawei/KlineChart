@@ -14,9 +14,6 @@ import com.benben.kchartlib.index.range.IndexRange;
  */
 public abstract class RepeatAnimDrawing extends AutoAnimDrawing {
 
-    public static final int RESTART = 1;    // 重新开始
-    public static final int REVERSE = 2;    // 逆转
-
     private int mRepeatMode = RESTART;
 
     private long mCycleTime = 1000;     // 单个周期时间
@@ -38,6 +35,14 @@ public abstract class RepeatAnimDrawing extends AutoAnimDrawing {
 
     public RepeatAnimDrawing(@Nullable IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
+    }
+
+    @Override
+    public void updateAnimProcessTime(long time) {
+        super.updateAnimProcessTime(time);
+        if (mCycleStartTime == 0) {
+            mCycleStartTime = mAnimProcessTime;
+        }
     }
 
     /**
@@ -80,13 +85,7 @@ public abstract class RepeatAnimDrawing extends AutoAnimDrawing {
     public float getAnimProcess() {
         if (mCycleTime == 0) return 1.0f;
         ensureInterpolator();
-        final long time;
-        if (mCycleStartTime == 0) {
-            mCycleStartTime = mAnimProcessTime;
-            time = 0;
-        } else {
-            time = mAnimProcessTime - mCycleStartTime;
-        }
+        final long time = mAnimProcessTime - mCycleStartTime;
         if (mRepeatMode == RESTART) {
             float fraction = time % mCycleTime / (float) mCycleTime;
             return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
