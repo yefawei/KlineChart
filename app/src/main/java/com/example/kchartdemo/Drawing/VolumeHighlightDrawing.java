@@ -1,11 +1,12 @@
 package com.example.kchartdemo.Drawing;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.benben.kchartlib.canvas.RendererCanvas;
-import com.benben.kchartlib.drawing.Drawing;
+import com.benben.kchartlib.drawing.AbstractAnimDrawing;
+import com.benben.kchartlib.drawing.TriggerRepeatAnimDrawing;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.touch.TapMarkerOption;
 import com.benben.kchartlib.touch.TouchTapManager;
@@ -14,16 +15,31 @@ import com.benben.kchartlib.touch.TouchTapManager;
  * @日期 : 2020/8/31
  * @描述 : 成交量高亮
  */
-public class VolumeHighlightDrawing extends Drawing {
+public class VolumeHighlightDrawing extends TriggerRepeatAnimDrawing {
 
     private final Paint mPaint;
 
     public VolumeHighlightDrawing(VolumeIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
+        setInterpolator(new AccelerateDecelerateInterpolator());
+        setRepeatMode(AbstractAnimDrawing.REVERSE);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(Color.YELLOW);
-        mPaint.setAlpha(127);
         mPaint.setStrokeWidth(6);
+    }
+
+    @Override
+    public void preCalcDataValue() {
+        super.preCalcDataValue();
+        if (mDataProvider.getTouchTapManager().hasSingleTap()
+                || mDataProvider.getTouchTapManager().hasLongTap()) {
+            if (!inAnimTime()) {
+                startRepeatAnim(Integer.MAX_VALUE, 1_000);
+            }
+        } else {
+            if (inAnimTime()) {
+                stopRepeatAnim();
+            }
+        }
     }
 
     @Override
@@ -40,20 +56,30 @@ public class VolumeHighlightDrawing extends Drawing {
     }
 
     private void drawHighlight(Canvas canvas, TapMarkerOption marker) {
+        mPaint.setColor(0xBBFFFF00);
         float x = mDataProvider.getTransformer().getPointInScreenXByIndex(marker.getIndex());
         canvas.drawLine(x, mViewPort.top, x, mViewPort.bottom, mPaint);
         float y = marker.getY();
         if (mViewPort.top < y && mViewPort.bottom > y) {
             canvas.drawLine(mViewPort.left, y, mViewPort.right, y, mPaint);
+            if (inAnim()) {
+                mPaint.setColor(0xBBFFFFFF);
+                canvas.drawCircle(x, y, getAnimProcess() * 40, mPaint);
+            }
         }
     }
 
     private void drawFixHighlight(Canvas canvas, TapMarkerOption marker) {
+        mPaint.setColor(0xBBFFFF00);
         float x = mDataProvider.getTransformer().getPointInScreenXByIndex(marker.getIndex());
         canvas.drawLine(x, mViewPort.top, x, mViewPort.bottom, mPaint);
         float y = marker.getY();
         if (mViewPort.top < y && mViewPort.bottom > y) {
             canvas.drawLine(mViewPort.left, y, mViewPort.right, y, mPaint);
+            if (inAnim()) {
+                mPaint.setColor(0xBBFFFFFF);
+                canvas.drawCircle(x, y, getAnimProcess() * 40, mPaint);
+            }
         }
     }
 }
