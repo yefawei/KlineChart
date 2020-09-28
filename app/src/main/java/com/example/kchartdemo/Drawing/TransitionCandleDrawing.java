@@ -34,7 +34,7 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
         if (!(indexRange.getRealIndexRange() instanceof CandleIndexRange)) {
             throw new IllegalArgumentException("RealIndexRange is not CandleIndexRange!");
         }
-        indexRange.setOnCalcValueListener(this);
+        indexRange.addOnCalcValueListener(this);
         indexRange.setInterpolator(new DecelerateInterpolator());
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);

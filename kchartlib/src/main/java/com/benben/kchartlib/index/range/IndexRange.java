@@ -1,13 +1,16 @@
 package com.benben.kchartlib.index.range;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.index.IEntity;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,7 +36,7 @@ public abstract class IndexRange {
     private int mMaxIndex; // 屏幕内最大值的索引
     private int mMinIndex; // 屏幕内最小值的索引
 
-    protected OnCalcValueListener mOnCalcValueListener;
+    protected List<OnCalcValueListener> mOnCalcValueListeners;
 
     private Map<String, Object> mExtendedData = new HashMap<>();
 
@@ -95,7 +98,11 @@ public abstract class IndexRange {
         }
         mMaxIndex = -1;
         mMinIndex = -1;
-        if (mOnCalcValueListener != null) mOnCalcValueListener.onResetValue(isEmptyData);
+        if (mOnCalcValueListeners != null) {
+            for (OnCalcValueListener listener : mOnCalcValueListeners) {
+                listener.onResetValue(isEmptyData);
+            }
+        }
     }
 
     /**
@@ -176,7 +183,11 @@ public abstract class IndexRange {
      * 计算结束
      */
     public void calcValueEnd() {
-        if (mOnCalcValueListener != null) mOnCalcValueListener.onCalcValueEnd();
+        if (mOnCalcValueListeners != null) {
+            for (OnCalcValueListener listener : mOnCalcValueListeners) {
+                listener.onCalcValueEnd();
+            }
+        }
     }
 
     /**
@@ -247,8 +258,23 @@ public abstract class IndexRange {
         return curMinValue;
     }
 
-    public void setOnCalcValueListener(OnCalcValueListener listener) {
-        mOnCalcValueListener = listener;
+    public void addOnCalcValueListener(@NonNull OnCalcValueListener listener) {
+        if (mOnCalcValueListeners == null) {
+            mOnCalcValueListeners = new ArrayList<>();
+        }
+        mOnCalcValueListeners.add(listener);
+    }
+
+    public void removerOnCalcValueListener(@NonNull OnCalcValueListener listener) {
+        if (mOnCalcValueListeners != null) {
+            mOnCalcValueListeners.remove(listener);
+        }
+    }
+
+    public void clearOnCalcValueListener() {
+        if (mOnCalcValueListeners != null) {
+            mOnCalcValueListeners.clear();
+        }
     }
 
     /**

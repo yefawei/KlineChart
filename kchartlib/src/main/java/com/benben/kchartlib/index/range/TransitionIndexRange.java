@@ -31,7 +31,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
             throw new IllegalArgumentException("ReverseIndexRange: IndexRange cannot be empty.");
         }
         mIndexRange = indexRange;
-        mIndexRange.setOnCalcValueListener(this);
+        mIndexRange.addOnCalcValueListener(this);
     }
 
     @Override
@@ -96,6 +96,11 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         mTargetMaxValue = 0;
         mTargetMinValue = 0;
         unlockChange();
+        if (mOnCalcValueListeners != null) {
+            for (OnCalcValueListener listener : mOnCalcValueListeners) {
+                listener.onResetValue(isEmptyData);
+            }
+        }
     }
 
     @Override
@@ -103,7 +108,11 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         if (Float.isNaN(mLastMaxValue) || Float.isNaN(mLastMinValue)) {
             mLastMaxValue = mTargetMaxValue = mIndexRange.getMaxValue();
             mLastMinValue = mTargetMinValue = mIndexRange.getMinValue();
-            if (mOnCalcValueListener != null) mOnCalcValueListener.onCalcValueEnd();
+            if (mOnCalcValueListeners != null) {
+                for (OnCalcValueListener listener : mOnCalcValueListeners) {
+                    listener.onCalcValueEnd();
+                }
+            }
             return;
         }
         float currMaxValue = mIndexRange.getMaxValue();
@@ -120,7 +129,11 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
             mTargetMinValue = currMinValue;
             unlockChange();
         }
-        if (mOnCalcValueListener != null) mOnCalcValueListener.onCalcValueEnd();
+        if (mOnCalcValueListeners != null) {
+            for (OnCalcValueListener listener : mOnCalcValueListeners) {
+                listener.onCalcValueEnd();
+            }
+        }
     }
 
     /**

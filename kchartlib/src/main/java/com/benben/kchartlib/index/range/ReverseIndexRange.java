@@ -17,7 +17,7 @@ public final class ReverseIndexRange extends IndexRange implements IndexRangeCon
             throw new IllegalArgumentException("ReverseIndexRange: IndexRange cannot be empty.");
         }
         mIndexRange = indexRange;
-        mIndexRange.setOnCalcValueListener(this);
+        mIndexRange.addOnCalcValueListener(this);
     }
 
     @Override
@@ -62,11 +62,19 @@ public final class ReverseIndexRange extends IndexRange implements IndexRangeCon
 
     @Override
     public void onResetValue(boolean isEmptyData) {
-        if (mOnCalcValueListener != null) mOnCalcValueListener.onResetValue(isEmptyData);
+        if (mOnCalcValueListeners != null) {
+            for (OnCalcValueListener listener : mOnCalcValueListeners) {
+                listener.onResetValue(isEmptyData);
+            }
+        }
     }
 
     @Override
     public void onCalcValueEnd() {
-        if (mOnCalcValueListener != null) mOnCalcValueListener.onCalcValueEnd();
+        if (mOnCalcValueListeners != null) {
+            for (OnCalcValueListener listener : mOnCalcValueListeners) {
+                listener.onCalcValueEnd();
+            }
+        }
     }
 }
