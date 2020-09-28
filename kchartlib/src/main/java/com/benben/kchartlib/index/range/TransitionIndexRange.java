@@ -15,13 +15,19 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
 
     private float mLastMaxValue = Float.NaN;
     private float mLastMinValue = Float.NaN;
+    private float mTransitionMaxValue;
+    private float mTransitionMinValue;
     private float mTargetMaxValue;
     private float mTargetMinValue;
 
     private boolean mIsLockChange;
+    private long mDuration;
     private long mStartTime;
-    private long mProcessTime;
     private long mEndTime;
+    private long mProcessTime;
+
+    private long mLastProcessTime;
+    private float mBufferFraction;
 
     private Interpolator mInterpolator;
 
@@ -56,26 +62,26 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
 
     @Override
     public float getMaxValue() {
-        if (!mIsLockChange) {
+        if (!mIsLockChange || getSideMode() == IndexRange.DOWN_SIDE) {
             return mIndexRange.getMaxValue();
         }
         float fraction = getProcessFraction();
         if (fraction == 1.0f) {
             return mIndexRange.getMaxValue();
         }
-        return (mTargetMaxValue - mLastMaxValue) * fraction + mLastMaxValue;
+        return mTransitionMaxValue * fraction + mLastMaxValue;
     }
 
     @Override
     public float getMinValue() {
-        if (!mIsLockChange) {
+        if (!mIsLockChange || getSideMode() == IndexRange.UP_SIDE) {
             return mIndexRange.getMinValue();
         }
         float fraction = getProcessFraction();
         if (fraction == 1.0f) {
             return mIndexRange.getMinValue();
         }
-        return (mTargetMinValue - mLastMinValue) * fraction + mLastMinValue;
+        return mTransitionMinValue * fraction + mLastMinValue;
     }
 
     @Override
@@ -93,6 +99,8 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         if (!isEmptyData) return;
         mLastMaxValue = Float.NaN;
         mLastMinValue = Float.NaN;
+        mTransitionMaxValue = 0;
+        mTransitionMinValue = 0;
         mTargetMaxValue = 0;
         mTargetMinValue = 0;
         unlockChange();
@@ -127,6 +135,8 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
             }
             mTargetMaxValue = currMaxValue;
             mTargetMinValue = currMinValue;
+            mTransitionMaxValue = mTargetMaxValue - mLastMaxValue;
+            mTransitionMinValue = mTargetMinValue - mLastMinValue;
             unlockChange();
         }
         if (mOnCalcValueListeners != null) {
@@ -157,6 +167,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         mIsLockChange = true;
         mStartTime = mProcessTime = startTime;
         mEndTime = endTime;
+        mDuration = endTime - startTime;
     }
 
     /**
@@ -165,7 +176,10 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
     public void unlockChange() {
         mIsLockChange = false;
         mStartTime = 0;
+        mDuration = 0;
         mEndTime = 0;
+        mProcessTime = 0;
+        mLastProcessTime = 0;
     }
 
     public boolean isLockChange() {
@@ -191,11 +205,15 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         if (!mIsLockChange) {
             return 1.0f;
         }
-        float fraction = (mProcessTime - mStartTime) / (float) (mEndTime - mStartTime);
-        if (mInterpolator == null) {
-            return Math.max(Math.min(fraction, 1.0f), 0.0f);
+        if (mLastProcessTime == mProcessTime) {
+            return mBufferFraction;
         }
-        return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
+        mLastProcessTime = mProcessTime;
+        float fraction = (mProcessTime - mStartTime) / (float) mDuration;
+        if (mInterpolator == null) {
+            return mBufferFraction = Math.max(Math.min(fraction, 1.0f), 0.0f);
+        }
+        return mBufferFraction = mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
     }
 
     public void setInterpolator(Interpolator i) {
