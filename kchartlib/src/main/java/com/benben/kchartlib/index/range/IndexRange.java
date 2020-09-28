@@ -2,6 +2,7 @@ package com.benben.kchartlib.index.range;
 
 import androidx.annotation.IntDef;
 
+import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.index.IEntity;
 
 import java.lang.annotation.Retention;
@@ -243,5 +244,10 @@ public abstract class IndexRange {
         return curMinValue;
     }
 
+    /**
+     * 获取tag标记，区分不同的指标
+     * 方便{@link Transformer#addIndexRange(IndexRange)}和{@link Transformer#removeIndexRange(IndexRange)}的使用
+     * 返回空或者null将不会被{@link Transformer#addIndexRange(IndexRange)}所添加
+     */
     public abstract String getIndexTag();
 }

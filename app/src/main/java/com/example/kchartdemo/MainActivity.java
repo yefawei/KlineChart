@@ -16,6 +16,7 @@ import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
+import com.benben.kchartlib.index.range.ReverseIndexRange;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.touch.TouchTapManager;
@@ -24,6 +25,7 @@ import com.example.kchartdemo.Drawing.CandleDrawing;
 import com.example.kchartdemo.Drawing.ClickDrawing;
 import com.example.kchartdemo.Drawing.HighlightDrawing;
 import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
+import com.example.kchartdemo.Drawing.RepeatPointDrawing;
 import com.example.kchartdemo.Drawing.RightPaddingDrawing;
 import com.example.kchartdemo.Drawing.TriggerRepeatPointDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
@@ -159,9 +161,9 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.setWeight(1);
         mainRenderCanvas.addDrawing(new TriggerRepeatPointDrawing(layoutParams));
 
-//        layoutParams = new RendererCanvas.DrawingLayoutParams();
-//        layoutParams.setWeight(1);
-//        mainRenderCanvas.addDrawing(new RepeatPointDrawing(layoutParams));
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        mainRenderCanvas.addDrawing(new RepeatPointDrawing(layoutParams));
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);

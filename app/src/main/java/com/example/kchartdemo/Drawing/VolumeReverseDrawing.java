@@ -10,7 +10,7 @@ import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.index.IVolume;
-import com.benben.kchartlib.index.range.IndexReverse;
+import com.benben.kchartlib.index.range.ReverseIndexRange;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 
 /**
@@ -21,10 +21,10 @@ public class VolumeReverseDrawing extends Drawing {
 
     private final Paint mPaint;
 
-    public VolumeReverseDrawing(IndexReverse indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public VolumeReverseDrawing(ReverseIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
-        if (!(indexRange.getIndexRange() instanceof VolumeIndexRange)) {
-            throw new IllegalArgumentException("IndexReverse is not VolumeIndexRange.");
+        if (!(indexRange.getRealIndexRange() instanceof VolumeIndexRange)) {
+            throw new IllegalArgumentException("ReverseIndexRange is not VolumeIndexRange.");
         }
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);

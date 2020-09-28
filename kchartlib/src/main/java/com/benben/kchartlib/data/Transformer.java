@@ -9,6 +9,7 @@ import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IMainCanvasPort;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.IndexRange;
+import com.benben.kchartlib.index.range.IndexRangeContainer;
 import com.benben.kchartlib.index.range.IndexRangeSet;
 
 import java.util.Collection;
@@ -230,43 +231,57 @@ public class Transformer {
     }
 
     /**
-     * 添加相关指标计算类，如果{@link IndexRange#getIndexTag()}一致，会在原有基础计数器+1，
-     * 并要求已存对象与传入对象一致，防止重复计算
+     * 添加相关指标计算类，如果{@link IndexRange#getIndexTag()}返回值一致，会被认为是同一类型的指标，
+     * 会在原有基础计数器+1，不会被添加进{@link #mIndexMap}计算容器中
      */
     public void addIndexRange(IndexRange indexRange) {
-        if (indexRange == null || TextUtils.isEmpty(indexRange.getIndexTag())) return;
+        final IndexRange realIndex = getRealIndexRange(indexRange);
+        if (realIndex == null || TextUtils.isEmpty(realIndex.getIndexTag())) return;
 
-        if (indexRange instanceof IndexRangeSet) {
-            ((IndexRangeSet) indexRange).setCanChangeIndex(false);
+        if (realIndex instanceof IndexRangeSet) {
+            ((IndexRangeSet) realIndex).setCanChangeIndex(false);
         }
-        Integer count = mIndexCount.get(indexRange.getIndexTag());
+        Integer count = mIndexCount.get(realIndex.getIndexTag());
         if (count == null) {
-            mIndexCount.put(indexRange.getIndexTag(), 1);
-            mIndexMap.put(indexRange.getIndexTag(), indexRange);
+            mIndexCount.put(realIndex.getIndexTag(), 1);
+            mIndexMap.put(realIndex.getIndexTag(), realIndex);
             return;
         }
-        if (mIndexMap.get(indexRange.getIndexTag()) != indexRange) {
-            throw new IllegalArgumentException("Inconsistent indexRange instances: " + indexRange.getIndexTag());
+        if (mIndexMap.get(realIndex.getIndexTag()) != realIndex) {
+            throw new IllegalArgumentException("Inconsistent indexRange instances: " + realIndex.getIndexTag());
         }
-        mIndexCount.put(indexRange.getIndexTag(), count + 1);
-
+        mIndexCount.put(realIndex.getIndexTag(), count + 1);
     }
 
     /**
-     * 移除指标计算类，会先通过{@link IndexRange#getIndexTag()}判断计数器是否等于1，等于就移除，否则计数器-1
+     * 移除指标计算类，如果{@link IndexRange#getIndexTag()}返回值一致，会被认为是同一类型的指标，
+     * 会在原有基础计数器-1，如果
      */
     public void removeIndexRange(IndexRange indexRange) {
-        if (indexRange == null || TextUtils.isEmpty(indexRange.getIndexTag())) return;
+        final IndexRange realIndex = getRealIndexRange(indexRange);
+        if (realIndex == null || TextUtils.isEmpty(realIndex.getIndexTag())) return;
 
-        Integer count = mIndexCount.get(indexRange.getIndexTag());
+        Integer count = mIndexCount.get(realIndex.getIndexTag());
         if (count == null) return;
         if (count > 1) {
-            mIndexCount.put(indexRange.getIndexTag(), count - 1);
+            mIndexCount.put(realIndex.getIndexTag(), count - 1);
+            return;
         }
-        mIndexCount.remove(indexRange.getIndexTag());
-        IndexRange remove = mIndexMap.remove(indexRange.getIndexTag());
+        mIndexCount.remove(realIndex.getIndexTag());
+        IndexRange remove = mIndexMap.remove(realIndex.getIndexTag());
         if (remove instanceof IndexRangeSet) {
             ((IndexRangeSet) remove).setCanChangeIndex(true);
+        }
+    }
+
+    /**
+     * 获取真实的指标计算类
+     */
+    private IndexRange getRealIndexRange(IndexRange indexRange) {
+        if (indexRange instanceof IndexRangeContainer) {
+            return getRealIndexRange(((IndexRangeContainer) indexRange).getRealIndexRange());
+        } else {
+            return indexRange;
         }
     }
 
