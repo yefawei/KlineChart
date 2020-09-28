@@ -36,7 +36,7 @@ public abstract class IndexRange {
     private int mMaxIndex; // 屏幕内最大值的索引
     private int mMinIndex; // 屏幕内最小值的索引
 
-    protected List<OnCalcValueListener> mOnCalcValueListeners;
+    private List<OnCalcValueListener> mOnCalcValueListeners;
 
     private Map<String, Object> mExtendedData = new HashMap<>();
 
@@ -98,6 +98,10 @@ public abstract class IndexRange {
         }
         mMaxIndex = -1;
         mMinIndex = -1;
+        dispatchResetValue(isEmptyData);
+    }
+
+    protected void dispatchResetValue(boolean isEmptyData) {
         if (mOnCalcValueListeners != null) {
             for (OnCalcValueListener listener : mOnCalcValueListeners) {
                 listener.onResetValue(isEmptyData);
@@ -183,6 +187,10 @@ public abstract class IndexRange {
      * 计算结束
      */
     public void calcValueEnd() {
+        dispatchCalcValueEnd();
+    }
+
+    protected void dispatchCalcValueEnd() {
         if (mOnCalcValueListeners != null) {
             for (OnCalcValueListener listener : mOnCalcValueListeners) {
                 listener.onCalcValueEnd();

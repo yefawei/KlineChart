@@ -62,19 +62,11 @@ public final class ReverseIndexRange extends IndexRange implements IndexRangeCon
 
     @Override
     public void onResetValue(boolean isEmptyData) {
-        if (mOnCalcValueListeners != null) {
-            for (OnCalcValueListener listener : mOnCalcValueListeners) {
-                listener.onResetValue(isEmptyData);
-            }
-        }
+        dispatchResetValue(isEmptyData);
     }
 
     @Override
     public void onCalcValueEnd() {
-        if (mOnCalcValueListeners != null) {
-            for (OnCalcValueListener listener : mOnCalcValueListeners) {
-                listener.onCalcValueEnd();
-            }
-        }
+        dispatchCalcValueEnd();
     }
 }

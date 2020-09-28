@@ -104,11 +104,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         mTargetMaxValue = 0;
         mTargetMinValue = 0;
         unlockChange();
-        if (mOnCalcValueListeners != null) {
-            for (OnCalcValueListener listener : mOnCalcValueListeners) {
-                listener.onResetValue(isEmptyData);
-            }
-        }
+        dispatchResetValue(isEmptyData);
     }
 
     @Override
@@ -116,11 +112,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         if (Float.isNaN(mLastMaxValue) || Float.isNaN(mLastMinValue)) {
             mLastMaxValue = mTargetMaxValue = mIndexRange.getMaxValue();
             mLastMinValue = mTargetMinValue = mIndexRange.getMinValue();
-            if (mOnCalcValueListeners != null) {
-                for (OnCalcValueListener listener : mOnCalcValueListeners) {
-                    listener.onCalcValueEnd();
-                }
-            }
+            dispatchCalcValueEnd();
             return;
         }
         float currMaxValue = mIndexRange.getMaxValue();
@@ -139,11 +131,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
             mTransitionMinValue = mTargetMinValue - mLastMinValue;
             unlockChange();
         }
-        if (mOnCalcValueListeners != null) {
-            for (OnCalcValueListener listener : mOnCalcValueListeners) {
-                listener.onCalcValueEnd();
-            }
-        }
+        dispatchCalcValueEnd();
     }
 
     /**
