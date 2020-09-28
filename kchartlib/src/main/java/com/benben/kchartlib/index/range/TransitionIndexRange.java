@@ -1,6 +1,7 @@
 package com.benben.kchartlib.index.range;
 
 import android.view.animation.Interpolator;
+
 import com.benben.kchartlib.data.Transformer;
 
 /**
@@ -8,7 +9,7 @@ import com.benben.kchartlib.data.Transformer;
  * @描述 : 最大最小值过渡计算类
  * 注意：该类不会被{@link Transformer}所计算
  */
-public final class TransitionIndexRange extends IndexRange implements IndexRangeContainer, IndexRange.OnCalcValueEndListener {
+public final class TransitionIndexRange extends IndexRange implements IndexRangeContainer, IndexRange.OnCalcValueListener {
 
     private IndexRange mIndexRange;
 
@@ -30,7 +31,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
             throw new IllegalArgumentException("ReverseIndexRange: IndexRange cannot be empty.");
         }
         mIndexRange = indexRange;
-        mIndexRange.setOnCalcValueEndListener(this);
+        mIndexRange.setOnCalcValueListener(this);
     }
 
     @Override
@@ -88,11 +89,21 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
     }
 
     @Override
+    public void onResetValue(boolean isEmptyData) {
+        if (!isEmptyData) return;
+        mLastMaxValue = Float.NaN;
+        mLastMinValue = Float.NaN;
+        mTargetMaxValue = 0;
+        mTargetMinValue = 0;
+        unlockChange();
+    }
+
+    @Override
     public void onCalcValueEnd() {
         if (Float.isNaN(mLastMaxValue) || Float.isNaN(mLastMinValue)) {
             mLastMaxValue = mTargetMaxValue = mIndexRange.getMaxValue();
             mLastMinValue = mTargetMinValue = mIndexRange.getMinValue();
-            if (mOnCalcValueEndListener != null) mOnCalcValueEndListener.onCalcValueEnd();
+            if (mOnCalcValueListener != null) mOnCalcValueListener.onCalcValueEnd();
             return;
         }
         float currMaxValue = mIndexRange.getMaxValue();
@@ -109,7 +120,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
             mTargetMinValue = currMinValue;
             unlockChange();
         }
-        if (mOnCalcValueEndListener != null) mOnCalcValueEndListener.onCalcValueEnd();
+        if (mOnCalcValueListener != null) mOnCalcValueListener.onCalcValueEnd();
     }
 
     /**

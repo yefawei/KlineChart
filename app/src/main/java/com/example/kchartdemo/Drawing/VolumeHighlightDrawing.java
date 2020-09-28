@@ -35,16 +35,16 @@ public class VolumeHighlightDrawing extends TriggerRepeatAnimDrawing<VolumeIndex
     @Override
     public void preCalcDataValue() {
         super.preCalcDataValue();
-        if (mDataProvider.getTouchTapManager().hasSingleTap()
-                || mDataProvider.getTouchTapManager().hasLongTap()) {
-            if (!inAnimTime()) {
-                startRepeatAnim(Integer.MAX_VALUE, 1_000);
-            }
-        } else {
-            if (inAnimTime()) {
-                stopRepeatAnim();
-            }
-        }
+//        if (mDataProvider.getTouchTapManager().hasSingleTap()
+//                || mDataProvider.getTouchTapManager().hasLongTap()) {
+//            if (!inAnimTime()) {
+//                startRepeatAnim(Integer.MAX_VALUE, 1_000);
+//            }
+//        } else {
+//            if (inAnimTime()) {
+//                stopRepeatAnim();
+//            }
+//        }
     }
 
     @Override

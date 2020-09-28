@@ -22,7 +22,7 @@ import java.util.Locale;
  * @日期 : 2020/7/14
  * @描述 : 最大值最小值有变更以动画的形式过渡蜡烛图
  */
-public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexRange> implements IndexRange.OnCalcValueEndListener {
+public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexRange> implements IndexRange.OnCalcValueListener {
 
     private Date date = new Date();
     private static final SimpleDateFormat format = new SimpleDateFormat("MM-dd", Locale.getDefault());
@@ -34,12 +34,17 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
         if (!(indexRange.getRealIndexRange() instanceof CandleIndexRange)) {
             throw new IllegalArgumentException("RealIndexRange is not CandleIndexRange!");
         }
-        indexRange.setOnCalcValueEndListener(this);
+        indexRange.setOnCalcValueListener(this);
         indexRange.setInterpolator(new DecelerateInterpolator());
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(3);
         mPaint.setTextSize(18);
+    }
+
+    @Override
+    public void onResetValue(boolean isEmptyData) {
+
     }
 
     @Override
@@ -54,11 +59,6 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
     public void updateAnimProcessTime(long time) {
         super.updateAnimProcessTime(time);
         mIndexRange.updateProcessTime(time);
-    }
-
-    @Override
-    public void callInAnimation(boolean in) {
-        super.callInAnimation(in);
     }
 
     @Override

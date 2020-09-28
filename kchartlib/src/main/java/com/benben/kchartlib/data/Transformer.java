@@ -111,6 +111,9 @@ public class Transformer {
      * 重置数据边界
      */
     public void resetBounds() {
+        for (IndexRange value : mIndexMap.values()) {
+            value.resetValue(true);
+        }
         int oldStartIndex = mStartIndex;
         int oldStopIndex = mStopIndex;
         mPointXBuffer = sEmptyPointXBuffer;
@@ -148,12 +151,7 @@ public class Transformer {
         for (int i = 0; i < mPointXBuffer.length; i++) {
             mPointXBuffer[i] = i * mDataProvider.getScalePointWidth() + mStartPointX;
         }
-        for (IndexRange value : mIndexMap.values()) {
-            value.resetValue();
-        }
-        if (getItemCount() > 0) {
-            calcMinMax(mDataProvider.getAdapter());
-        }
+        calcMinMax(mDataProvider.getAdapter());
         if (mViewIndexListener != null && (mStartIndex != oldStartIndex || mStopIndex != oldStopIndex)) {
             mViewIndexListener.viewIndex(mStartIndex, mStopIndex);
         }
@@ -212,6 +210,9 @@ public class Transformer {
      * @param adapter
      */
     private void calcMinMax(BaseKChartAdapter adapter) {
+        for (IndexRange value : mIndexMap.values()) {
+            value.resetValue(false);
+        }
         Collection<IndexRange> values = mIndexMap.values();
         for (IndexRange value : values) {
             value.calcExtendedData();

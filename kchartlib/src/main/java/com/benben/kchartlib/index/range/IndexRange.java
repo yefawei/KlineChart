@@ -33,7 +33,7 @@ public abstract class IndexRange {
     private int mMaxIndex; // 屏幕内最大值的索引
     private int mMinIndex; // 屏幕内最小值的索引
 
-    protected OnCalcValueEndListener mOnCalcValueEndListener;
+    protected OnCalcValueListener mOnCalcValueListener;
 
     private Map<String, Object> mExtendedData = new HashMap<>();
 
@@ -84,7 +84,7 @@ public abstract class IndexRange {
     /**
      * 重置数据
      */
-    public void resetValue() {
+    public void resetValue(boolean isEmptyData) {
         if (mSideMode == DOUBLE_SIDE) {
             mMaxValue = Float.MIN_VALUE;
             mMinValue = Float.MAX_VALUE;
@@ -95,6 +95,7 @@ public abstract class IndexRange {
         }
         mMaxIndex = -1;
         mMinIndex = -1;
+        if (mOnCalcValueListener != null) mOnCalcValueListener.onResetValue(isEmptyData);
     }
 
     /**
@@ -107,7 +108,7 @@ public abstract class IndexRange {
     /**
      * 移除所有扩展计算数据
      */
-    public void chearExtendedCalcData() {
+    public void clearExtendedCalcData() {
         mExtendedData.clear();
     }
 
@@ -175,7 +176,7 @@ public abstract class IndexRange {
      * 计算结束
      */
     public void calcValueEnd() {
-        if (mOnCalcValueEndListener != null) mOnCalcValueEndListener.onCalcValueEnd();
+        if (mOnCalcValueListener != null) mOnCalcValueListener.onCalcValueEnd();
     }
 
     /**
@@ -246,8 +247,8 @@ public abstract class IndexRange {
         return curMinValue;
     }
 
-    public void setOnCalcValueEndListener(OnCalcValueEndListener listener) {
-        mOnCalcValueEndListener = listener;
+    public void setOnCalcValueListener(OnCalcValueListener listener) {
+        mOnCalcValueListener = listener;
     }
 
     /**
@@ -257,7 +258,10 @@ public abstract class IndexRange {
      */
     public abstract String getIndexTag();
 
-    public interface OnCalcValueEndListener {
+    public interface OnCalcValueListener {
+
+        void onResetValue(boolean isEmptyData);
+
         void onCalcValueEnd();
     }
 }

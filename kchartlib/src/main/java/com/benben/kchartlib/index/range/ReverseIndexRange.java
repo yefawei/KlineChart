@@ -7,7 +7,7 @@ import com.benben.kchartlib.data.Transformer;
  * @描述 :指标计算反转，用于实现同一指标{@link IndexRange#isReverse}返回值不同
  * 注意：该类不会被{@link Transformer}所计算
  */
-public final class ReverseIndexRange extends IndexRange implements IndexRangeContainer, IndexRange.OnCalcValueEndListener {
+public final class ReverseIndexRange extends IndexRange implements IndexRangeContainer, IndexRange.OnCalcValueListener {
 
     private IndexRange mIndexRange;
 
@@ -17,7 +17,7 @@ public final class ReverseIndexRange extends IndexRange implements IndexRangeCon
             throw new IllegalArgumentException("ReverseIndexRange: IndexRange cannot be empty.");
         }
         mIndexRange = indexRange;
-        mIndexRange.setOnCalcValueEndListener(this);
+        mIndexRange.setOnCalcValueListener(this);
     }
 
     @Override
@@ -61,7 +61,12 @@ public final class ReverseIndexRange extends IndexRange implements IndexRangeCon
     }
 
     @Override
+    public void onResetValue(boolean isEmptyData) {
+        if (mOnCalcValueListener != null) mOnCalcValueListener.onResetValue(isEmptyData);
+    }
+
+    @Override
     public void onCalcValueEnd() {
-        if (mOnCalcValueEndListener != null) mOnCalcValueEndListener.onCalcValueEnd();
+        if (mOnCalcValueListener != null) mOnCalcValueListener.onCalcValueEnd();
     }
 }
