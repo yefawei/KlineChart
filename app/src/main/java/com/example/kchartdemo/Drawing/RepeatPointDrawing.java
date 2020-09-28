@@ -10,12 +10,13 @@ import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.drawing.RepeatAnimDrawing;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IParentPortLayout;
+import com.benben.kchartlib.index.range.IndexRange;
 
 /**
  * @日期 : 2020/9/27
  * @描述 : 自动触发重复点动画
  */
-public class RepeatPointDrawing extends RepeatAnimDrawing {
+public class RepeatPointDrawing extends RepeatAnimDrawing<IndexRange> {
 
     private final Paint mPaint;
 

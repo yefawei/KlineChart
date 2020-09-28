@@ -11,7 +11,7 @@ import com.benben.kchartlib.index.range.IndexRange;
  * @日期 : 2020/7/10
  * @描述 : 自动执行动画的绘制，适合持续性的动画
  */
-public abstract class AutoAnimDrawing extends AbstractAnimDrawing{
+public abstract class AutoAnimDrawing<T extends IndexRange> extends AbstractAnimDrawing<T>{
 
     public AutoAnimDrawing() {
     }
@@ -20,11 +20,11 @@ public abstract class AutoAnimDrawing extends AbstractAnimDrawing{
         super(params);
     }
 
-    public AutoAnimDrawing(@Nullable IndexRange indexRange) {
+    public AutoAnimDrawing(@Nullable T indexRange) {
         super(indexRange);
     }
 
-    public AutoAnimDrawing(@Nullable IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public AutoAnimDrawing(@Nullable T indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
     }
 

@@ -15,7 +15,7 @@ import com.benben.kchartlib.touch.TouchTapManager;
  * @日期 : 2020/8/31
  * @描述 : 成交量高亮
  */
-public class VolumeHighlightDrawing extends TriggerRepeatAnimDrawing {
+public class VolumeHighlightDrawing extends TriggerRepeatAnimDrawing<VolumeIndexRange> {
 
     private final Paint mPaint;
 

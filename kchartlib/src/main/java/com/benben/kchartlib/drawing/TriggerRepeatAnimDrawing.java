@@ -12,7 +12,7 @@ import com.benben.kchartlib.index.range.IndexRange;
  * @日期 : 2020/7/10
  * @描述 : 主动触发重复动画的绘制
  */
-public abstract class TriggerRepeatAnimDrawing extends AbstractAnimDrawing{
+public abstract class TriggerRepeatAnimDrawing<T extends IndexRange> extends AbstractAnimDrawing<T>{
 
     private long mAnimStartTime;
     private long mAnimEndTime;
@@ -28,11 +28,11 @@ public abstract class TriggerRepeatAnimDrawing extends AbstractAnimDrawing{
         super(params);
     }
 
-    public TriggerRepeatAnimDrawing(@Nullable IndexRange indexRange) {
+    public TriggerRepeatAnimDrawing(@Nullable T indexRange) {
         super(indexRange);
     }
 
-    public TriggerRepeatAnimDrawing(@Nullable IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public TriggerRepeatAnimDrawing(@Nullable T indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
     }
 

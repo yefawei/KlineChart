@@ -15,7 +15,7 @@ import com.benben.kchartlib.touch.TouchTapManager;
  * @日期 : 2020/8/31
  * @描述 : k线高亮
  */
-public class HighlightDrawing extends TriggerRepeatAnimDrawing {
+public class HighlightDrawing extends TriggerRepeatAnimDrawing<CandleIndexRange> {
 
     private final Paint mPaint;
 

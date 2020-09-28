@@ -9,7 +9,7 @@ import com.benben.kchartlib.index.range.IndexRange;
  * @日期 : 2020/9/25
  * @描述 : 重复动画的绘制,适合重复持续性动画
  */
-public abstract class RepeatAnimDrawing extends AutoAnimDrawing {
+public abstract class RepeatAnimDrawing<T extends IndexRange> extends AutoAnimDrawing<T> {
 
     private long mCycleTime = 1000;     // 单个周期时间
     private long mCycleStartTime = 0;   // 周期开始时间
@@ -22,11 +22,11 @@ public abstract class RepeatAnimDrawing extends AutoAnimDrawing {
         super(params);
     }
 
-    public RepeatAnimDrawing(@Nullable IndexRange indexRange) {
+    public RepeatAnimDrawing(@Nullable T indexRange) {
         super(indexRange);
     }
 
-    public RepeatAnimDrawing(@Nullable IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public RepeatAnimDrawing(@Nullable T indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
     }
 

@@ -7,8 +7,11 @@ import android.graphics.Paint;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.Drawing;
+import com.benben.kchartlib.drawing.TriggerAnimDrawing;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
+import com.benben.kchartlib.index.range.IndexRange;
+import com.benben.kchartlib.index.range.TransitionIndexRange;
 import com.benben.kchartlib.utils.FontCalculateUtils;
 
 import java.text.SimpleDateFormat;
@@ -19,19 +22,28 @@ import java.util.Locale;
  * @日期 : 2020/7/14
  * @描述 :
  */
-public class CandleDrawing extends Drawing {
+public class CandleDrawing extends TriggerAnimDrawing<TransitionIndexRange> implements IndexRange.OnCalcValueEndListener {
 
     private Date date = new Date();
     private static final SimpleDateFormat format = new SimpleDateFormat("MM-dd", Locale.getDefault());
 
     private final Paint mPaint;
 
-    public CandleDrawing(CandleIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public CandleDrawing(TransitionIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
+        if (!(indexRange.getRealIndexRange() instanceof CandleIndexRange)) {
+            throw new IllegalArgumentException("RealIndexRange is not CandleIndexRange!");
+        }
+        indexRange.setOnCalcValueEndListener(this);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(3);
         mPaint.setTextSize(18);
+    }
+
+    @Override
+    public void onCalcValueEnd() {
+
     }
 
     @Override

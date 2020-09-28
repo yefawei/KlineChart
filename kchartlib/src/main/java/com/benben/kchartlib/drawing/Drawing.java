@@ -18,9 +18,9 @@ import com.benben.kchartlib.index.range.IndexRange;
  * @日期 : 2020/7/10
  * @描述 : 普通绘制
  */
-public abstract class Drawing implements IDrawing, IViewPort, IDispatchSingleTapChild {
+public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPort, IDispatchSingleTapChild {
 
-    protected IndexRange mIndexRange;
+    protected T mIndexRange;
     private RendererCanvas.DrawingLayoutParams mLayoutParams;
     private int mWidth;
     private int mHeight;
@@ -41,11 +41,11 @@ public abstract class Drawing implements IDrawing, IViewPort, IDispatchSingleTap
         mLayoutParams = params;
     }
 
-    public Drawing(@Nullable IndexRange indexRange) {
+    public Drawing(@Nullable T indexRange) {
         mIndexRange = indexRange;
     }
 
-    public Drawing(@Nullable IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public Drawing(@Nullable T indexRange, RendererCanvas.DrawingLayoutParams params) {
         mIndexRange = indexRange;
         if (params == null) {
             throw new NullPointerException("DrawingLayoutParams cannot be null!");

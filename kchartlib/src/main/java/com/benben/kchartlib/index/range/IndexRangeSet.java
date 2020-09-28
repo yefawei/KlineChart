@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @日期 : 2020/7/10
  * @描述 : 组合指标计算类
  */
-public class IndexRangeSet extends IndexRange {
+public final class IndexRangeSet extends IndexRange {
 
     private ArrayList<IndexRange> mIndexRanges = new ArrayList<>();
 

@@ -48,7 +48,7 @@ public interface Animation {
     boolean inAnimTime();
 
     /**
-     * 更新动画时间
+     * 由{@link AnimationManager#animUpdate()}统一更新动画时间
      */
     void updateAnimProcessTime(long time);
 }

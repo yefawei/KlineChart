@@ -17,6 +17,7 @@ import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
 import com.benben.kchartlib.index.range.ReverseIndexRange;
+import com.benben.kchartlib.index.range.TransitionIndexRange;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.touch.TouchTapManager;
@@ -143,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
-        mainRenderCanvas.addDrawing(new CandleDrawing(candleIndexRange, layoutParams), true);
+        mainRenderCanvas.addDrawing(new CandleDrawing(new TransitionIndexRange(candleIndexRange), layoutParams), true);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);

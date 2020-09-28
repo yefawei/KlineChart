@@ -11,7 +11,7 @@ import com.benben.kchartlib.index.range.IndexRange;
  * @日期 : 2020/7/10
  * @描述 : 主动触发动画的绘制
  */
-public abstract class TriggerAnimDrawing extends AbstractAnimDrawing{
+public abstract class TriggerAnimDrawing<T extends IndexRange> extends AbstractAnimDrawing<T>{
 
     private long mAnimStartTime;
     private long mDuration;
@@ -24,11 +24,11 @@ public abstract class TriggerAnimDrawing extends AbstractAnimDrawing{
         super(params);
     }
 
-    public TriggerAnimDrawing(@Nullable IndexRange indexRange) {
+    public TriggerAnimDrawing(@Nullable T indexRange) {
         super(indexRange);
     }
 
-    public TriggerAnimDrawing(@Nullable IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public TriggerAnimDrawing(@Nullable T indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
     }
 

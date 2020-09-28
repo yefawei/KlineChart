@@ -6,12 +6,13 @@ import android.graphics.Paint;
 import android.text.TextPaint;
 
 import com.benben.kchartlib.drawing.Drawing;
+import com.benben.kchartlib.index.range.IndexRange;
 
 /**
  * @日期 : 2020/8/28
  * @描述 :
  */
-public class ClickDrawing extends Drawing {
+public class ClickDrawing extends Drawing<IndexRange> {
 
     private final TextPaint mPaint;
     private String mTag;

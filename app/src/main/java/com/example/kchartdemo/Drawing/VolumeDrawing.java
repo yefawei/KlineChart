@@ -18,7 +18,7 @@ import com.benben.kchartlib.index.range.VolumeIndexRange;
  * @日期 : 2020/8/12
  * @描述 :
  */
-public class VolumeDrawing extends Drawing {
+public class VolumeDrawing extends Drawing<VolumeIndexRange> {
 
     private final Paint mPaint;
 

@@ -33,6 +33,8 @@ public abstract class IndexRange {
     private int mMaxIndex; // 屏幕内最大值的索引
     private int mMinIndex; // 屏幕内最小值的索引
 
+    protected OnCalcValueEndListener mOnCalcValueEndListener;
+
     private Map<String, Object> mExtendedData = new HashMap<>();
 
     public IndexRange() {
@@ -173,7 +175,7 @@ public abstract class IndexRange {
      * 计算结束
      */
     public void calcValueEnd() {
-
+        if (mOnCalcValueEndListener != null) mOnCalcValueEndListener.onCalcValueEnd();
     }
 
     /**
@@ -244,10 +246,18 @@ public abstract class IndexRange {
         return curMinValue;
     }
 
+    public void setOnCalcValueEndListener(OnCalcValueEndListener listener) {
+        mOnCalcValueEndListener = listener;
+    }
+
     /**
      * 获取tag标记，区分不同的指标
      * 方便{@link Transformer#addIndexRange(IndexRange)}和{@link Transformer#removeIndexRange(IndexRange)}的使用
      * 返回空或者null将不会被{@link Transformer#addIndexRange(IndexRange)}所添加
      */
     public abstract String getIndexTag();
+
+    public interface OnCalcValueEndListener {
+        void onCalcValueEnd();
+    }
 }

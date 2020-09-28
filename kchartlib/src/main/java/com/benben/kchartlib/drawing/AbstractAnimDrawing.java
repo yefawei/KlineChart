@@ -10,11 +10,13 @@ import com.benben.kchartlib.animation.Animation;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.index.range.IndexRange;
 
+import java.util.List;
+
 /**
  * @日期 : 2020/9/27
  * @描述 : 抽象动画绘制类，方便子类的实现
  */
-public abstract class AbstractAnimDrawing extends Drawing implements Animation {
+public abstract class AbstractAnimDrawing<T extends IndexRange> extends Drawing<T> implements Animation {
 
     public final static int RESTART = 1;    // 重新开始
     public final static int REVERSE = 2;    // 逆转
@@ -35,11 +37,11 @@ public abstract class AbstractAnimDrawing extends Drawing implements Animation {
         super(params);
     }
 
-    public AbstractAnimDrawing(@Nullable IndexRange indexRange) {
+    public AbstractAnimDrawing(@Nullable T indexRange) {
         super(indexRange);
     }
 
-    public AbstractAnimDrawing(@Nullable IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public AbstractAnimDrawing(@Nullable T indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
     }
 
@@ -69,6 +71,10 @@ public abstract class AbstractAnimDrawing extends Drawing implements Animation {
     @CallSuper
     public void updateAnimProcessTime(long time) {
         mAnimProcessTime = time;
+    }
+
+    public float getAnimProcessTime() {
+        return mAnimProcessTime;
     }
 
     public void setInterpolator(Interpolator i) {

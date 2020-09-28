@@ -11,13 +11,14 @@ import com.benben.kchartlib.drawing.RepeatAnimDrawing;
 import com.benben.kchartlib.drawing.TriggerRepeatAnimDrawing;
 import com.benben.kchartlib.impl.IDataProvider;
 import com.benben.kchartlib.impl.IParentPortLayout;
+import com.benben.kchartlib.index.range.IndexRange;
 import com.benben.kchartlib.utils.FontCalculateUtils;
 
 /**
  * @日期 : 2020/9/25
  * @描述 : 手动触发重复点动画
  */
-public class TriggerRepeatPointDrawing extends TriggerRepeatAnimDrawing {
+public class TriggerRepeatPointDrawing extends TriggerRepeatAnimDrawing<IndexRange> {
 
     private boolean isOpen;
     private final Paint mPaint;
