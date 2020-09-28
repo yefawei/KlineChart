@@ -145,12 +145,12 @@ public class MainActivity extends AppCompatActivity {
         MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
-        layoutParams.setVerticalLinear(true);
+        layoutParams.setVerticalLinear(true, 1);
         mainRenderCanvas.addDrawing(new CandleDrawing(candleIndexRange, layoutParams), true);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
-        layoutParams.setVerticalLinear(true);
+        layoutParams.setVerticalLinear(true, 1);
         mainRenderCanvas.addDrawing(new TransitionCandleDrawing(new TransitionIndexRange(candleIndexRange), layoutParams), true);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
@@ -183,25 +183,23 @@ public class MainActivity extends AppCompatActivity {
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
-        layoutParams.setVerticalLinear(true);
+        layoutParams.setVerticalLinear(true, 1);
         mainRenderCanvas.addDrawing(new VolumeDrawing(volumeIndexRange, layoutParams), true);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
-        layoutParams.setVerticalLinear(true);
+        layoutParams.setVerticalLinear(true, 1);
         mainRenderCanvas.addDrawing(new TransitionValumeDrawing(new TransitionIndexRange(volumeIndexRange), layoutParams), true);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
-        layoutParams.setVerticalPercent(0.5f);
-        layoutParams.setVerticalPosition(RendererCanvas.DrawingLayoutParams.POSITION_TOP);
+        layoutParams.setVerticalLinear(true, 2);
         mainRenderCanvas.addDrawing(new VolumeHighlightDrawing(volumeIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
-        layoutParams.setVerticalPercent(0.5f);
-        layoutParams.setVerticalPosition(RendererCanvas.DrawingLayoutParams.POSITION_BOTTOM);
+        layoutParams.setVerticalLinear(true, 2);
         mainRenderCanvas.addDrawing(new VolumeHighlightDrawing(volumeIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
 

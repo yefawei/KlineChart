@@ -17,6 +17,10 @@ import com.benben.kchartlib.impl.IViewPort;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @日期 : 2020/7/1
@@ -33,8 +37,10 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     protected IDataProvider mDataProvider;
 
     private ArrayList<Drawing> mDrawings = new ArrayList<>();
-    private ArrayList<Drawing> mHorizontalLinearDrawings = new ArrayList<>();
-    private ArrayList<Drawing> mVerticalLinearDrawings = new ArrayList<>();
+    private LinkedHashMap<Integer, List<Drawing>> mHorizontalLinearGroup = new LinkedHashMap();
+    private LinkedHashMap<Integer, List<Drawing>> mVerticalLinearGroup = new LinkedHashMap();
+    private HashMap<Integer, Integer> mStartXValueMap = new HashMap<>();
+    private HashMap<Integer, Integer> mStartYValueMap = new HashMap<>();
 
     public RendererCanvas() {
     }
@@ -62,24 +68,89 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
             return;
         }
 
-        mHorizontalLinearDrawings.clear();
-        mVerticalLinearDrawings.clear();
+        DrawingLayoutParams params;
+        List<Drawing> drawings;
+        mStartXValueMap.clear();
+        mStartYValueMap.clear();
+        mHorizontalLinearGroup.clear();
+        mVerticalLinearGroup.clear();
         for (Drawing drawing : mDrawings) {
-            if (drawing.getLayoutParams().mIsHorizontalLinear) {
-                mHorizontalLinearDrawings.add(drawing);
+            params = drawing.getLayoutParams();
+            if (params.mIsHorizontalLinear) {
+                drawings = mHorizontalLinearGroup.get(params.mHorizontalLinearGroupId);
+                if (drawings == null) {
+                    mStartXValueMap.put(params.mHorizontalLinearGroupId, getLeft());
+                    drawings = new ArrayList<>();
+                    drawings.add(drawing);
+                    mHorizontalLinearGroup.put(params.mHorizontalLinearGroupId, drawings);
+                } else {
+                    drawings.add(drawing);
+                }
             }
-            if (drawing.getLayoutParams().mIsVerticalLinear) {
-                mVerticalLinearDrawings.add(drawing);
+            if (params.mIsVerticalLinear) {
+                drawings = mVerticalLinearGroup.get(params.mVerticalLinearGroupId);
+                if (drawings == null) {
+                    mStartYValueMap.put(params.mVerticalLinearGroupId, getTop());
+                    drawings = new ArrayList<>();
+                    drawings.add(drawing);
+                    mVerticalLinearGroup.put(params.mVerticalLinearGroupId, drawings);
+                } else {
+                    drawings.add(drawing);
+                }
             }
         }
 
+        // 确认所有布局的宽高
+        for (Map.Entry<Integer, List<Drawing>> entry : mHorizontalLinearGroup.entrySet()) {
+            calcHorizontalLinearDrawingsWidth(entry.getValue());
+        }
+        for (Map.Entry<Integer, List<Drawing>> entry : mVerticalLinearGroup.entrySet()) {
+            calcVerticalLinearDrawingsHeight(entry.getValue());
+        }
+        calcNotLinearDrawingsWidthAndHeight(mDrawings);
+
+        int x;
+        int y;
+        // 最终确认布局
+        for (Drawing drawing : mDrawings) {
+            params = drawing.getLayoutParams();
+            if (params.mIsHorizontalLinear) {
+                x = mStartXValueMap.get(params.mHorizontalLinearGroupId);
+                mStartXValueMap.put(params.mHorizontalLinearGroupId, x + drawing.getWidth());
+            } else if (params.mHorizontalPosition == DrawingLayoutParams.POSITION_CENTER) {
+                x = getLeft() + (getWidth() - drawing.getWidth()) / 2;
+            } else if (params.mHorizontalPosition == DrawingLayoutParams.POSITION_RIGHT) {
+                x = getRight() - drawing.getWidth();
+            } else {
+                x = getLeft();
+            }
+            if (params.mIsVerticalLinear) {
+                y = mStartYValueMap.get(params.mVerticalLinearGroupId);
+                mStartYValueMap.put(params.mVerticalLinearGroupId, y + drawing.getHeight());
+            } else if (params.mVerticalPosition == DrawingLayoutParams.POSITION_CENTER) {
+                y = getTop() + (getHeight() - drawing.getHeight()) / 2;
+            } else if (params.mVerticalPosition == DrawingLayoutParams.POSITION_BOTTOM) {
+                y = getBottom() - drawing.getHeight();
+            } else {
+                y = getTop();
+            }
+            drawing.updateViewPort(x, y, x + drawing.getWidth(), y + drawing.getHeight());
+        }
+
+        setInUpdateChildLayout(false);
+    }
+
+    /**
+     * 计算出水平方向线性布局宽度
+     *
+     * @param hDrawings 所有水平线性布局
+     */
+    private void calcHorizontalLinearDrawingsWidth(List<Drawing> hDrawings) {
         final int w = this.getWidth();
-        final int h = this.getHeight();
-        int width = this.getWidth();
-        int height = this.getHeight();
+        int width = w;
 
         int weightUnitWidth = 0;
-        int[] horizontalWeightAndWidth = getHorizontalWeightAndWidth();
+        int[] horizontalWeightAndWidth = getHorizontalWeightAndWidth(hDrawings);
         if (horizontalWeightAndWidth[0] != 0) {
             int remainingWidth = width - horizontalWeightAndWidth[1];
             if (remainingWidth > 0) {
@@ -87,19 +158,11 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
                 weightUnitWidth = (int) (remainingWidth * 1.0f / horizontalWeightAndWidth[0]);
             }
         }
-        int weightUnitHeight = 0;
-        int[] verticalWeightAndHeight = getVerticalWeightAndHeight();
-        if (verticalWeightAndHeight[0] != 0) {
-            int remainingHeight = height - verticalWeightAndHeight[1];
-            if (remainingHeight > 0) {
-                // 说明固定高度没有超出总宽度
-                weightUnitHeight = (int) (remainingHeight * 1.0f / verticalWeightAndHeight[0]);
-            }
-        }
+
         int tempValue;
         DrawingLayoutParams params;
         // 计算出水平方向线性布局宽度
-        for (Drawing drawing : mHorizontalLinearDrawings) {
+        for (Drawing drawing : hDrawings) {
             params = drawing.getLayoutParams();
             if (params.mWidth > 0) {
                 tempValue = params.mWidth;
@@ -123,7 +186,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         if (width > 0 && weightUnitWidth > 0) {
             int tw = 0;
             // 说明按比例宽度没有填满视图
-            for (Drawing drawing : mHorizontalLinearDrawings) {
+            for (Drawing drawing : hDrawings) {
                 params = drawing.getLayoutParams();
                 if (params.mWidth > 0 || params.mHorizontalPercent > 0) continue;
                 if (params.mWeight > 0) {
@@ -138,8 +201,30 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
                 if (width == tw) break;
             }
         }
+    }
+
+    /**
+     * 计算出垂直方向线性布局高度度
+     *
+     * @param vDrawings 所有垂直线性布局
+     */
+    private void calcVerticalLinearDrawingsHeight(List<Drawing> vDrawings) {
+        final int h = this.getHeight();
+        int height = h;
+        int weightUnitHeight = 0;
+        int[] verticalWeightAndHeight = getVerticalWeightAndHeight(vDrawings);
+        if (verticalWeightAndHeight[0] != 0) {
+            int remainingHeight = height - verticalWeightAndHeight[1];
+            if (remainingHeight > 0) {
+                // 说明固定高度没有超出总宽度
+                weightUnitHeight = (int) (remainingHeight * 1.0f / verticalWeightAndHeight[0]);
+            }
+        }
+
+        int tempValue;
+        DrawingLayoutParams params;
         // 计算出垂直方向线性布局高度
-        for (Drawing drawing : mVerticalLinearDrawings) {
+        for (Drawing drawing : vDrawings) {
             params = drawing.getLayoutParams();
             if (params.mHeight > 0) {
                 tempValue = params.mHeight;
@@ -163,11 +248,11 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         if (height > 0 && weightUnitHeight > 0) {
             int th = 0;
             // 说明按比例高度没有填满视图
-            for (Drawing drawing : mVerticalLinearDrawings) {
+            for (Drawing drawing : vDrawings) {
                 params = drawing.getLayoutParams();
                 if (params.mHeight > 0 || params.mVerticalPercent > 0) continue;
                 if (params.mWeight > 0) {
-                    tempValue = Math.round(width * 1.0f / horizontalWeightAndWidth[0] * params.mWeight + 0.5f);
+                    tempValue = Math.round(height * 1.0f / verticalWeightAndHeight[0] * params.mWeight + 0.5f);
                     if (tempValue + th > height) {
                         tempValue = height - th;
                     }
@@ -178,9 +263,19 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
                 if (height == th) break;
             }
         }
+    }
 
-        //计算非线性布局宽高
-        for (Drawing drawing : mDrawings) {
+    /**
+     * 计算非线性布局宽高
+     *
+     * @param drawings 所有布局，内部会把线性布局给去除
+     */
+    private void calcNotLinearDrawingsWidthAndHeight(List<Drawing> drawings) {
+        final int w = this.getWidth();
+        final int h = this.getHeight();
+        int tempValue;
+        DrawingLayoutParams params;
+        for (Drawing drawing : drawings) {
             params = drawing.getLayoutParams();
             if (!params.mIsHorizontalLinear) {
                 if (params.mWidth > 0) {
@@ -211,46 +306,16 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
                 }
             }
         }
-
-        int startX = getLeft();
-        int startY = getTop();
-        int x;
-        int y;
-        // 最终确认布局
-        for (Drawing drawing : mDrawings) {
-            params = drawing.getLayoutParams();
-            if (params.mIsHorizontalLinear) {
-                x = startX;
-                startX += drawing.getWidth();
-            } else if (params.mHorizontalPosition == DrawingLayoutParams.POSITION_CENTER) {
-                x = getLeft() + (getWidth() - drawing.getWidth()) / 2;
-            } else if (params.mHorizontalPosition == DrawingLayoutParams.POSITION_RIGHT) {
-                x = getRight() - drawing.getWidth();
-            } else {
-                x = getLeft();
-            }
-            if (params.mIsVerticalLinear) {
-                y = startY;
-                startY += drawing.getHeight();
-            } else if (params.mVerticalPosition == DrawingLayoutParams.POSITION_CENTER) {
-                y = getTop() + (getHeight() - drawing.getHeight()) / 2;
-            } else if (params.mVerticalPosition == DrawingLayoutParams.POSITION_BOTTOM) {
-                y = getBottom() - drawing.getHeight();
-            } else {
-                y = getTop();
-            }
-            drawing.updateViewPort(x, y, x + drawing.getWidth(), y + drawing.getHeight());
-        }
-
-        setInUpdateChildLayout(false);
     }
 
+
     /**
+     * @param hDrawings 所有水平线性布局
      * @return [0]:all weight [1]:all width
      */
-    private int[] getHorizontalWeightAndWidth() {
+    private int[] getHorizontalWeightAndWidth(List<Drawing> hDrawings) {
         int[] i = new int[2];
-        for (Drawing drawing : mHorizontalLinearDrawings) {
+        for (Drawing drawing : hDrawings) {
             DrawingLayoutParams params = drawing.getLayoutParams();
             if (params.mWidth > 0) {
                 i[1] += params.mWidth;
@@ -264,11 +329,12 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     }
 
     /**
+     * @param vDrawings 所有垂直线性布局
      * @return [0]:all weight [1]:all height
      */
-    private int[] getVerticalWeightAndHeight() {
+    private int[] getVerticalWeightAndHeight(List<Drawing> vDrawings) {
         int[] i = new int[2];
-        for (Drawing drawing : mVerticalLinearDrawings) {
+        for (Drawing drawing : vDrawings) {
             DrawingLayoutParams params = drawing.getLayoutParams();
             if (params.mHeight > 0) {
                 i[1] += params.mHeight;
@@ -510,7 +576,9 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         private int mWeight;            // 自适应 注意：如果非垂直布局和非水平布局将会铺满
 
         // 优先级: 【水平布局/垂直布局】>【相对父布局】
+        private int mHorizontalLinearGroupId;   // 水平布局组id
         private boolean mIsHorizontalLinear;    // 是否是水平布局
+        private int mVerticalLinearGroupId;     // 垂直布局组id
         private boolean mIsVerticalLinear;      // 是否是垂直布局
 
         private int mHorizontalPosition = NO_POSITION;        // 相对父布局位置：左 中 右
@@ -582,16 +650,26 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
             return mIsHorizontalLinear;
         }
 
-        public void setHorizontalLinear(boolean isHorizontalLinear) {
+        /**
+         * 设置是否是水平布局
+         * @param groupId 组id，不同组id会单独排序
+         */
+        public void setHorizontalLinear(boolean isHorizontalLinear, int groupId) {
             mIsHorizontalLinear = isHorizontalLinear;
+            mHorizontalLinearGroupId = groupId;
         }
 
         public boolean isVerticalLinear() {
             return mIsVerticalLinear;
         }
 
-        public void setVerticalLinear(boolean isVerticalLinear) {
+        /**
+         * 设置是否是垂直布局
+         * @param groupId 组id，不同组id会单独排序
+         */
+        public void setVerticalLinear(boolean isVerticalLinear, int groupId) {
             mIsVerticalLinear = isVerticalLinear;
+            mVerticalLinearGroupId = groupId;
         }
 
         public int getHorizontalPosition() {
