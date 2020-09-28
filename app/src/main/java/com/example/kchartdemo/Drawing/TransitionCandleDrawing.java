@@ -52,7 +52,7 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
     @Override
     public void onCalcValueEnd() {
         if (!mIndexRange.isLockChange() && mIndexRange.valueHasChange()) {
-            startAnim(200);
+            startAnim(400);
             mIndexRange.lockChange(getAnimStartTime(), getAnimEndTime());
         }
     }

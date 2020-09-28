@@ -21,12 +21,12 @@ import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.touch.TouchTapManager;
 import com.benben.kchartlib.utils.ConvertUtils;
-import com.example.kchartdemo.Drawing.TransitionCandleDrawing;
 import com.example.kchartdemo.Drawing.ClickDrawing;
 import com.example.kchartdemo.Drawing.HighlightDrawing;
 import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
 import com.example.kchartdemo.Drawing.RepeatPointDrawing;
 import com.example.kchartdemo.Drawing.RightPaddingDrawing;
+import com.example.kchartdemo.Drawing.TransitionCandleDrawing;
 import com.example.kchartdemo.Drawing.TriggerRepeatPointDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
 import com.example.kchartdemo.Drawing.VolumeHighlightDrawing;
@@ -143,6 +143,12 @@ public class MainActivity extends AppCompatActivity {
         MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
+        layoutParams.setVerticalLinear(true);
+        mainRenderCanvas.addDrawing(new TransitionCandleDrawing(new TransitionIndexRange(candleIndexRange), layoutParams), true);
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        layoutParams.setVerticalLinear(true);
         mainRenderCanvas.addDrawing(new TransitionCandleDrawing(new TransitionIndexRange(candleIndexRange), layoutParams), true);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
