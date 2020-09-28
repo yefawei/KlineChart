@@ -16,13 +16,12 @@ import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
-import com.benben.kchartlib.index.range.ReverseIndexRange;
 import com.benben.kchartlib.index.range.TransitionIndexRange;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.touch.TouchTapManager;
 import com.benben.kchartlib.utils.ConvertUtils;
-import com.example.kchartdemo.Drawing.CandleDrawing;
+import com.example.kchartdemo.Drawing.TransitionCandleDrawing;
 import com.example.kchartdemo.Drawing.ClickDrawing;
 import com.example.kchartdemo.Drawing.HighlightDrawing;
 import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
@@ -144,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
         RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
-        mainRenderCanvas.addDrawing(new CandleDrawing(new TransitionIndexRange(candleIndexRange), layoutParams), true);
+        mainRenderCanvas.addDrawing(new TransitionCandleDrawing(new TransitionIndexRange(candleIndexRange), layoutParams), true);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);

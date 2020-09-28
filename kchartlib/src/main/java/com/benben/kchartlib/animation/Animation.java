@@ -15,7 +15,7 @@ public interface Animation {
      * {@link AnimationManager}添加和移除会回调该函数
      * @param in true 被添加 false 被移除
      */
-    void inAnimationCall(boolean in);
+    void callInAnimation(boolean in);
 
     /**
      * 是否是自动动画

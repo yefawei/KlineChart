@@ -3,10 +3,10 @@ package com.example.kchartdemo.Drawing;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.view.animation.DecelerateInterpolator;
 
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.Transformer;
-import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.drawing.TriggerAnimDrawing;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
@@ -20,21 +20,22 @@ import java.util.Locale;
 
 /**
  * @日期 : 2020/7/14
- * @描述 :
+ * @描述 : 最大值最小值有变更以动画的形式过渡蜡烛图
  */
-public class CandleDrawing extends TriggerAnimDrawing<TransitionIndexRange> implements IndexRange.OnCalcValueEndListener {
+public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexRange> implements IndexRange.OnCalcValueEndListener {
 
     private Date date = new Date();
     private static final SimpleDateFormat format = new SimpleDateFormat("MM-dd", Locale.getDefault());
 
     private final Paint mPaint;
 
-    public CandleDrawing(TransitionIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public TransitionCandleDrawing(TransitionIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
         if (!(indexRange.getRealIndexRange() instanceof CandleIndexRange)) {
             throw new IllegalArgumentException("RealIndexRange is not CandleIndexRange!");
         }
         indexRange.setOnCalcValueEndListener(this);
+        indexRange.setInterpolator(new DecelerateInterpolator());
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(3);
@@ -43,7 +44,21 @@ public class CandleDrawing extends TriggerAnimDrawing<TransitionIndexRange> impl
 
     @Override
     public void onCalcValueEnd() {
+        if (!mIndexRange.isLockChange() && mIndexRange.valueHasChange()) {
+            startAnim(200);
+            mIndexRange.lockChange(getAnimStartTime(), getAnimEndTime());
+        }
+    }
 
+    @Override
+    public void updateAnimProcessTime(long time) {
+        super.updateAnimProcessTime(time);
+        mIndexRange.updateProcessTime(time);
+    }
+
+    @Override
+    public void callInAnimation(boolean in) {
+        super.callInAnimation(in);
     }
 
     @Override
@@ -81,7 +96,7 @@ public class CandleDrawing extends TriggerAnimDrawing<TransitionIndexRange> impl
         canvas.drawLine(center, lowY, center, heighY, mPaint);
 
         date.setTime(entity.getDatatime());
-        String format = CandleDrawing.format.format(date);
+        String format = TransitionCandleDrawing.format.format(date);
         mPaint.setColor(Color.WHITE);
         float v = mPaint.measureText(format);
         canvas.drawText(format, center - v / 2, heighY, mPaint);

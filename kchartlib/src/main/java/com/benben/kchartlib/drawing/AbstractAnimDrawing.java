@@ -10,8 +10,6 @@ import com.benben.kchartlib.animation.Animation;
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.index.range.IndexRange;
 
-import java.util.List;
-
 /**
  * @日期 : 2020/9/27
  * @描述 : 抽象动画绘制类，方便子类的实现
@@ -52,7 +50,7 @@ public abstract class AbstractAnimDrawing<T extends IndexRange> extends Drawing<
 
     @Override
     @CallSuper
-    public void inAnimationCall(boolean in) {
+    public void callInAnimation(boolean in) {
         mInAnimationManager = in;
     }
 

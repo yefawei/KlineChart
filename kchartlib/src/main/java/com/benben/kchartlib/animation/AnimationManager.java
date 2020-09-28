@@ -33,7 +33,7 @@ public class AnimationManager {
                 animation.setInAnim(true);
             } else {
                 animation.setInAnim(false);
-                animation.inAnimationCall(false);
+                animation.callInAnimation(false);
                 mChartAnimtion.mAnimations.remove(i);
                 i--;
             }
@@ -65,14 +65,14 @@ public class AnimationManager {
             if (mAnimations.contains(anim)) return;
 
             mAnimations.add(anim);
-            anim.inAnimationCall(true);
+            anim.callInAnimation(true);
             mManager.postAnim();
         }
 
         public void removeAnim(Animation anim) {
             if (mAnimations.remove(anim)) {
                 anim.setInAnim(false);
-                anim.inAnimationCall(false);
+                anim.callInAnimation(false);
             }
         }
     }
