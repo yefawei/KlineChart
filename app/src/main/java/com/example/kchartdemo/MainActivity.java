@@ -28,6 +28,7 @@ import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
 import com.example.kchartdemo.Drawing.RepeatPointDrawing;
 import com.example.kchartdemo.Drawing.RightPaddingDrawing;
 import com.example.kchartdemo.Drawing.TransitionCandleDrawing;
+import com.example.kchartdemo.Drawing.TransitionValumeDrawing;
 import com.example.kchartdemo.Drawing.TriggerRepeatPointDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
 import com.example.kchartdemo.Drawing.VolumeHighlightDrawing;
@@ -187,6 +188,20 @@ public class MainActivity extends AppCompatActivity {
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
+        layoutParams.setVerticalLinear(true);
+        mainRenderCanvas.addDrawing(new TransitionValumeDrawing(new TransitionIndexRange(volumeIndexRange), layoutParams), true);
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        layoutParams.setVerticalPercent(0.5f);
+        layoutParams.setVerticalPosition(RendererCanvas.DrawingLayoutParams.POSITION_TOP);
+        mainRenderCanvas.addDrawing(new VolumeHighlightDrawing(volumeIndexRange, layoutParams), true);
+        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        layoutParams.setVerticalPercent(0.5f);
+        layoutParams.setVerticalPosition(RendererCanvas.DrawingLayoutParams.POSITION_BOTTOM);
         mainRenderCanvas.addDrawing(new VolumeHighlightDrawing(volumeIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
 

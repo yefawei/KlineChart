@@ -5,27 +5,58 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
+import android.view.animation.DecelerateInterpolator;
 
 import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.Transformer;
-import com.benben.kchartlib.drawing.Drawing;
+import com.benben.kchartlib.drawing.TriggerAnimDrawing;
 import com.benben.kchartlib.index.IVolume;
+import com.benben.kchartlib.index.range.IndexRange;
+import com.benben.kchartlib.index.range.TransitionIndexRange;
 import com.benben.kchartlib.index.range.VolumeIndexRange;
 
 /**
  * @日期 : 2020/8/12
- * @描述 : 成交量
+ * @描述 : 动画成交量
  */
-public class VolumeDrawing extends Drawing<VolumeIndexRange> {
+public class TransitionValumeDrawing extends TriggerAnimDrawing<TransitionIndexRange> implements IndexRange.OnCalcValueListener {
 
     private final Paint mPaint;
 
-    public VolumeDrawing(@Nullable VolumeIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public TransitionValumeDrawing(@Nullable TransitionIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
+        if (!(indexRange.getRealIndexRange() instanceof VolumeIndexRange)) {
+            throw new IllegalArgumentException("RealIndexRange is not VolumeIndexRange!");
+        }
+        indexRange.addOnCalcValueListener(this);
+        indexRange.setInterpolator(new DecelerateInterpolator());
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
+    }
+
+    @Override
+    public void onResetValue(boolean isEmptyData) {
+        if (isEmptyData) {
+            stopAnim();
+        }
+    }
+
+    @Override
+    public void onCalcValueEnd() {
+        if (!mIndexRange.isLockChange() && mIndexRange.valueHasChange()) {
+            startAnim(400);
+            mIndexRange.lockChange(getAnimStartTime(), getAnimEndTime());
+        }
+    }
+
+    @Override
+    public void updateAnimProcessTime(long time) {
+        super.updateAnimProcessTime(time);
+        if (mIndexRange.isLockChange()) {
+            mIndexRange.updateProcessTime(time);
+        }
     }
 
     @Override
