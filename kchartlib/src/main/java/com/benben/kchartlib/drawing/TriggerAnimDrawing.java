@@ -85,6 +85,14 @@ public abstract class TriggerAnimDrawing<T extends IndexRange> extends AbstractA
         }
     }
 
+    public void stopAnim() {
+        mAnimStartTime = 0;
+        mAnimEndTime = 0;
+        if (mInAnimationManager) {
+            mDataProvider.getChartAnimation().removeAnim(this);
+        }
+    }
+
     public float getAnimProcess() {
         if (!inAnimTime()) return 1.0f;
         float fraction = (mAnimProcessTime - mAnimStartTime) / (float) mDuration;

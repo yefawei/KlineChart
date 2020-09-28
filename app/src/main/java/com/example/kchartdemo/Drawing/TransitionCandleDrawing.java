@@ -44,7 +44,9 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
 
     @Override
     public void onResetValue(boolean isEmptyData) {
-
+        if (isEmptyData) {
+            stopAnim();
+        }
     }
 
     @Override
@@ -58,7 +60,9 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
     @Override
     public void updateAnimProcessTime(long time) {
         super.updateAnimProcessTime(time);
-        mIndexRange.updateProcessTime(time);
+        if (mIndexRange.isLockChange()) {
+            mIndexRange.updateProcessTime(time);
+        }
     }
 
     @Override
