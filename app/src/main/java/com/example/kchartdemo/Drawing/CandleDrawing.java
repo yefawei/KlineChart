@@ -6,7 +6,7 @@ import android.graphics.Paint;
 
 import com.benben.kchartlib.canvas.RendererCanvas;
 import com.benben.kchartlib.data.Transformer;
-import com.benben.kchartlib.drawing.TriggerAnimDrawing;
+import com.benben.kchartlib.drawing.Drawing;
 import com.benben.kchartlib.index.IEntity;
 import com.benben.kchartlib.index.range.CandleIndexRange;
 import com.benben.kchartlib.utils.FontCalculateUtils;
@@ -19,7 +19,7 @@ import java.util.Locale;
  * @日期 : 2020/7/14
  * @描述 : 蜡烛图
  */
-public class CandleDrawing extends TriggerAnimDrawing<CandleIndexRange>{
+public class CandleDrawing extends Drawing<CandleIndexRange> {
 
     private Date date = new Date();
     private static final SimpleDateFormat format = new SimpleDateFormat("MM-dd", Locale.getDefault());
