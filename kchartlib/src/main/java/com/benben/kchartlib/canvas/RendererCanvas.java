@@ -36,9 +36,9 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
 
     protected IDataProvider mDataProvider;
 
-    private ArrayList<Drawing> mDrawings = new ArrayList<>();
-    private LinkedHashMap<Integer, List<Drawing>> mHorizontalLinearGroup = new LinkedHashMap();
-    private LinkedHashMap<Integer, List<Drawing>> mVerticalLinearGroup = new LinkedHashMap();
+    private ArrayList<Drawing<?>> mDrawings = new ArrayList<>();
+    private LinkedHashMap<Integer, List<Drawing<?>>> mHorizontalLinearGroup = new LinkedHashMap<>();
+    private LinkedHashMap<Integer, List<Drawing<?>>> mVerticalLinearGroup = new LinkedHashMap<>();
     private HashMap<Integer, Integer> mStartXValueMap = new HashMap<>();
     private HashMap<Integer, Integer> mStartYValueMap = new HashMap<>();
 
@@ -59,7 +59,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     public void updateChildLayout() {
         setInUpdateChildLayout(true);
         if (mViewPort.isEmpty()) {
-            for (Drawing drawing : mDrawings) {
+            for (Drawing<?> drawing : mDrawings) {
                 drawing.setWidth(0);
                 drawing.setHeight(0);
                 drawing.updateViewPort(0, 0, 0, 0);
@@ -69,12 +69,12 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         }
 
         DrawingLayoutParams params;
-        List<Drawing> drawings;
+        List<Drawing<?>> drawings;
         mStartXValueMap.clear();
         mStartYValueMap.clear();
         mHorizontalLinearGroup.clear();
         mVerticalLinearGroup.clear();
-        for (Drawing drawing : mDrawings) {
+        for (Drawing<?> drawing : mDrawings) {
             params = drawing.getLayoutParams();
             if (params.mIsHorizontalLinear) {
                 drawings = mHorizontalLinearGroup.get(params.mHorizontalLinearGroupId);
@@ -101,10 +101,10 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         }
 
         // 确认所有布局的宽高
-        for (Map.Entry<Integer, List<Drawing>> entry : mHorizontalLinearGroup.entrySet()) {
+        for (Map.Entry<Integer, List<Drawing<?>>> entry : mHorizontalLinearGroup.entrySet()) {
             calcHorizontalLinearDrawingsWidth(entry.getValue());
         }
-        for (Map.Entry<Integer, List<Drawing>> entry : mVerticalLinearGroup.entrySet()) {
+        for (Map.Entry<Integer, List<Drawing<?>>> entry : mVerticalLinearGroup.entrySet()) {
             calcVerticalLinearDrawingsHeight(entry.getValue());
         }
         calcNotLinearDrawingsWidthAndHeight(mDrawings);
@@ -112,7 +112,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         int x;
         int y;
         // 最终确认布局
-        for (Drawing drawing : mDrawings) {
+        for (Drawing<?> drawing : mDrawings) {
             params = drawing.getLayoutParams();
             if (params.mIsHorizontalLinear) {
                 x = mStartXValueMap.get(params.mHorizontalLinearGroupId);
@@ -145,7 +145,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
      *
      * @param hDrawings 所有水平线性布局
      */
-    private void calcHorizontalLinearDrawingsWidth(List<Drawing> hDrawings) {
+    private void calcHorizontalLinearDrawingsWidth(List<Drawing<?>> hDrawings) {
         final int w = this.getWidth();
         int width = w;
 
@@ -162,7 +162,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         int tempValue;
         DrawingLayoutParams params;
         // 计算出水平方向线性布局宽度
-        for (Drawing drawing : hDrawings) {
+        for (Drawing<?> drawing : hDrawings) {
             params = drawing.getLayoutParams();
             if (params.mWidth > 0) {
                 tempValue = params.mWidth;
@@ -186,7 +186,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         if (width > 0 && weightUnitWidth > 0) {
             int tw = 0;
             // 说明按比例宽度没有填满视图
-            for (Drawing drawing : hDrawings) {
+            for (Drawing<?> drawing : hDrawings) {
                 params = drawing.getLayoutParams();
                 if (params.mWidth > 0 || params.mHorizontalPercent > 0) continue;
                 if (params.mWeight > 0) {
@@ -208,7 +208,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
      *
      * @param vDrawings 所有垂直线性布局
      */
-    private void calcVerticalLinearDrawingsHeight(List<Drawing> vDrawings) {
+    private void calcVerticalLinearDrawingsHeight(List<Drawing<?>> vDrawings) {
         final int h = this.getHeight();
         int height = h;
         int weightUnitHeight = 0;
@@ -224,7 +224,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         int tempValue;
         DrawingLayoutParams params;
         // 计算出垂直方向线性布局高度
-        for (Drawing drawing : vDrawings) {
+        for (Drawing<?> drawing : vDrawings) {
             params = drawing.getLayoutParams();
             if (params.mHeight > 0) {
                 tempValue = params.mHeight;
@@ -248,7 +248,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         if (height > 0 && weightUnitHeight > 0) {
             int th = 0;
             // 说明按比例高度没有填满视图
-            for (Drawing drawing : vDrawings) {
+            for (Drawing<?> drawing : vDrawings) {
                 params = drawing.getLayoutParams();
                 if (params.mHeight > 0 || params.mVerticalPercent > 0) continue;
                 if (params.mWeight > 0) {
@@ -270,12 +270,12 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
      *
      * @param drawings 所有布局，内部会把线性布局给去除
      */
-    private void calcNotLinearDrawingsWidthAndHeight(List<Drawing> drawings) {
+    private void calcNotLinearDrawingsWidthAndHeight(List<Drawing<?>> drawings) {
         final int w = this.getWidth();
         final int h = this.getHeight();
         int tempValue;
         DrawingLayoutParams params;
-        for (Drawing drawing : drawings) {
+        for (Drawing<?> drawing : drawings) {
             params = drawing.getLayoutParams();
             if (!params.mIsHorizontalLinear) {
                 if (params.mWidth > 0) {
@@ -313,9 +313,9 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
      * @param hDrawings 所有水平线性布局
      * @return [0]:all weight [1]:all width
      */
-    private int[] getHorizontalWeightAndWidth(List<Drawing> hDrawings) {
+    private int[] getHorizontalWeightAndWidth(List<Drawing<?>> hDrawings) {
         int[] i = new int[2];
-        for (Drawing drawing : hDrawings) {
+        for (Drawing<?> drawing : hDrawings) {
             DrawingLayoutParams params = drawing.getLayoutParams();
             if (params.mWidth > 0) {
                 i[1] += params.mWidth;
@@ -332,9 +332,9 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
      * @param vDrawings 所有垂直线性布局
      * @return [0]:all weight [1]:all height
      */
-    private int[] getVerticalWeightAndHeight(List<Drawing> vDrawings) {
+    private int[] getVerticalWeightAndHeight(List<Drawing<?>> vDrawings) {
         int[] i = new int[2];
-        for (Drawing drawing : vDrawings) {
+        for (Drawing<?> drawing : vDrawings) {
             DrawingLayoutParams params = drawing.getLayoutParams();
             if (params.mHeight > 0) {
                 i[1] += params.mHeight;
@@ -352,7 +352,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider) {
         mParentPortLayout = portLayout;
         mDataProvider = dataProvider;
-        for (Drawing drawing : mDrawings) {
+        for (Drawing<?> drawing : mDrawings) {
             drawing.attachedParentPortLayout(this, mDataProvider);
         }
     }
@@ -365,7 +365,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         mWidth = 0;
         mHeight = 0;
         mViewPort.setEmpty();
-        for (Drawing drawing : mDrawings) {
+        for (Drawing<?> drawing : mDrawings) {
             drawing.detachedParentPortLayout();
         }
     }
@@ -437,7 +437,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
         vps.append("[right: ").append(getRight()).append("]");
         vps.append("[bottom: ").append(getBottom()).append("]");
         vps.append("\n");
-        for (Drawing drawing : mDrawings) {
+        for (Drawing<?> drawing : mDrawings) {
             vps.append(drawing.toViewPortString());
             vps.append("\n");
         }
@@ -451,12 +451,12 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
 
 
     @Override
-    public void addDrawing(Drawing drawing) {
+    public void addDrawing(Drawing<?> drawing) {
         addDrawing(drawing, false);
     }
 
     @Override
-    public void addDrawing(Drawing drawing, boolean isMainIndexDrawing) {
+    public void addDrawing(Drawing<?> drawing, boolean isMainIndexDrawing) {
         if (drawing == null) return;
 
         if (drawing.getLayoutParams() == null) {
@@ -479,7 +479,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     }
 
     @Override
-    public void removeDrawing(Drawing drawing) {
+    public void removeDrawing(Drawing<?> drawing) {
         if (drawing == null) return;
 
         mDrawings.remove(drawing);
@@ -496,7 +496,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     @Override
     public boolean dispatchSingleTap(int x, int y) {
         for (int i = mDrawings.size() - 1; i >= 0; i--) {
-            Drawing drawing = mDrawings.get(i);
+            Drawing<?> drawing = mDrawings.get(i);
             if (drawing.canSingleTap() && drawing.inDispatchRange(x, y) && drawing.onSingleTap(x, y)) {
                 return true;
             }
@@ -506,14 +506,14 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
 
     @Override
     public void preCalcDataValue() {
-        for (Drawing drawing : mDrawings) {
+        for (Drawing<?> drawing : mDrawings) {
             drawing.preCalcDataValue();
         }
     }
 
     @Override
     public void render(Canvas canvas) {
-        BaseKChartAdapter adapter = mDataProvider.getAdapter();
+        BaseKChartAdapter<?> adapter = mDataProvider.getAdapter();
         if (adapter == null || adapter.getCount() == 0) {
             renderEmpty(canvas);
         } else {
@@ -522,7 +522,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     }
 
     private void renderEmpty(Canvas canvas) {
-        for (Drawing drawing : mDrawings) {
+        for (Drawing<?> drawing : mDrawings) {
             if (!drawing.isValid()) continue;
             canvas.save();
             if (drawing.drawInViewPort()) {
@@ -534,7 +534,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     }
 
     private void renderData(Canvas canvas) {
-        for (Drawing drawing : mDrawings) {
+        for (Drawing<?> drawing : mDrawings) {
             if (!drawing.isValid()) continue;
             canvas.save();
             if (drawing.drawInViewPort()) {

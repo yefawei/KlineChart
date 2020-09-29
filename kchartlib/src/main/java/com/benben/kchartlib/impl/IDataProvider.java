@@ -33,7 +33,7 @@ public interface IDataProvider {
     PaddingHelper getPaddingHelper();
 
     @Nullable
-    BaseKChartAdapter getAdapter();
+    BaseKChartAdapter<?> getAdapter();
 
     int getPointWidth();
 
