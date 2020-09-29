@@ -20,7 +20,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
     private float mTargetMaxValue;
     private float mTargetMinValue;
 
-    private boolean mIsLockChange;
+    private boolean mInTransition;
 
     private float mFraction = 1.0f;
 
@@ -55,7 +55,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
 
     @Override
     public float getMaxValue() {
-        if (!mIsLockChange || getSideMode() == IndexRange.DOWN_SIDE) {
+        if (!mInTransition || getSideMode() == IndexRange.DOWN_SIDE) {
             return mIndexRange.getMaxValue();
         }
         if (mFraction == 1.0f) {
@@ -66,7 +66,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
 
     @Override
     public float getMinValue() {
-        if (!mIsLockChange || getSideMode() == IndexRange.UP_SIDE) {
+        if (!mInTransition || getSideMode() == IndexRange.UP_SIDE) {
             return mIndexRange.getMinValue();
         }
         if (mFraction == 1.0f) {
@@ -94,7 +94,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         mTransitionMinValue = 0;
         mTargetMaxValue = 0;
         mTargetMinValue = 0;
-        unlockChange();
+        stopTransition();
         dispatchResetValue(isEmptyData);
     }
 
@@ -109,7 +109,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         float currMaxValue = mIndexRange.getMaxValue();
         float currMinValue = mIndexRange.getMinValue();
         if (mTargetMaxValue != currMaxValue || mTargetMinValue != currMinValue) {
-            if (mIsLockChange) {
+            if (mInTransition) {
                 mLastMaxValue = getMaxValue();
                 mLastMinValue = getMinValue();
             } else {
@@ -120,7 +120,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
             mTargetMinValue = currMinValue;
             mTransitionMaxValue = mTargetMaxValue - mLastMaxValue;
             mTransitionMinValue = mTargetMinValue - mLastMinValue;
-            unlockChange();
+            stopTransition();
         }
         dispatchCalcValueEnd(isEmptyData);
     }
@@ -128,7 +128,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
     /**
      * 判断最大最小值是否有变化
      */
-    public boolean valueHasChange() {
+    public boolean valueIsChange() {
         if (Float.isNaN(mLastMaxValue) || Float.isNaN(mLastMinValue)) {
             return false;
         }
@@ -136,24 +136,23 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
     }
 
     /**
-     * 锁住变更，{@link #mLastMaxValue}、{@link #mLastMinValue}、
-     * {@link #mTargetMaxValue}和{@link #mTargetMinValue}有变化会自动去锁
+     * 开始过渡
      */
-    public void lockChange() {
-        mIsLockChange = true;
+    public void startTransition() {
+        mInTransition = true;
         mFraction = 0;
     }
 
     /**
-     * 去锁
+     * 停止过渡
      */
-    public void unlockChange() {
-        mIsLockChange = false;
+    public void stopTransition() {
+        mInTransition = false;
         mFraction = 1.0f;
     }
 
-    public boolean isLockChange() {
-        return mIsLockChange;
+    public boolean isInTransition() {
+        return mInTransition;
     }
 
     /**
@@ -164,7 +163,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         if (fraction == 1.0f) {
             mLastMaxValue = mTargetMaxValue;
             mLastMinValue = mTargetMinValue;
-            unlockChange();
+            stopTransition();
         }
     }
 }
