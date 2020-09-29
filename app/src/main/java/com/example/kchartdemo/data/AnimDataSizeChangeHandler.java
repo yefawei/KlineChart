@@ -21,20 +21,8 @@ public class AnimDataSizeChangeHandler implements IDataSizeChangeHandler {
             view.setScroll(currScroll + scrollRange);
         } else {
             int scrollRange = Math.round(view.getScalePointWidth() * itemCount);
-            view.setScrollThenAnimScroll(currScroll + scrollRange, finalScroll, getDuration(itemCount), true);
+            view.setScrollThenAnimScroll(currScroll + scrollRange, finalScroll, 4000, true);
         }
         return true;
-    }
-
-    private int getDuration(int itemCount) {
-        if (itemCount == 1) {
-            return 4000;
-        } else if (itemCount == 2) {
-            return 6000;
-        } else if (itemCount == 3) {
-            return 7000;
-        } else {
-            return 8000;
-        }
     }
 }
