@@ -167,16 +167,23 @@ public class MainActivity extends AppCompatActivity {
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
+        layoutParams.setVerticalLinear(true, 2);
+        mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
+        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        layoutParams.setVerticalLinear(true, 2);
+        mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
+        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
         mainRenderCanvas.addDrawing(new TriggerRepeatPointDrawing(layoutParams));
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
         mainRenderCanvas.addDrawing(new RepeatPointDrawing(layoutParams));
-
-        layoutParams = new RendererCanvas.DrawingLayoutParams();
-        layoutParams.setWeight(1);
-        mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
-        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
 
         canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 0, 1);
         mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
