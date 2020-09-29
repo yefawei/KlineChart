@@ -1,5 +1,7 @@
 package com.benben.kchartlib.drawing;
 
+import android.view.animation.Interpolator;
+
 import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.canvas.RendererCanvas;
@@ -11,8 +13,15 @@ import com.benben.kchartlib.index.range.IndexRange;
  */
 public abstract class RepeatAnimDrawing<T extends IndexRange> extends AutoAnimDrawing<T> {
 
+    public final static int RESTART = 1;    // 重新开始
+    public final static int REVERSE = 2;    // 逆转
+
     private long mCycleTime = 1000;     // 单个周期时间
     private long mCycleStartTime = 0;   // 周期开始时间
+
+    protected int mRepeatMode = RESTART;
+
+    private Interpolator mInterpolator;
 
     public RepeatAnimDrawing() {
         super();
@@ -38,6 +47,50 @@ public abstract class RepeatAnimDrawing<T extends IndexRange> extends AutoAnimDr
         }
     }
 
+    @Override
+    public void setInterpolator(Interpolator i) {
+        mInterpolator = i;
+    }
+
+    @Override
+    public Interpolator getInterpolator() {
+        return mInterpolator;
+    }
+
+    @Override
+    public float getAnimProcess() {
+        if (mCycleTime == 0) return 1.0f;
+        final long time = mAnimProcessTime - mCycleStartTime;
+        final float fraction;
+        if (mRepeatMode == RESTART) {
+            fraction = time % mCycleTime / (float) mCycleTime;
+        } else {
+            long l = time / mCycleTime % 2;
+            if (l == 0) {
+                // 正向
+                fraction = time % mCycleTime / (float) mCycleTime;
+            } else {
+                // 逆向
+                fraction = (mCycleTime - time % mCycleTime) / (float) mCycleTime;
+            }
+        }
+        if (mInterpolator == null) {
+            return Math.max(Math.min(fraction, 1.0f), 0.0f);
+        }
+        return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
+    }
+
+    /**
+     * @param repeatMode {@link #RESTART} or {@link #REVERSE}
+     */
+    public void setRepeatMode(int repeatMode) {
+        mRepeatMode = repeatMode;
+    }
+
+    public int getRepeatMode() {
+        return mRepeatMode;
+    }
+
     public void setRepeatCycle(long cycleTime) {
         if (cycleTime < 0) {
             mCycleTime = 0;
@@ -51,25 +104,5 @@ public abstract class RepeatAnimDrawing<T extends IndexRange> extends AutoAnimDr
      */
     public void restartCycle() {
         mCycleStartTime = 0;
-    }
-
-    public float getAnimProcess() {
-        if (mCycleTime == 0) return 1.0f;
-        final long time = mAnimProcessTime - mCycleStartTime;
-        if (mRepeatMode == RESTART) {
-            float fraction = time % mCycleTime / (float) mCycleTime;
-            return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
-        } else {
-            long l = time / mCycleTime % 2;
-            if (l == 0) {
-                // 正向
-                float fraction = time % mCycleTime / (float) mCycleTime;
-                return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
-            } else {
-                // 逆向
-                float fraction = (mCycleTime - time % mCycleTime) / (float) mCycleTime;
-                return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
-            }
-        }
     }
 }

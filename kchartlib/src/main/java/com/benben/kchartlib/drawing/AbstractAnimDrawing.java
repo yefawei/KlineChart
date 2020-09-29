@@ -1,7 +1,6 @@
 package com.benben.kchartlib.drawing;
 
 import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
@@ -16,17 +15,10 @@ import com.benben.kchartlib.index.range.IndexRange;
  */
 public abstract class AbstractAnimDrawing<T extends IndexRange> extends Drawing<T> implements Animation {
 
-    public final static int RESTART = 1;    // 重新开始
-    public final static int REVERSE = 2;    // 逆转
-    private final static Interpolator sDefaultInterpolator = new LinearInterpolator();
-
     boolean mInAnimationManager;
     boolean mInAnim;
 
     protected long mAnimProcessTime;
-    protected Interpolator mInterpolator = sDefaultInterpolator;
-
-    protected int mRepeatMode = RESTART;
 
     public AbstractAnimDrawing() {
     }
@@ -75,26 +67,9 @@ public abstract class AbstractAnimDrawing<T extends IndexRange> extends Drawing<
         return mAnimProcessTime;
     }
 
-    public void setInterpolator(Interpolator i) {
-        if (i == null) {
-            mInterpolator = sDefaultInterpolator;
-        } else {
-            mInterpolator = i;
-        }
-    }
+    public abstract void setInterpolator(Interpolator i);
 
-    public Interpolator getInterpolator() {
-        return mInterpolator;
-    }
+    public abstract Interpolator getInterpolator();
 
-    /**
-     * @param repeatMode {@link #RESTART} or {@link #REVERSE}
-     */
-    public void setRepeatMode(int repeatMode) {
-        mRepeatMode = repeatMode;
-    }
-
-    public int getRepeatMode() {
-        return mRepeatMode;
-    }
+    public abstract float getAnimProcess();
 }

@@ -1,5 +1,7 @@
 package com.benben.kchartlib.drawing;
 
+import android.view.animation.Interpolator;
+
 import androidx.annotation.Nullable;
 
 import com.benben.kchartlib.canvas.RendererCanvas;
@@ -11,11 +13,13 @@ import com.benben.kchartlib.index.range.IndexRange;
  * @日期 : 2020/7/10
  * @描述 : 主动触发动画的绘制
  */
-public abstract class TriggerAnimDrawing<T extends IndexRange> extends AbstractAnimDrawing<T>{
+public abstract class TriggerAnimDrawing<T extends IndexRange> extends AbstractAnimDrawing<T> {
 
     private long mAnimStartTime;
     private long mDuration;
     private long mAnimEndTime;
+
+    private Interpolator mInterpolator;
 
     public TriggerAnimDrawing() {
     }
@@ -68,9 +72,30 @@ public abstract class TriggerAnimDrawing<T extends IndexRange> extends AbstractA
         return mAnimEndTime > System.currentTimeMillis();
     }
 
+    @Override
+    public void setInterpolator(Interpolator i) {
+        mInterpolator = i;
+    }
+
+    @Override
+    public Interpolator getInterpolator() {
+        return mInterpolator;
+    }
+
+    @Override
+    public float getAnimProcess() {
+        if (!inAnimTime()) return 1.0f;
+        float fraction = (mAnimProcessTime - mAnimStartTime) / (float) mDuration;
+        if ( mInterpolator == null) {
+            return Math.max(Math.min(fraction, 1.0f), 0.0f);
+        }
+        return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
+    }
+
     /**
      * 开始执行动画
      * 上一个动画没有结束的情况下调用该函数将以新的动画周期开始
+     *
      * @param duration 执行时长
      */
     public void startAnim(long duration) {
@@ -91,11 +116,5 @@ public abstract class TriggerAnimDrawing<T extends IndexRange> extends AbstractA
         if (mInAnimationManager) {
             mDataProvider.getChartAnimation().removeAnim(this);
         }
-    }
-
-    public float getAnimProcess() {
-        if (!inAnimTime()) return 1.0f;
-        float fraction = (mAnimProcessTime - mAnimStartTime) / (float) mDuration;
-        return mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
     }
 }
