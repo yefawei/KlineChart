@@ -29,6 +29,9 @@ import com.benben.kchartlib.render.ForegroundRenderer;
 import com.benben.kchartlib.render.MainRenderer;
 import com.benben.kchartlib.touch.TouchTapManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @日期 : 2020/6/30
  * @描述 :
@@ -48,6 +51,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private boolean mPreviousIsFullScreen;  // 备份上一次是否满屏
     private int mPreviousDataLength;        // 备份上一次数据长度
     private int mDataLength;                // 视图总长度
+    private List<OnAdapterChangeListener> mAdapterChangeListeners;
     private BaseKChartAdapter mAdapter;     // 数据适配器
     private IDataSizeChangeHandler mDataSizeChangeHandler;
 
@@ -515,13 +519,25 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         }
     }
 
-    public void setAdapter(@Nullable BaseKChartAdapter adapter) {
+    public void setAdapter(@Nullable BaseKChartAdapter<?> adapter) {
         if (mAdapter != null) {
             mAdapter.unregisterDataSetObserver(mDataObserver);
+
+            if (mAdapterChangeListeners != null) {
+                for (OnAdapterChangeListener listener : mAdapterChangeListeners) {
+                    listener.onDetachAdapter(mAdapter);
+                }
+            }
         }
         mAdapter = adapter;
         if (adapter != null) {
             adapter.registerDataSetObserver(mDataObserver);
+
+            if (mAdapterChangeListeners != null) {
+                for (OnAdapterChangeListener listener : mAdapterChangeListeners) {
+                    listener.onAttachAdapter(mAdapter);
+                }
+            }
         }
         requestDraw();
     }
@@ -539,7 +555,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     @Override
-    public BaseKChartAdapter getAdapter() {
+    public BaseKChartAdapter<?> getAdapter() {
         return mAdapter;
     }
 
@@ -601,6 +617,19 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mScalePointWidthBuffer.mScaleX = 0;
         mIsFullScreenBuffer.mScaleX = 0;
         mMaxScrollXBuffer.mScaleX = 0;
+    }
+
+    public void addOnAdapterChangeListener(OnAdapterChangeListener listener) {
+        if (listener == null) return;
+        if (mAdapterChangeListeners == null) {
+            mAdapterChangeListeners = new ArrayList<>();
+        }
+        mAdapterChangeListeners.add(listener);
+    }
+
+    public void removeOnAdapterChangeListener(OnAdapterChangeListener listener) {
+        if (listener == null || mAdapterChangeListeners == null) return;
+        mAdapterChangeListeners.remove(listener);
     }
 
     public void setOnPaddingListener(OnPaddingListener listener) {
@@ -666,6 +695,12 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             }
         }
     };
+
+    public interface OnAdapterChangeListener {
+        void onAttachAdapter(@NonNull BaseKChartAdapter<?> adapter);
+
+        void onDetachAdapter(@NonNull BaseKChartAdapter<?> adapter);
+    }
 
     public interface OnPaddingListener {
         /**
