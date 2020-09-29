@@ -1,12 +1,12 @@
 package com.benben.kchartlib.index.range;
 
-import android.view.animation.Interpolator;
+import androidx.annotation.FloatRange;
 
 import com.benben.kchartlib.data.Transformer;
 
 /**
  * @日期 : 2020/9/27
- * @描述 : 最大最小值过渡计算类
+ * @描述 : 最大最小值过渡计算辅助类类
  * 注意：该类不会被{@link Transformer}所计算
  */
 public final class TransitionIndexRange extends IndexRange implements IndexRangeContainer, IndexRange.OnCalcValueListener {
@@ -21,15 +21,8 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
     private float mTargetMinValue;
 
     private boolean mIsLockChange;
-    private long mDuration;
-    private long mStartTime;
-    private long mEndTime;
-    private long mProcessTime;
 
-    private long mLastProcessTime;
-    private float mBufferFraction;
-
-    private Interpolator mInterpolator;
+    private float mFraction = 1.0f;
 
     public TransitionIndexRange(IndexRange indexRange) {
         super();
@@ -65,11 +58,10 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         if (!mIsLockChange || getSideMode() == IndexRange.DOWN_SIDE) {
             return mIndexRange.getMaxValue();
         }
-        float fraction = getProcessFraction();
-        if (fraction == 1.0f) {
+        if (mFraction == 1.0f) {
             return mIndexRange.getMaxValue();
         }
-        return mTransitionMaxValue * fraction + mLastMaxValue;
+        return mTransitionMaxValue * mFraction + mLastMaxValue;
     }
 
     @Override
@@ -77,11 +69,10 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         if (!mIsLockChange || getSideMode() == IndexRange.UP_SIDE) {
             return mIndexRange.getMinValue();
         }
-        float fraction = getProcessFraction();
-        if (fraction == 1.0f) {
+        if (mFraction == 1.0f) {
             return mIndexRange.getMinValue();
         }
-        return mTransitionMinValue * fraction + mLastMinValue;
+        return mTransitionMinValue * mFraction + mLastMinValue;
     }
 
     @Override
@@ -147,15 +138,10 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
     /**
      * 锁住变更，{@link #mLastMaxValue}、{@link #mLastMinValue}、
      * {@link #mTargetMaxValue}和{@link #mTargetMinValue}有变化会自动去锁
-     *
-     * @param startTime 锁起始时间
-     * @param endTime   锁结束时间
      */
-    public void lockChange(long startTime, long endTime) {
+    public void lockChange() {
         mIsLockChange = true;
-        mStartTime = mProcessTime = startTime;
-        mEndTime = endTime;
-        mDuration = endTime - startTime;
+        mFraction = 0;
     }
 
     /**
@@ -163,11 +149,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
      */
     public void unlockChange() {
         mIsLockChange = false;
-        mStartTime = 0;
-        mDuration = 0;
-        mEndTime = 0;
-        mProcessTime = 0;
-        mLastProcessTime = 0;
+        mFraction = 1.0f;
     }
 
     public boolean isLockChange() {
@@ -177,38 +159,12 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
     /**
      * 更新当前进度时间
      */
-    public void updateProcessTime(long time) {
-        mProcessTime = time;
-        if (mProcessTime >= mEndTime) {
+    public void updateProcess(@FloatRange(from = 0.0, to = 1.0) float fraction) {
+        mFraction = fraction;
+        if (fraction == 1.0f) {
             mLastMaxValue = mTargetMaxValue;
             mLastMinValue = mTargetMinValue;
             unlockChange();
         }
-    }
-
-    /**
-     * 获取进度值
-     */
-    public float getProcessFraction() {
-        if (!mIsLockChange) {
-            return 1.0f;
-        }
-        if (mLastProcessTime == mProcessTime) {
-            return mBufferFraction;
-        }
-        mLastProcessTime = mProcessTime;
-        float fraction = (mProcessTime - mStartTime) / (float) mDuration;
-        if (mInterpolator == null) {
-            return mBufferFraction = Math.max(Math.min(fraction, 1.0f), 0.0f);
-        }
-        return mBufferFraction = mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
-    }
-
-    public void setInterpolator(Interpolator i) {
-        mInterpolator = i;
-    }
-
-    public Interpolator getInterpolator() {
-        return mInterpolator;
     }
 }

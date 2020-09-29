@@ -35,7 +35,7 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
             throw new IllegalArgumentException("RealIndexRange is not CandleIndexRange!");
         }
         indexRange.addOnCalcValueListener(this);
-        indexRange.setInterpolator(new DecelerateInterpolator());
+        setInterpolator(new DecelerateInterpolator());
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(3);
@@ -53,7 +53,7 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
     public void onCalcValueEnd() {
         if (!mIndexRange.isLockChange() && mIndexRange.valueHasChange()) {
             startAnim(400);
-            mIndexRange.lockChange(getAnimStartTime(), getAnimEndTime());
+            mIndexRange.lockChange();
         }
     }
 
@@ -61,7 +61,7 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
     public void updateAnimProcessTime(long time) {
         super.updateAnimProcessTime(time);
         if (mIndexRange.isLockChange()) {
-            mIndexRange.updateProcessTime(time);
+            mIndexRange.updateProcess(getAnimProcess());
         }
     }
 
