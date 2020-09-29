@@ -111,17 +111,22 @@ public class Transformer {
      * 重置数据边界
      */
     public void resetBounds() {
-        for (IndexRange value : mIndexMap.values()) {
-            value.resetValue(true);
-        }
         int oldStartIndex = mStartIndex;
         int oldStopIndex = mStopIndex;
         mPointXBuffer = sEmptyPointXBuffer;
         mStartPointX = 0;
         mStartIndex = -1;
         mStopIndex = -1;
-        if (mViewIndexListener != null && (mStartIndex != oldStartIndex || mStopIndex != oldStopIndex)) {
-            mViewIndexListener.viewIndex(mStartIndex, mStopIndex);
+        if (mStartIndex != oldStartIndex || mStopIndex != oldStopIndex) {
+            for (IndexRange value : mIndexMap.values()) {
+                value.resetValue(true);
+            }
+            for (IndexRange value : mIndexMap.values()) {
+                value.calcValueEnd(true);
+            }
+            if (mViewIndexListener != null) {
+                mViewIndexListener.viewIndex(mStartIndex, mStopIndex);
+            }
         }
     }
 
@@ -151,8 +156,11 @@ public class Transformer {
         for (int i = 0; i < mPointXBuffer.length; i++) {
             mPointXBuffer[i] = i * mDataProvider.getScalePointWidth() + mStartPointX;
         }
+        if (mStartIndex == oldStartIndex && mStopIndex == oldStopIndex) {
+            return;
+        }
         calcMinMax(mDataProvider.getAdapter());
-        if (mViewIndexListener != null && (mStartIndex != oldStartIndex || mStopIndex != oldStopIndex)) {
+        if (mViewIndexListener != null) {
             mViewIndexListener.viewIndex(mStartIndex, mStopIndex);
         }
     }
@@ -227,7 +235,7 @@ public class Transformer {
             value.calcPaddingValue();
         }
         for (IndexRange value : mIndexMap.values()) {
-            value.calcValueEnd();
+            value.calcValueEnd(false);
         }
     }
 
@@ -298,6 +306,11 @@ public class Transformer {
     }
 
     public interface OnViewIndexListener {
+        /**
+         * 可视索引范围
+         * @param startIndex item开始索引
+         * @param endIndex item结束索引
+         */
         void viewIndex(int startIndex, int endIndex);
     }
 }

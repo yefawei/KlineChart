@@ -44,7 +44,7 @@ public class TransitionValumeDrawing extends TriggerAnimDrawing<TransitionIndexR
     }
 
     @Override
-    public void onCalcValueEnd() {
+    public void onCalcValueEnd(boolean isEmptyData) {
         if (!mIndexRange.isLockChange() && mIndexRange.valueHasChange()) {
             startAnim(400);
             mIndexRange.lockChange();

@@ -186,14 +186,14 @@ public abstract class IndexRange {
     /**
      * 计算结束
      */
-    public void calcValueEnd() {
-        dispatchCalcValueEnd();
+    public void calcValueEnd(boolean isEmptyData) {
+        dispatchCalcValueEnd(isEmptyData);
     }
 
-    protected void dispatchCalcValueEnd() {
+    protected void dispatchCalcValueEnd(boolean isEmptyData) {
         if (mOnCalcValueListeners != null) {
             for (OnCalcValueListener listener : mOnCalcValueListeners) {
-                listener.onCalcValueEnd();
+                listener.onCalcValueEnd(isEmptyData);
             }
         }
     }
@@ -293,9 +293,16 @@ public abstract class IndexRange {
     public abstract String getIndexTag();
 
     public interface OnCalcValueListener {
-
+        /**
+         * 重置数据
+         * @param isEmptyData true:为空数据重置数据回调 false:为数据有变更，计算前的重置
+         */
         void onResetValue(boolean isEmptyData);
 
-        void onCalcValueEnd();
+        /**
+         * 计算结束
+         * @param isEmptyData true:为空数据计算结束回调 false:为数据有变更，计算前结束的回调
+         */
+        void onCalcValueEnd(boolean isEmptyData);
     }
 }

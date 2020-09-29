@@ -66,7 +66,7 @@ public final class ReverseIndexRange extends IndexRange implements IndexRangeCon
     }
 
     @Override
-    public void onCalcValueEnd() {
-        dispatchCalcValueEnd();
+    public void onCalcValueEnd(boolean isEmptyData) {
+        dispatchCalcValueEnd(isEmptyData);
     }
 }
