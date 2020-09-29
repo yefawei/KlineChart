@@ -100,6 +100,10 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
 
     @Override
     public void onCalcValueEnd(boolean isEmptyData) {
+        if (isEmptyData) {
+            dispatchCalcValueEnd(isEmptyData);
+            return;
+        }
         if (Float.isNaN(mLastMaxValue) || Float.isNaN(mLastMinValue)) {
             mLastMaxValue = mTargetMaxValue = mIndexRange.getMaxValue();
             mLastMinValue = mTargetMinValue = mIndexRange.getMinValue();
