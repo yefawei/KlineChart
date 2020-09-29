@@ -227,4 +227,8 @@ public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPo
     public void drawData(Canvas canvas) {
 
     }
+
+    protected void release() {
+
+    }
 }

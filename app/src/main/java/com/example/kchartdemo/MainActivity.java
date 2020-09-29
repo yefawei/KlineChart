@@ -25,6 +25,7 @@ import com.example.kchartdemo.Drawing.CandleDrawing;
 import com.example.kchartdemo.Drawing.ClickDrawing;
 import com.example.kchartdemo.Drawing.HighlightDrawing;
 import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
+import com.example.kchartdemo.Drawing.ParalleCandleDrawing;
 import com.example.kchartdemo.Drawing.RepeatPointDrawing;
 import com.example.kchartdemo.Drawing.RightPaddingDrawing;
 import com.example.kchartdemo.Drawing.TransitionCandleDrawing;
@@ -155,6 +156,11 @@ public class MainActivity extends AppCompatActivity {
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
+        layoutParams.setVerticalLinear(true, 1);
+        mainRenderCanvas.addDrawing(new ParalleCandleDrawing(new TransitionIndexRange(candleIndexRange), layoutParams), true);
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
         layoutParams.setWidth(100);
         layoutParams.setHorizontalPosition(RendererCanvas.DrawingLayoutParams.POSITION_LEFT);
         mainRenderCanvas.addDrawing(new LeftPaddingDrawing(layoutParams));
@@ -164,6 +170,12 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.setWidth(100);
         layoutParams.setHorizontalPosition(RendererCanvas.DrawingLayoutParams.POSITION_RIGHT);
         mainRenderCanvas.addDrawing(new RightPaddingDrawing(layoutParams));
+
+        layoutParams = new RendererCanvas.DrawingLayoutParams();
+        layoutParams.setWeight(1);
+        layoutParams.setVerticalLinear(true, 2);
+        mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
+        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);

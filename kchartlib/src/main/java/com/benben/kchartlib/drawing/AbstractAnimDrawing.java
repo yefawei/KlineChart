@@ -71,5 +71,8 @@ public abstract class AbstractAnimDrawing<T extends IndexRange> extends Drawing<
 
     public abstract Interpolator getInterpolator();
 
+    /**
+     * 返回当前动画进度
+     */
     public abstract float getAnimProcess();
 }

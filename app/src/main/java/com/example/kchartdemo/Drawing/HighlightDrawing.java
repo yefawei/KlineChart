@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.benben.kchartlib.canvas.RendererCanvas;
-import com.benben.kchartlib.drawing.AbstractAnimDrawing;
 import com.benben.kchartlib.drawing.TriggerRepeatAnimDrawing;
 import com.benben.kchartlib.index.range.CandleIndexRange;
 import com.benben.kchartlib.touch.TapMarkerOption;
@@ -22,7 +21,7 @@ public class HighlightDrawing extends TriggerRepeatAnimDrawing<CandleIndexRange>
     public HighlightDrawing(CandleIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
         setInterpolator(new AccelerateDecelerateInterpolator());
-        setRepeatMode(AbstractAnimDrawing.REVERSE);
+        setRepeatMode(TriggerRepeatAnimDrawing.REVERSE);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStrokeWidth(6);
     }
