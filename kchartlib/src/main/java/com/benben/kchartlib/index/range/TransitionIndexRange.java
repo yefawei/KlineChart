@@ -87,7 +87,10 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
 
     @Override
     public void onResetValue(boolean isEmptyData) {
-        if (!isEmptyData) return;
+        if (!isEmptyData) {
+            dispatchResetValue(isEmptyData);
+            return;
+        }
         mLastMaxValue = Float.NaN;
         mLastMinValue = Float.NaN;
         mTransitionMaxValue = 0;

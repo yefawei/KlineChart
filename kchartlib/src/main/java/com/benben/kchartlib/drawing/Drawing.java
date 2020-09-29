@@ -181,7 +181,6 @@ public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPo
         return mIndexRange;
     }
 
-    @CallSuper
     @Override
     public void preCalcDataValue() {
         if (mIndexRange != null) {
