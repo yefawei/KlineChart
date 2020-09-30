@@ -27,7 +27,7 @@ public abstract class BaseKChartAdapter<T extends IEntity> implements IAdapter<T
      */
     @Override
     public final void notifyDataSetChanged() {
-        mDataSetObservable.notifyChanged();
+        mDataSetObservable.notifyChanged(getCount());
     }
 
     /**
@@ -44,8 +44,8 @@ public abstract class BaseKChartAdapter<T extends IEntity> implements IAdapter<T
      * 末尾数据有更新
      */
     @Override
-    public void notifyLastUpdated() {
-        mDataSetObservable.notifyLastUpdated();
+    public void notifyLastUpdated(int index) {
+        mDataSetObservable.notifyLastUpdated(index);
     }
 
     /**

@@ -26,11 +26,9 @@ import com.example.kchartdemo.Drawing.ClickDrawing;
 import com.example.kchartdemo.Drawing.HighlightDrawing;
 import com.example.kchartdemo.Drawing.LeftPaddingDrawing;
 import com.example.kchartdemo.Drawing.ParalleCandleDrawing;
-import com.example.kchartdemo.Drawing.RepeatPointDrawing;
 import com.example.kchartdemo.Drawing.RightPaddingDrawing;
 import com.example.kchartdemo.Drawing.TransitionCandleDrawing;
 import com.example.kchartdemo.Drawing.TransitionValumeDrawing;
-import com.example.kchartdemo.Drawing.TriggerRepeatPointDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
 import com.example.kchartdemo.Drawing.VolumeHighlightDrawing;
 import com.example.kchartdemo.data.AnimDataSizeChangeHandler;
@@ -191,13 +189,13 @@ public class MainActivity extends AppCompatActivity {
         mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
 
-        layoutParams = new RendererCanvas.DrawingLayoutParams();
-        layoutParams.setWeight(1);
-        mainRenderCanvas.addDrawing(new TriggerRepeatPointDrawing(layoutParams));
-
-        layoutParams = new RendererCanvas.DrawingLayoutParams();
-        layoutParams.setWeight(1);
-        mainRenderCanvas.addDrawing(new RepeatPointDrawing(layoutParams));
+//        layoutParams = new RendererCanvas.DrawingLayoutParams();
+//        layoutParams.setWeight(1);
+//        mainRenderCanvas.addDrawing(new TriggerRepeatPointDrawing(layoutParams));
+//
+//        layoutParams = new RendererCanvas.DrawingLayoutParams();
+//        layoutParams.setWeight(1);
+//        mainRenderCanvas.addDrawing(new RepeatPointDrawing(layoutParams));
 
         canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 0, 1);
         mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
@@ -274,7 +272,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void line(View view) {
-
+        KlineInfo item = (KlineInfo) mAdapter.getItem(mAdapter.getCount() - 1);
+        double ceil = Math.ceil(Math.log10(item.close_price));
+        if (System.currentTimeMillis() % 2 == 0) {
+            item.close_price =item.close_price + (float) (Math.random() * ceil) * 0.8f;
+        } else {
+            item.close_price =item.close_price - (float) (Math.random() * ceil) * 0.8f;
+        }
+        if (item.close_price < item.min_price) {
+            item.min_price = item.close_price;
+        }
+        if (item.close_price > item.max_price) {
+            item.max_price = item.close_price;
+        }
+        mAdapter.notifyLastUpdated(mAdapter.getCount() - 1);
     }
 
     public void candle(View view) {

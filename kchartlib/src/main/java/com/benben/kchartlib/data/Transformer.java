@@ -156,10 +156,10 @@ public class Transformer {
         for (int i = 0; i < mPointXBuffer.length; i++) {
             mPointXBuffer[i] = i * mDataProvider.getScalePointWidth() + mStartPointX;
         }
+        calcMinMax(mDataProvider.getAdapter());
         if (mStartIndex == oldStartIndex && mStopIndex == oldStopIndex) {
             return;
         }
-        calcMinMax(mDataProvider.getAdapter());
         if (mViewIndexListener != null) {
             mViewIndexListener.viewIndex(mStartIndex, mStopIndex);
         }

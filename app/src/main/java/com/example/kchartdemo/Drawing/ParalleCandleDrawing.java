@@ -39,6 +39,9 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
 
     private final Paint mPaint;
 
+    private float mLastItemClosePrice;
+    private float mLastItemTargetPrice;
+
     public ParalleCandleDrawing(TransitionIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
         if (!(indexRange.getRealIndexRange() instanceof CandleIndexRange)) {
@@ -77,6 +80,9 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
             startAnim(mTransitionTagId, 400);
             mIndexRange.startTransition();
         }
+        if (!inAnimTime(mLastUpdateTagId)) {
+            mLastItemClosePrice = mLastItemTargetPrice;
+        }
     }
 
     @Override
@@ -97,42 +103,62 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
         float width = mDataProvider.getScalePointWidth();
         Transformer transformer = mDataProvider.getTransformer();
         IEntity item;
-        if (inAnim() && inAnimTime(mLastInsertedTagId)) {
-            // 插入一条数据动画
-            int stopIndex = transformer.getStopIndex();
-            item = mDataProvider.getAdapter().getItem(stopIndex);
-            float process = getAnimProcess(mLastInsertedTagId);
-            float position = transformer.getPointInScreenXByIndex(stopIndex);
-            drawCandle(canvas, item, width, position - width * (1.0f - process), stopIndex);
-            for (int i = transformer.getStartIndex(); i < stopIndex; i++) {
-                item = mDataProvider.getAdapter().getItem(i);
-                float positionId = transformer.getPointInScreenXByIndex(i);
-                drawCandle(canvas, item, width, positionId, i);
-            }
-        } else {
-            for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
-                item = mDataProvider.getAdapter().getItem(i);
-                float position = transformer.getPointInScreenXByIndex(i);
-                drawCandle(canvas, item, width, position, i);
+        if (inAnim()) {
+            if (inAnimTime(mLastInsertedTagId)) {
+                // 插入一条数据动画
+                int stopIndex = transformer.getStopIndex();
+                item = mDataProvider.getAdapter().getItem(stopIndex);
+                float process = getAnimProcess(mLastInsertedTagId);
+                float position = transformer.getPointInScreenXByIndex(stopIndex);
+                drawCandle(canvas, item, width, position - width * (1.0f - process), stopIndex, false);
+                for (int i = transformer.getStartIndex(); i < stopIndex; i++) {
+                    item = mDataProvider.getAdapter().getItem(i);
+                    float positionId = transformer.getPointInScreenXByIndex(i);
+                    drawCandle(canvas, item, width, positionId, i, false);
+                }
+                return;
+            } else if (inAnimTime(mLastUpdateTagId)) {
+                int stopIndex = transformer.getStopIndex();
+                item = mDataProvider.getAdapter().getItem(stopIndex);
+                float position = transformer.getPointInScreenXByIndex(stopIndex);
+                drawCandle(canvas, item, width, position, stopIndex, true);
+                for (int i = transformer.getStartIndex(); i < stopIndex; i++) {
+                    item = mDataProvider.getAdapter().getItem(i);
+                    float positionId = transformer.getPointInScreenXByIndex(i);
+                    drawCandle(canvas, item, width, positionId, i, false);
+                }
+                return;
             }
         }
+        for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
+            item = mDataProvider.getAdapter().getItem(i);
+            float position = transformer.getPointInScreenXByIndex(i);
+            drawCandle(canvas, item, width, position, i, false);
+        }
+
     }
 
-    private void drawCandle(Canvas canvas, IEntity entity, float width, float inScreenPosition, int positionId) {
-        if (entity.getOpenPrice() > entity.getClosePrice()) { // 跌
+    private void drawCandle(Canvas canvas, IEntity entity, float width, float inScreenPosition, int positionId, boolean processLast) {
+        float closePrice = entity.getClosePrice();
+        float process = getAnimProcess(mLastUpdateTagId);
+        if (processLast) {
+            closePrice = (mLastItemTargetPrice - mLastItemClosePrice) * process + mLastItemClosePrice;
+        }
+        if (entity.getOpenPrice() > closePrice) { // 跌
             mPaint.setColor(Color.RED);
         } else {
             mPaint.setColor(Color.GREEN);
         }
+
         float heighY = getCoordinateY(entity.getHighPrice());
         float lowY = getCoordinateY(entity.getLowPrice());
         float openY = getCoordinateY(entity.getOpenPrice());
-        if (entity.getOpenPrice() == entity.getClosePrice()) {
+        if (entity.getOpenPrice() == closePrice) {
             canvas.drawLine(inScreenPosition - width / 2, openY, inScreenPosition + width / 2, openY, mPaint);
             canvas.drawLine(inScreenPosition, lowY, inScreenPosition, heighY, mPaint);
             return;
         }
-        float closeY = getCoordinateY(entity.getClosePrice());
+        float closeY = getCoordinateY(closePrice);
         // 部分手机top值需要小于bottom值才能正常显示，这里做了个兼容
         if (closeY > openY) {
             canvas.drawRect(inScreenPosition - width / 2, openY, inScreenPosition + width / 2, closeY, mPaint);
@@ -154,14 +180,30 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
     }
 
     AdapterDataObserver mAdapterDataObserver = new AdapterDataObserver() {
+
         @Override
-        public void onLastUpdated() {
-            //TODO 这里更新最后一条数据
+        public void onChanged(int allCount) {
+            if (allCount == 0) return;
+            IEntity item = mDataProvider.getAdapter().getItem(allCount - 1);
+            mLastItemClosePrice = mLastItemTargetPrice = item.getClosePrice();
+            stopAllAnim();
         }
 
         @Override
-        public void onLastInserted(int itemCount) {
-            if (itemCount != 1) return;
+        public void onLastUpdated(int index) {
+            IEntity item = mDataProvider.getAdapter().getItem(index);
+            if (mLastItemTargetPrice != item.getClosePrice()) {
+                float process = getAnimProcess(mLastUpdateTagId);
+                mLastItemClosePrice = (mLastItemTargetPrice - mLastItemClosePrice) * process + mLastItemClosePrice;
+                mLastItemTargetPrice = item.getClosePrice();
+                startAnim(mLastUpdateTagId, 200);
+            }
+        }
+
+        @Override
+        public void onLastInserted(int insertedCount) {
+            if (insertedCount != 1) return;
+            stopAnim(mLastUpdateTagId);
             startAnim(mLastInsertedTagId, 4000);
         }
     };

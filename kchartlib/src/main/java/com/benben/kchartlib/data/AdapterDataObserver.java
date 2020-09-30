@@ -8,29 +8,33 @@ public class AdapterDataObserver {
 
     /**
      * 更新所有数据
+     * @param allCount 总数量
      */
-    public void onChanged() {
+    public void onChanged(int allCount) {
 
     }
 
     /**
      * 头部有插入新数据
+     * @param insertedCount 前端插入数量
      */
-    public void onFirstInserted(int itemCount) {
+    public void onFirstInserted(int insertedCount) {
 
     }
 
     /**
      * 最后一个数据有更新
+     * @param index 最后的索引
      */
-    public void onLastUpdated() {
+    public void onLastUpdated(int index) {
 
     }
 
     /**
      * 尾部有插入新数据
+     * @param insertedCount 末尾插入数量
      */
-    public void onLastInserted(int itemCount) {
+    public void onLastInserted(int insertedCount) {
 
     }
 }

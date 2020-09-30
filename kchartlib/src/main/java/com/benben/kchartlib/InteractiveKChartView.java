@@ -649,13 +649,13 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private AdapterDataObserver mDataObserver = new AdapterDataObserver() {
 
         @Override
-        public void onChanged() {
+        public void onChanged(int allCount) {
             prepareIndexData();
             requestDraw();
         }
 
         @Override
-        public void onFirstInserted(int itemCount) {
+        public void onFirstInserted(int insertedCount) {
             prepareIndexData();
             if (!isFullScreen()) {
                 // 原有数据并没有铺满屏幕
@@ -664,25 +664,25 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             }
             resetBuffer();
             mDataLength = getPointWidth() * mAdapter.getCount();
-            mTouchTapManager.updateTapIndexOffset(itemCount);
+            mTouchTapManager.updateTapIndexOffset(insertedCount);
             if (mDataSizeChangeHandler == null) {
                 invalidate();
                 return;
             }
             if (!mDataSizeChangeHandler.onFullFirstInserted(InteractiveKChartView.this,
-                    itemCount, mScrollX, getFinalScroll())) {
+                    insertedCount, mScrollX, getFinalScroll())) {
                 invalidate();
             }
         }
 
         @Override
-        public void onLastUpdated() {
+        public void onLastUpdated(int index) {
             prepareIndexData();
             invalidate();
         }
 
         @Override
-        public void onLastInserted(int itemCount) {
+        public void onLastInserted(int insertedCount) {
             prepareIndexData();
             if (!isFullScreen()) {
                 // 原有数据并没有铺满屏幕
@@ -696,7 +696,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
                 return;
             }
             if (!mDataSizeChangeHandler.onFullLastInserted(InteractiveKChartView.this,
-                    itemCount, mScrollX, getFinalScroll())) {
+                    insertedCount, mScrollX, getFinalScroll())) {
                 invalidate();
             }
         }

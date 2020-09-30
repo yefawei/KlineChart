@@ -126,7 +126,7 @@ public class DefaultKChartAdapter extends BaseKChartAdapter<IEntity> {
             notifyFirstInserted(1);
         } else if (datatime == mEndTime) {
             mKlineInfos.set(mKlineInfos.size() - 1, data);
-            notifyLastUpdated();
+            notifyLastUpdated(mKlineInfos.size() - 1);
         } else if (datatime > mEndTime) {
             mKlineInfos.add(data);
             mEndTime = datatime;

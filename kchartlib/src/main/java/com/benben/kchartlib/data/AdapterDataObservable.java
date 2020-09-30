@@ -11,9 +11,9 @@ public class AdapterDataObservable extends Observable<AdapterDataObserver> {
     /**
      * 通知更新所有数据
      */
-    public void notifyChanged() {
+    public void notifyChanged(int count) {
         for (AdapterDataObserver observer : mObservers) {
-            observer.onChanged();
+            observer.onChanged(count);
         }
     }
 
@@ -29,9 +29,9 @@ public class AdapterDataObservable extends Observable<AdapterDataObserver> {
     /**
      * 通知最后一个数据有更新
      */
-    public void notifyLastUpdated() {
+    public void notifyLastUpdated(int index) {
         for (AdapterDataObserver observer : mObservers) {
-            observer.onLastUpdated();
+            observer.onLastUpdated(index);
         }
     }
 

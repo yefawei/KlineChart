@@ -50,7 +50,7 @@ public interface IAdapter<T extends IEntity> {
     /**
      * 末尾数据有所更新
      */
-    void notifyLastUpdated();
+    void notifyLastUpdated(int index);
 
     /**
      * 尾部数据有所添加
