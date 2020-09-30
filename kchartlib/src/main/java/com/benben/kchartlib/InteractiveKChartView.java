@@ -522,24 +522,30 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     public void setAdapter(@Nullable BaseKChartAdapter<?> adapter) {
         if (mAdapter != null) {
             mAdapter.unregisterDataSetObserver(mDataObserver);
-
-            if (mAdapterChangeListeners != null) {
-                for (OnAdapterChangeListener listener : mAdapterChangeListeners) {
-                    listener.onDetachAdapter(mAdapter);
-                }
-            }
         }
+        dispatchDetachAdapter();
         mAdapter = adapter;
         if (adapter != null) {
             adapter.registerDataSetObserver(mDataObserver);
+        }
+        dispatchAttachAdapter();
+        requestDraw();
+    }
 
-            if (mAdapterChangeListeners != null) {
-                for (OnAdapterChangeListener listener : mAdapterChangeListeners) {
-                    listener.onAttachAdapter(mAdapter);
-                }
+    private void dispatchAttachAdapter() {
+        if (mAdapterChangeListeners != null) {
+            for (OnAdapterChangeListener listener : mAdapterChangeListeners) {
+                listener.onAttachAdapter(mAdapter);
             }
         }
-        requestDraw();
+    }
+
+    private void dispatchDetachAdapter() {
+        if (mAdapterChangeListeners != null) {
+            for (OnAdapterChangeListener listener : mAdapterChangeListeners) {
+                listener.onDetachAdapter(mAdapter);
+            }
+        }
     }
 
     /**
@@ -697,9 +703,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     };
 
     public interface OnAdapterChangeListener {
-        void onAttachAdapter(@NonNull BaseKChartAdapter<?> adapter);
 
-        void onDetachAdapter(@NonNull BaseKChartAdapter<?> adapter);
+        void onAttachAdapter(@Nullable BaseKChartAdapter<?> adapter);
+
+        void onDetachAdapter(@Nullable BaseKChartAdapter<?> adapter);
     }
 
     public interface OnPaddingListener {

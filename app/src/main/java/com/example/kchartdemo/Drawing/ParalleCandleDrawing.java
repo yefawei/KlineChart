@@ -5,7 +5,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.animation.DecelerateInterpolator;
 
+import androidx.annotation.Nullable;
+
+import com.benben.kchartlib.InteractiveKChartView;
+import com.benben.kchartlib.adapter.BaseKChartAdapter;
 import com.benben.kchartlib.canvas.RendererCanvas;
+import com.benben.kchartlib.data.AdapterDataObserver;
 import com.benben.kchartlib.data.Transformer;
 import com.benben.kchartlib.drawing.ParallelTriggerAnimDrawing;
 import com.benben.kchartlib.index.IEntity;
@@ -22,7 +27,8 @@ import java.util.Locale;
  * @日期 : 2020/7/14
  * @描述 : 最大值最小值有变更、新添加、末尾值有变更都以动画的形式过渡蜡烛图
  */
-public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionIndexRange> implements IndexRange.OnCalcValueListener {
+public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionIndexRange>
+        implements IndexRange.OnCalcValueListener, InteractiveKChartView.OnAdapterChangeListener {
 
     private static final int mTransitionTagId = 1;      // 最大最小值过渡
     private static final int mLastInsertedTagId = 2;    // 末尾有插入
@@ -44,6 +50,18 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(3);
         mPaint.setTextSize(18);
+    }
+
+    @Override
+    public void onAttachAdapter(@Nullable BaseKChartAdapter<?> adapter) {
+        if (adapter == null) return;
+        adapter.registerDataSetObserver(mAdapterDataObserver);
+    }
+
+    @Override
+    public void onDetachAdapter(@Nullable BaseKChartAdapter<?> adapter) {
+        if (adapter == null) return;
+        adapter.unregisterDataSetObserver(mAdapterDataObserver);
     }
 
     @Override
@@ -78,14 +96,29 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
     public void drawData(Canvas canvas) {
         float width = mDataProvider.getScalePointWidth();
         Transformer transformer = mDataProvider.getTransformer();
-        for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
-            IEntity item = mDataProvider.getAdapter().getItem(i);
-            float limit = transformer.getPointInScreenXByIndex(i);
-            drawCandle(canvas, item, width, limit, i);
+        IEntity item;
+        if (inAnim() && inAnimTime(mLastInsertedTagId)) {
+            // 插入一条数据动画
+            int stopIndex = transformer.getStopIndex();
+            item = mDataProvider.getAdapter().getItem(stopIndex);
+            float process = getAnimProcess(mLastInsertedTagId);
+            float position = transformer.getPointInScreenXByIndex(stopIndex);
+            drawCandle(canvas, item, width, position - width * (1.0f - process), stopIndex);
+            for (int i = transformer.getStartIndex(); i < stopIndex; i++) {
+                item = mDataProvider.getAdapter().getItem(i);
+                float positionId = transformer.getPointInScreenXByIndex(i);
+                drawCandle(canvas, item, width, positionId, i);
+            }
+        } else {
+            for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
+                item = mDataProvider.getAdapter().getItem(i);
+                float position = transformer.getPointInScreenXByIndex(i);
+                drawCandle(canvas, item, width, position, i);
+            }
         }
     }
 
-    private void drawCandle(Canvas canvas, IEntity entity, float width, float center, int position) {
+    private void drawCandle(Canvas canvas, IEntity entity, float width, float inScreenPosition, int positionId) {
         if (entity.getOpenPrice() > entity.getClosePrice()) { // 跌
             mPaint.setColor(Color.RED);
         } else {
@@ -95,28 +128,41 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
         float lowY = getCoordinateY(entity.getLowPrice());
         float openY = getCoordinateY(entity.getOpenPrice());
         if (entity.getOpenPrice() == entity.getClosePrice()) {
-            canvas.drawLine(center - width / 2, openY, center + width / 2, openY, mPaint);
-            canvas.drawLine(center, lowY, center, heighY, mPaint);
+            canvas.drawLine(inScreenPosition - width / 2, openY, inScreenPosition + width / 2, openY, mPaint);
+            canvas.drawLine(inScreenPosition, lowY, inScreenPosition, heighY, mPaint);
             return;
         }
         float closeY = getCoordinateY(entity.getClosePrice());
         // 部分手机top值需要小于bottom值才能正常显示，这里做了个兼容
         if (closeY > openY) {
-            canvas.drawRect(center - width / 2, openY, center + width / 2, closeY, mPaint);
+            canvas.drawRect(inScreenPosition - width / 2, openY, inScreenPosition + width / 2, closeY, mPaint);
         } else {
-            canvas.drawRect(center - width / 2, closeY, center + width / 2, openY, mPaint);
+            canvas.drawRect(inScreenPosition - width / 2, closeY, inScreenPosition + width / 2, openY, mPaint);
         }
-        canvas.drawLine(center, lowY, center, heighY, mPaint);
+        canvas.drawLine(inScreenPosition, lowY, inScreenPosition, heighY, mPaint);
 
         date.setTime(entity.getDatatime());
         String format = mSimpleDateFormat.format(date);
         mPaint.setColor(Color.WHITE);
         float v = mPaint.measureText(format);
-        canvas.drawText(format, center - v / 2, heighY, mPaint);
+        canvas.drawText(format, inScreenPosition - v / 2, heighY, mPaint);
 
-        String pos = position + "";
+        String pos = positionId + "";
         v = mPaint.measureText(pos);
         float offset = FontCalculateUtils.getFontTopYOffset(mPaint);
-        canvas.drawText(pos, center - v / 2, lowY + offset, mPaint);
+        canvas.drawText(pos, inScreenPosition - v / 2, lowY + offset, mPaint);
     }
+
+    AdapterDataObserver mAdapterDataObserver = new AdapterDataObserver() {
+        @Override
+        public void onLastUpdated() {
+            //TODO 这里更新最后一条数据
+        }
+
+        @Override
+        public void onLastInserted(int itemCount) {
+            if (itemCount != 1) return;
+            startAnim(mLastInsertedTagId, 4000);
+        }
+    };
 }

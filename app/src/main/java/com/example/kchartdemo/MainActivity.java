@@ -157,7 +157,9 @@ public class MainActivity extends AppCompatActivity {
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
         layoutParams.setVerticalLinear(true, 1);
-        mainRenderCanvas.addDrawing(new ParalleCandleDrawing(new TransitionIndexRange(candleIndexRange), layoutParams), true);
+        ParalleCandleDrawing paralleCandleDrawing = new ParalleCandleDrawing(new TransitionIndexRange(candleIndexRange), layoutParams);
+        mKChart.addOnAdapterChangeListener(paralleCandleDrawing);
+        mainRenderCanvas.addDrawing(paralleCandleDrawing, true);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);

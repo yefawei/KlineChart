@@ -652,7 +652,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
 
         /**
          * 设置是否是水平布局
-         * @param groupId 组id，不同组id会单独排序
+         * @param groupId 组id，不同组id会单独线性布局
          */
         public void setHorizontalLinear(boolean isHorizontalLinear, int groupId) {
             mIsHorizontalLinear = isHorizontalLinear;
@@ -665,7 +665,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
 
         /**
          * 设置是否是垂直布局
-         * @param groupId 组id，不同组id会单独排序
+         * @param groupId 组id，不同组id会单独线性布局
          */
         public void setVerticalLinear(boolean isVerticalLinear, int groupId) {
             mIsVerticalLinear = isVerticalLinear;
