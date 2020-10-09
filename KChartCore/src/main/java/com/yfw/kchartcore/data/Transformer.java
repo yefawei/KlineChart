@@ -221,10 +221,8 @@ public class Transformer {
 
     /**
      * 计算当前页面的最大最小值
-     *
-     * @param adapter
      */
-    private void calcMinMax(BaseKChartAdapter adapter) {
+    private void calcMinMax(BaseKChartAdapter<?> adapter) {
         for (IndexRange value : mIndexMap.values()) {
             value.resetValue(false);
         }
