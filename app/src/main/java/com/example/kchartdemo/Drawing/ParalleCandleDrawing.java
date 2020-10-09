@@ -7,6 +7,7 @@ import android.view.animation.DecelerateInterpolator;
 
 import androidx.annotation.Nullable;
 
+import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.InteractiveKChartView;
 import com.yfw.kchartcore.adapter.BaseKChartAdapter;
 import com.yfw.kchartcore.canvas.RendererCanvas;
@@ -19,10 +20,6 @@ import com.yfw.kchartcore.index.range.TransitionIndexRange;
 import com.yfw.kchartext.drawing.ParallelTriggerAnimDrawing;
 import com.yfw.kchartext.utils.FontCalculateUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 /**
  * @日期 : 2020/7/14
  * @描述 : 最大值最小值有变更、新添加、末尾值有变更都以动画的形式过渡蜡烛图
@@ -33,9 +30,6 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
     private static final int mTransitionTagId = 1;      // 最大最小值过渡
     private static final int mLastInsertedTagId = 2;    // 末尾有插入
     private static final int mLastUpdateTagId = 3;      // 末尾有更新
-
-    private Date date = new Date();
-    private SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("MM-dd", Locale.getDefault());
 
     private final Paint mPaint;
 
@@ -163,8 +157,7 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
         }
         canvas.drawLine(inScreenPosition, lowY, inScreenPosition, heighY, mPaint);
 
-        date.setTime(entity.getDatatime());
-        String format = mSimpleDateFormat.format(date);
+        String format = ((KlineInfo)entity).getFormatTime();
         mPaint.setColor(Color.WHITE);
         float v = mPaint.measureText(format);
         canvas.drawText(format, inScreenPosition - v / 2, heighY, mPaint);

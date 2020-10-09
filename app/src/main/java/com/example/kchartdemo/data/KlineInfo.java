@@ -1,8 +1,14 @@
 package com.example.kchartdemo.data;
 
 
+import android.text.TextUtils;
+
 import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartext.index.IVolume;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * @日期 : 2020/8/5
@@ -29,6 +35,8 @@ public class KlineInfo implements IEntity, IVolume {
     public float close_price;      // 收盘价
     public float volume;           // 数量
     public float amount;           // 金额
+
+    public String formatTime;
 
     @Override
     public float getOpenPrice() {
@@ -63,5 +71,22 @@ public class KlineInfo implements IEntity, IVolume {
     @Override
     public float getAmount() {
         return amount;
+    }
+
+    public String getFormatTime() {
+        if (TextUtils.isEmpty(formatTime)) {
+            formatTime = FormatTime.formatTime(getDatatime());
+        }
+        return formatTime;
+    }
+
+    private static class FormatTime {
+        private static Date mDate = new Date();
+        private static SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("MM-dd", Locale.getDefault());
+
+        public static String formatTime(long time) {
+            mDate.setTime(time);
+            return mSimpleDateFormat.format(mDate);
+        }
     }
 }

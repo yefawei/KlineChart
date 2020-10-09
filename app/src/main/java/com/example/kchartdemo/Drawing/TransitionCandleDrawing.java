@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.animation.DecelerateInterpolator;
 
+import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.data.Transformer;
 import com.yfw.kchartcore.index.IEntity;
@@ -14,18 +15,11 @@ import com.yfw.kchartcore.index.range.TransitionIndexRange;
 import com.yfw.kchartext.drawing.TriggerAnimDrawing;
 import com.yfw.kchartext.utils.FontCalculateUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 /**
  * @日期 : 2020/7/14
  * @描述 : 最大值最小值有变更以动画的形式过渡蜡烛图
  */
 public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexRange> implements IndexRange.OnCalcValueListener {
-
-    private Date date = new Date();
-    private SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("MM-dd", Locale.getDefault());
 
     private final Paint mPaint;
 
@@ -99,8 +93,7 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
         }
         canvas.drawLine(center, lowY, center, heighY, mPaint);
 
-        date.setTime(entity.getDatatime());
-        String format = mSimpleDateFormat.format(date);
+        String format = ((KlineInfo)entity).getFormatTime();
         mPaint.setColor(Color.WHITE);
         float v = mPaint.measureText(format);
         canvas.drawText(format, center - v / 2, heighY, mPaint);
