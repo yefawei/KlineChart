@@ -288,6 +288,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     // for performance tracking
+    private boolean openDrawtime = false;
     private long totalTime = 0;
     private long drawCycles = 0;
 
@@ -306,16 +307,18 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         if (mIsRenderForeground) {
             mForegroundRenderer.render(canvas);
         }
-        long drawtime = System.nanoTime() - startTime;
-        totalTime += drawtime;
-        drawCycles++;
-        long average = totalTime / drawCycles;
-        if (drawtime > 10_000_000) {
-            Log.e("Drawtime", "Drawtime error: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
-        } else if (drawtime > 5_000_000) {
-            Log.w("Drawtime", "Drawtime warn: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
-        } else {
-            Log.i("Drawtime", "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
+        if (openDrawtime) {
+            long drawtime = System.nanoTime() - startTime;
+            totalTime += drawtime;
+            drawCycles++;
+            long average = totalTime / drawCycles;
+            if (drawtime > 10_000_000) {
+                Log.e("Drawtime", "Drawtime error: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
+            } else if (drawtime > 5_000_000) {
+                Log.w("Drawtime", "Drawtime warn: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
+            } else {
+                Log.i("Drawtime", "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
+            }
         }
         mAnimationManager.animCheck();
     }
