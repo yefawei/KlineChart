@@ -67,7 +67,7 @@ public class CandleDrawing extends Drawing<CandleIndexRange> {
         float v = mPaint.measureText(format);
         canvas.drawText(format, center - v / 2, heighY, mPaint);
 
-        String pos = position + "";
+        String pos = String.valueOf(position);
         v = mPaint.measureText(pos);
         float offset = FontCalculateUtils.getFontTopYOffset(mPaint);
         canvas.drawText(pos, center - v / 2, lowY + offset, mPaint);

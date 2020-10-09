@@ -162,7 +162,7 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
         float v = mPaint.measureText(format);
         canvas.drawText(format, inScreenPosition - v / 2, heighY, mPaint);
 
-        String pos = positionId + "";
+        String pos = String.valueOf(positionId);
         v = mPaint.measureText(pos);
         float offset = FontCalculateUtils.getFontTopYOffset(mPaint);
         canvas.drawText(pos, inScreenPosition - v / 2, lowY + offset, mPaint);
