@@ -22,7 +22,7 @@ import java.util.Locale;
 public class CandleDrawing extends Drawing<CandleIndexRange> {
 
     private Date date = new Date();
-    private static final SimpleDateFormat format = new SimpleDateFormat("MM-dd", Locale.getDefault());
+    private SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("MM-dd", Locale.getDefault());
 
     private final Paint mPaint;
 
@@ -69,7 +69,7 @@ public class CandleDrawing extends Drawing<CandleIndexRange> {
         canvas.drawLine(center, lowY, center, heighY, mPaint);
 
         date.setTime(entity.getDatatime());
-        String format = CandleDrawing.format.format(date);
+        String format = mSimpleDateFormat.format(date);
         mPaint.setColor(Color.WHITE);
         float v = mPaint.measureText(format);
         canvas.drawText(format, center - v / 2, heighY, mPaint);
