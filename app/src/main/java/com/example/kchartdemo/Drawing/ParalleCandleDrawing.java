@@ -118,6 +118,7 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
                 }
                 return;
             } else if (inAnimTime(mLastUpdateTagId)) {
+                // 最后一条数据有更新
                 int stopIndex = transformer.getStopIndex();
                 item = mDataProvider.getAdapter().getItem(stopIndex);
                 float position = transformer.getPointInScreenXByIndex(stopIndex);
