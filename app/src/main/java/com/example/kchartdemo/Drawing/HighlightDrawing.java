@@ -4,11 +4,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
-import com.benben.kchartlib.canvas.RendererCanvas;
-import com.benben.kchartlib.drawing.TriggerRepeatAnimDrawing;
-import com.benben.kchartlib.index.range.CandleIndexRange;
-import com.benben.kchartlib.touch.TapMarkerOption;
-import com.benben.kchartlib.touch.TouchTapManager;
+import com.yfw.kchartcore.canvas.RendererCanvas;
+import com.yfw.kchartcore.index.range.CandleIndexRange;
+import com.yfw.kchartcore.touch.TapMarkerOption;
+import com.yfw.kchartcore.touch.TouchTapManager;
+import com.yfw.kchartext.drawing.TriggerRepeatAnimDrawing;
 
 /**
  * @日期 : 2020/8/31

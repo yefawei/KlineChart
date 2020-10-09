@@ -1,13 +1,14 @@
 package com.example.kchartdemo.data;
 
-import com.benben.kchartlib.InteractiveKChartView;
-import com.benben.kchartlib.data.IDataSizeChangeHandler;
+
+import com.yfw.kchartcore.InteractiveKChartView;
+import com.yfw.kchartcore.data.IDataInsertedHandler;
 
 /**
  * @日期 : 2020/8/24
  * @描述 :
  */
-public class AnimDataSizeChangeHandler implements IDataSizeChangeHandler {
+public class AnimDataSizeChangeHandler implements IDataInsertedHandler {
 
     @Override
     public boolean onFullFirstInserted(InteractiveKChartView view, int itemCount, int currScroll, int finalScroll) {

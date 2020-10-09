@@ -6,13 +6,13 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
-import com.benben.kchartlib.canvas.RendererCanvas;
-import com.benben.kchartlib.drawing.RepeatAnimDrawing;
-import com.benben.kchartlib.drawing.TriggerRepeatAnimDrawing;
-import com.benben.kchartlib.impl.IDataProvider;
-import com.benben.kchartlib.impl.IParentPortLayout;
-import com.benben.kchartlib.index.range.IndexRange;
-import com.benben.kchartlib.utils.FontCalculateUtils;
+import com.yfw.kchartcore.canvas.RendererCanvas;
+import com.yfw.kchartcore.impl.IDataProvider;
+import com.yfw.kchartcore.index.range.IndexRange;
+import com.yfw.kchartcore.layout.IParentPortLayout;
+import com.yfw.kchartext.drawing.RepeatAnimDrawing;
+import com.yfw.kchartext.drawing.TriggerRepeatAnimDrawing;
+import com.yfw.kchartext.utils.FontCalculateUtils;
 
 /**
  * @日期 : 2020/9/25

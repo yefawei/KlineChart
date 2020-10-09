@@ -6,12 +6,12 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 
-import com.benben.kchartlib.canvas.RendererCanvas;
-import com.benben.kchartlib.data.Transformer;
-import com.benben.kchartlib.drawing.Drawing;
-import com.benben.kchartlib.index.IVolume;
-import com.benben.kchartlib.index.range.ReverseIndexRange;
-import com.benben.kchartlib.index.range.VolumeIndexRange;
+import com.yfw.kchartcore.canvas.RendererCanvas;
+import com.yfw.kchartcore.data.Transformer;
+import com.yfw.kchartcore.drawing.Drawing;
+import com.yfw.kchartcore.index.range.ReverseIndexRange;
+import com.yfw.kchartext.index.IVolume;
+import com.yfw.kchartext.index.range.VolumeIndexRange;
 
 /**
  * @日期 : 2020/8/12

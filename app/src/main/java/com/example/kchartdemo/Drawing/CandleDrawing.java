@@ -4,12 +4,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-import com.benben.kchartlib.canvas.RendererCanvas;
-import com.benben.kchartlib.data.Transformer;
-import com.benben.kchartlib.drawing.Drawing;
-import com.benben.kchartlib.index.IEntity;
-import com.benben.kchartlib.index.range.CandleIndexRange;
-import com.benben.kchartlib.utils.FontCalculateUtils;
+import com.yfw.kchartcore.canvas.RendererCanvas;
+import com.yfw.kchartcore.data.Transformer;
+import com.yfw.kchartcore.drawing.Drawing;
+import com.yfw.kchartcore.index.IEntity;
+import com.yfw.kchartcore.index.range.CandleIndexRange;
+import com.yfw.kchartext.utils.FontCalculateUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

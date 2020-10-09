@@ -1,7 +1,8 @@
 package com.example.kchartdemo.data;
 
-import com.benben.kchartlib.index.IEntity;
-import com.benben.kchartlib.index.IVolume;
+
+import com.yfw.kchartcore.index.IEntity;
+import com.yfw.kchartext.index.IVolume;
 
 /**
  * @日期 : 2020/8/5
