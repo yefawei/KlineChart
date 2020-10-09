@@ -410,7 +410,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
     @Override
     public int getMainCanvasLeft() {
-        if (mainCanvasValid()) {
+        if (mainCanvasIsValid()) {
             return mHorizontalCanvas[1].getLeft();
         }
         return 0;
@@ -418,7 +418,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
     @Override
     public int getMainCanvasTop() {
-        if (mainCanvasValid()) {
+        if (mainCanvasIsValid()) {
             return mHorizontalCanvas[1].getTop();
         }
         return 0;
@@ -426,7 +426,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
     @Override
     public int getMainCanvasRight() {
-        if (mainCanvasValid()) {
+        if (mainCanvasIsValid()) {
             return mHorizontalCanvas[1].getRight();
         }
         return 0;
@@ -434,7 +434,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
     @Override
     public int getMainCanvasBottom() {
-        if (mainCanvasValid()) {
+        if (mainCanvasIsValid()) {
             return mHorizontalCanvas[1].getBottom();
         }
         return 0;
@@ -442,7 +442,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
     @Override
     public int getMainCanvasWidth() {
-        if (mainCanvasValid()) {
+        if (mainCanvasIsValid()) {
             return mHorizontalCanvas[1].getWidth();
         }
         return 0;
@@ -450,14 +450,14 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
     @Override
     public int getMainCanvasHeight() {
-        if (mainCanvasValid()) {
+        if (mainCanvasIsValid()) {
             return mHorizontalCanvas[1].getHeight();
         }
         return 0;
     }
 
     @Override
-    public boolean mainCanvasValid() {
+    public boolean mainCanvasIsValid() {
         return mHorizontalCanvas[1] != null && mHorizontalCanvas[1].isValid();
     }
 

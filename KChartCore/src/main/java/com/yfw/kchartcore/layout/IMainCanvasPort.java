@@ -39,5 +39,5 @@ public interface IMainCanvasPort {
     /**
      * 主视图是否有效
      */
-    boolean mainCanvasValid();
+    boolean mainCanvasIsValid();
 }

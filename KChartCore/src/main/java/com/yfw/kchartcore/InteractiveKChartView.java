@@ -135,7 +135,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     @Override
     void preInvalidate() {
-        if (mAdapter == null || mAdapter.getCount() == 0 || !mMainRenderer.mainCanvasValid()) {
+        if (mAdapter == null || mAdapter.getCount() == 0 || !mMainRenderer.mainCanvasIsValid()) {
             mTransformer.resetBounds();
             return;
         }
@@ -294,7 +294,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     @Override
     protected void onDraw(Canvas canvas) {
         long startTime = System.nanoTime();
-        if (!mMainRenderer.mainCanvasValid()) {
+        if (!mMainRenderer.mainCanvasIsValid()) {
             return;
         }
         canvas.clipRect(mViewPort);
