@@ -505,9 +505,9 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     }
 
     @Override
-    public void preCalcDataValue() {
+    public void preCalcDataValue(boolean emptyBounds) {
         for (Drawing<?> drawing : mDrawings) {
-            drawing.preCalcDataValue();
+            drawing.preCalcDataValue(emptyBounds);
         }
     }
 

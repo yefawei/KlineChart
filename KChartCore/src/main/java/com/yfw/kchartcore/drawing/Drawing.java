@@ -182,8 +182,8 @@ public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPo
     }
 
     @Override
-    public void preCalcDataValue() {
-        if (mIndexRange != null) {
+    public void preCalcDataValue(boolean emptyBounds) {
+        if (!emptyBounds && mIndexRange != null) {
             float maxValue = mIndexRange.getMaxValue();
             float minValue = mIndexRange.getMinValue();
             mScaleValueY = mHeight * 1.0f / (maxValue - minValue);

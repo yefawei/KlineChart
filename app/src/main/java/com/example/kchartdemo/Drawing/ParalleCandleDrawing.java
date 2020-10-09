@@ -86,11 +86,6 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
     }
 
     @Override
-    public void preCalcDataValue() {
-        super.preCalcDataValue();
-    }
-
-    @Override
     public void updateAnimProcessTime(long time) {
         super.updateAnimProcessTime(time);
         if (mIndexRange.isInTransition()) {

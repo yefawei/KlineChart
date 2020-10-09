@@ -46,8 +46,8 @@ public class ForegroundRenderer extends Renderer {
     }
 
     @Override
-    public void preCalcDataValue() {
-        mRenderCanvas.preCalcDataValue();
+    public void preCalcDataValue(boolean emptyBounds) {
+        mRenderCanvas.preCalcDataValue(emptyBounds);
     }
 
     @Override

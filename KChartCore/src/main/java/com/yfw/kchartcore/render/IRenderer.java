@@ -10,8 +10,10 @@ public interface IRenderer {
 
     /**
      * 更新数据值
+     *
+     * @param emptyBounds true:无边界信息
      */
-    void preCalcDataValue();
+    void preCalcDataValue(boolean emptyBounds);
 
     /**
      * 绘制

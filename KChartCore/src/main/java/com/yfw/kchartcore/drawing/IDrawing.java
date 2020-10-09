@@ -42,7 +42,12 @@ public interface IDrawing {
      */
     IndexRange getIndexRange();
 
-    void preCalcDataValue();
+    /**
+     * 更新数据值
+     *
+     * @param emptyBounds true:无边界信息
+     */
+    void preCalcDataValue(boolean emptyBounds);
 
     /**
      * 绘制空值

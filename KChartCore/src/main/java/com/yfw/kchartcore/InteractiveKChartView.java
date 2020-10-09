@@ -136,17 +136,17 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     @Override
     void preInvalidate() {
         if (mAdapter == null || mAdapter.getCount() == 0 || !mMainRenderer.mainCanvasIsValid()) {
-            mTransformer.resetBounds();
-            return;
+            mTransformer.emptyBounds();
+        } else {
+            mTransformer.calcBounds();
         }
 
-        mTransformer.updateBounds();
         if (mIsRenderBackground) {
-            mBackgroundRenderer.preCalcDataValue();
+            mBackgroundRenderer.preCalcDataValue(mTransformer.isEmptyBounds());
         }
-        mMainRenderer.preCalcDataValue();
+        mMainRenderer.preCalcDataValue(mTransformer.isEmptyBounds());
         if (mIsRenderForeground) {
-            mForegroundRenderer.preCalcDataValue();
+            mForegroundRenderer.preCalcDataValue(mTransformer.isEmptyBounds());
         }
     }
 

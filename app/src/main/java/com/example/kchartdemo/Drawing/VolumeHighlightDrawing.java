@@ -32,10 +32,10 @@ public class VolumeHighlightDrawing extends TriggerRepeatAnimDrawing<VolumeIndex
     }
 
     @Override
-    public void preCalcDataValue() {
-        super.preCalcDataValue();
-        if (mDataProvider.getTouchTapManager().hasSingleTap()
-                || mDataProvider.getTouchTapManager().hasLongTap()) {
+    public void preCalcDataValue(boolean emptyBounds) {
+        super.preCalcDataValue(emptyBounds);
+        if (!emptyBounds && (mDataProvider.getTouchTapManager().hasSingleTap()
+                || mDataProvider.getTouchTapManager().hasLongTap())) {
             if (!inAnimTime()) {
                 startRepeatAnim(Integer.MAX_VALUE, 1_000);
             }

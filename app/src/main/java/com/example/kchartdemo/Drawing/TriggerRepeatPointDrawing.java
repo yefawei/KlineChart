@@ -77,11 +77,6 @@ public class TriggerRepeatPointDrawing extends TriggerRepeatAnimDrawing<IndexRan
     }
 
     @Override
-    public void preCalcDataValue() {
-        super.preCalcDataValue();
-    }
-
-    @Override
     public void drawEmpty(Canvas canvas) {
         drawData(canvas);
     }

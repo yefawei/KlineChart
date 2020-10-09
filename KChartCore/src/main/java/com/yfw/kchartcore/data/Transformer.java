@@ -68,6 +68,13 @@ public class Transformer {
     }
 
     /**
+     * 是否是无边界信息
+     */
+    public boolean isEmptyBounds() {
+        return mStartIndex == -1;
+    }
+
+    /**
      * 获取视图起始索引
      */
     public int getStartIndex() {
@@ -108,9 +115,9 @@ public class Transformer {
     }
 
     /**
-     * 重置数据边界
+     * 设为无边界信息，即不绘制任何K线数据
      */
-    public void resetBounds() {
+    public void emptyBounds() {
         int oldStartIndex = mStartIndex;
         int oldStopIndex = mStopIndex;
         mPointXBuffer = sEmptyPointXBuffer;
@@ -131,9 +138,9 @@ public class Transformer {
     }
 
     /**
-     * 更新数据的边界，边界以{@link IMainCanvasPort}提供的数据为准
+     * 计算数据的边界，边界以{@link IMainCanvasPort}提供的数据为准
      */
-    public void updateBounds() {
+    public void calcBounds() {
         int oldStartIndex = mStartIndex;
         int oldStopIndex = mStopIndex;
         if (mDataProvider.isFullScreen()) {
