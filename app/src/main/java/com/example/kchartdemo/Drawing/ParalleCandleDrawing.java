@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.InteractiveKChartView;
+import com.yfw.kchartcore.ScrollAndScaleView;
 import com.yfw.kchartcore.adapter.BaseKChartAdapter;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.data.AdapterDataObserver;
@@ -97,9 +98,15 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
                 // 插入一条数据动画
                 int stopIndex = transformer.getStopIndex();
                 item = mDataProvider.getAdapter().getItem(stopIndex);
-                float process = getAnimProcess(mLastInsertedTagId);
-                float position = transformer.getPointInScreenXByIndex(stopIndex);
-                drawCandle(canvas, item, width, position - width * (1.0f - process), stopIndex, false);
+                int scrollState = mDataProvider.getScrollState();
+                if (scrollState == ScrollAndScaleView.SCROLL_STATE_SETTLING) {
+                    int padding = mDataProvider.getPaddingHelper().getRightExtPadding(mDataProvider.getScaleX());
+                    drawCandle(canvas, item, width, getRight() - padding - width / 2.0f, stopIndex, false);
+                } else {
+                    float process = getAnimProcess(mLastInsertedTagId);
+                    float position = transformer.getPointInScreenXByIndex(stopIndex);
+                    drawCandle(canvas, item, width, position - width * (1.0f - process), stopIndex, false);
+                }
                 for (int i = transformer.getStartIndex(); i < stopIndex; i++) {
                     item = mDataProvider.getAdapter().getItem(i);
                     float positionId = transformer.getPointInScreenXByIndex(i);
@@ -157,7 +164,7 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
         }
         canvas.drawLine(inScreenPosition, lowY, inScreenPosition, heighY, mPaint);
 
-        String format = ((KlineInfo)entity).getFormatTime();
+        String format = ((KlineInfo) entity).getFormatTime();
         mPaint.setColor(Color.WHITE);
         float v = mPaint.measureText(format);
         canvas.drawText(format, inScreenPosition - v / 2, heighY, mPaint);
