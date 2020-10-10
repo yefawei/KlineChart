@@ -34,32 +34,32 @@ public final class IndexRangeSet extends IndexRange {
 
     @Override
     protected float calcExtendedMaxValue(float curMaxValue, String key, Object obj) {
-        for (IndexRange i : mIndexRanges) {
-            curMaxValue = i.calcExtendedMaxValue(curMaxValue, key, obj);
+        for (int i = 0; i < mIndexRanges.size(); i++) {
+            curMaxValue = mIndexRanges.get(i).calcExtendedMaxValue(curMaxValue, key, obj);
         }
         return curMaxValue;
     }
 
     @Override
     protected float calcExtendedMinValue(float curMinValue, String key, Object obj) {
-        for (IndexRange i : mIndexRanges) {
-            curMinValue = i.calcExtendedMinValue(curMinValue, key, obj);
+        for (int i = 0; i < mIndexRanges.size(); i++) {
+            curMinValue = mIndexRanges.get(i).calcExtendedMinValue(curMinValue, key, obj);
         }
         return curMinValue;
     }
 
     @Override
     protected float calcMaxValue(int index, float curMaxValue, IEntity entity) {
-        for (IndexRange i : mIndexRanges) {
-            curMaxValue = i.calcMaxValue(index, curMaxValue, entity);
+        for (int i = 0; i < mIndexRanges.size(); i++) {
+            curMaxValue = mIndexRanges.get(i).calcMaxValue(index, curMaxValue, entity);
         }
         return curMaxValue;
     }
 
     @Override
     protected float calcMinValue(int index, float curMinValue, IEntity entity) {
-        for (IndexRange i : mIndexRanges) {
-            curMinValue = i.calcMinValue(index, curMinValue, entity);
+        for (int i = 0; i < mIndexRanges.size(); i++) {
+            curMinValue = mIndexRanges.get(i).calcMinValue(index, curMinValue, entity);
         }
         return curMinValue;
     }
@@ -101,9 +101,9 @@ public final class IndexRangeSet extends IndexRange {
             return;
         }
         StringBuilder sb = new StringBuilder("Set");
-        for (IndexRange indexRange : mIndexRanges) {
+        for (int i = 0; i < mIndexRanges.size(); i++) {
             sb.append("-");
-            sb.append(indexRange.getIndexTag());
+            sb.append(mIndexRanges.get(i).getIndexTag());
         }
         mIndexTag = sb.toString();
     }

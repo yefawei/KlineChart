@@ -3,7 +3,7 @@ package com.yfw.kchartcore.adapter;
 import com.yfw.kchartcore.data.AdapterDataObserver;
 import com.yfw.kchartcore.index.IEntity;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * @日期 : 2020/7/1
@@ -21,7 +21,7 @@ public interface IAdapter<T extends IEntity> {
     /**
      * 准备指标数据
      */
-    void prepareIndexData(Set<String> indexTags);
+    void prepareIndexData(List<String> indexTags);
 
     /**
      * 注册一个数据观察者

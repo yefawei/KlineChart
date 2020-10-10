@@ -540,16 +540,16 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     private void dispatchAttachAdapter() {
         if (mAdapterChangeListeners != null) {
-            for (OnAdapterChangeListener listener : mAdapterChangeListeners) {
-                listener.onAttachAdapter(mAdapter);
+            for (int i = 0; i < mAdapterChangeListeners.size(); i++) {
+                mAdapterChangeListeners.get(i).onAttachAdapter(mAdapter);
             }
         }
     }
 
     private void dispatchDetachAdapter() {
         if (mAdapterChangeListeners != null) {
-            for (OnAdapterChangeListener listener : mAdapterChangeListeners) {
-                listener.onDetachAdapter(mAdapter);
+            for (int i = 0; i < mAdapterChangeListeners.size(); i++) {
+                mAdapterChangeListeners.get(i).onDetachAdapter(mAdapter);
             }
         }
     }

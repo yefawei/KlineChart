@@ -36,7 +36,7 @@ import com.yfw.kchartext.adapter.DefaultKChartAdapter;
 import com.yfw.kchartext.index.range.VolumeIndexRange;
 
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
         mAdapter = new DefaultKChartAdapter(new DefaultKChartAdapter.OnPrepareIndexDataListener() {
             @Override
-            public void prepareIndexData(Set<String> indexTags) {
+            public void prepareIndexData(List<String> indexTags) {
                 Log.e("OnPrepareIndexData", indexTags.toString());
             }
         });

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @日期 : 2020/8/21
@@ -38,7 +37,7 @@ public class DefaultKChartAdapter extends BaseKChartAdapter<IEntity> {
     }
 
     @Override
-    public void prepareIndexData(Set<String> indexTags) {
+    public void prepareIndexData(List<String> indexTags) {
         if (mListener != null) {
             mListener.prepareIndexData(indexTags);
         }
@@ -225,6 +224,6 @@ public class DefaultKChartAdapter extends BaseKChartAdapter<IEntity> {
     }
 
     public interface OnPrepareIndexDataListener {
-        void prepareIndexData(Set<String> indexTags);
+        void prepareIndexData(List<String> indexTags);
     }
 }

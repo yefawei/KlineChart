@@ -10,9 +10,8 @@ import com.yfw.kchartcore.impl.IDataProvider;
 import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.layout.IParentPortLayout;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @日期 : 2020/7/10
@@ -22,7 +21,8 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
 
     private Interpolator mInterpolator;
 
-    private HashMap<Integer, ChildAnim> mAnimMap = new HashMap<>();
+    private List<Integer> mTagIds = new ArrayList<>();
+    private List<ChildAnim> mAnims = new ArrayList<>();
     private ChildAnim mStartAnim;
     private ChildAnim mEndAnim;
 
@@ -71,7 +71,7 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
      * 指定id获取动画开始时间
      */
     public final long getAnimStartTime(int tagId) {
-        ChildAnim childAnim = mAnimMap.get(tagId);
+        ChildAnim childAnim = getChildAnimByTagId(tagId);
         return childAnim == null ? 0 : childAnim.mAnimStartTime;
     }
 
@@ -84,7 +84,7 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
      * 指定id获取动画结束时间
      */
     public final long getAnimEndTime(int tagId) {
-        ChildAnim childAnim = mAnimMap.get(tagId);
+        ChildAnim childAnim = getChildAnimByTagId(tagId);
         return childAnim == null ? 0 : childAnim.mAnimEndTime;
     }
 
@@ -97,7 +97,11 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
      * 指定id判断是否在动画时间内
      */
     public final boolean inAnimTime(int tagId) {
-        ChildAnim childAnim = mAnimMap.get(tagId);
+        ChildAnim childAnim = getChildAnimByTagId(tagId);
+        return inAnimTime(childAnim);
+    }
+
+    private boolean inAnimTime(@Nullable ChildAnim childAnim) {
         return childAnim != null && childAnim.mAnimEndTime > System.currentTimeMillis();
     }
 
@@ -106,20 +110,22 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
      * 则将新值赋值到{@link ChildAnim#mInterpolator}
      */
     @Override
-    public void setInterpolator(Interpolator i) {
-        for (ChildAnim value : mAnimMap.values()) {
-            if (value.mInterpolator == null || value.mInterpolator == mInterpolator) {
-                value.mInterpolator = i;
+    public void setInterpolator(Interpolator interpolator) {
+        ChildAnim childAnim;
+        for (int i = 0; i < mAnims.size(); i++) {
+            childAnim = mAnims.get(i);
+            if (childAnim.mInterpolator == null || childAnim.mInterpolator == mInterpolator) {
+                childAnim.mInterpolator = interpolator;
             }
         }
-        mInterpolator = i;
+        mInterpolator = interpolator;
     }
 
     /**
      * 指定id设置插值器
      */
     public void setInterpolator(int tagId, Interpolator i) {
-        ChildAnim childAnim = mAnimMap.get(tagId);
+        ChildAnim childAnim = getChildAnimByTagId(tagId);
         if (childAnim != null) {
             childAnim.mInterpolator = i;
         }
@@ -133,8 +139,9 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
     /**
      * 指定id获取插值器
      */
+    @Nullable
     public Interpolator getInterpolator(int tagId) {
-        ChildAnim childAnim = mAnimMap.get(tagId);
+        ChildAnim childAnim = getChildAnimByTagId(tagId);
         return childAnim == null ? null : childAnim.mInterpolator;
     }
 
@@ -155,8 +162,9 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
      * 指定id获取动画进度
      */
     public float getAnimProcess(int tagId) {
-        if (!inAnimTime(tagId)) return 1.0f;
-        ChildAnim childAnim = mAnimMap.get(tagId);
+        ChildAnim childAnim = getChildAnimByTagId(tagId);
+        if (!inAnimTime(childAnim)) return 1.0f;
+
         float fraction = (mAnimProcessTime - childAnim.mAnimStartTime) / (float) childAnim.mDuration;
         if (childAnim.mInterpolator == null) {
             return Math.max(Math.min(fraction, 1.0f), 0.0f);
@@ -175,10 +183,11 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
         if (duration < 0) {
             return;
         }
-        ChildAnim childAnim = mAnimMap.get(tagId);
+        ChildAnim childAnim = getChildAnimByTagId(tagId);
         if (childAnim == null) {
             childAnim = new ChildAnim();
-            mAnimMap.put(tagId, childAnim);
+            mTagIds.add(tagId);
+            mAnims.add(childAnim);
         }
         childAnim.mAnimStartTime = System.currentTimeMillis();
         childAnim.mDuration = duration;
@@ -196,8 +205,8 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
      * 停止指定id的动画
      */
     public void stopAnim(int tagId) {
-        if (inAnimTime(tagId)) {
-            ChildAnim childAnim = mAnimMap.get(tagId);
+        ChildAnim childAnim = getChildAnimByTagId(tagId);
+        if (inAnimTime(childAnim)) {
             childAnim.mAnimEndTime = System.currentTimeMillis();
             childAnim.mDuration = childAnim.mAnimEndTime - childAnim.mAnimStartTime;
             updateFinalDuration();
@@ -212,9 +221,10 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
      */
     public void stopAllAnim() {
         long currTime = System.currentTimeMillis();
-        for (Integer tagId : mAnimMap.keySet()) {
-            if (inAnimTime(tagId)) {
-                ChildAnim childAnim = mAnimMap.get(tagId);
+        ChildAnim childAnim;
+        for (int i = 0; i < mAnims.size(); i++) {
+            childAnim = mAnims.get(i);
+            if (inAnimTime(childAnim)) {
                 childAnim.mAnimEndTime = currTime;
                 childAnim.mDuration = childAnim.mAnimEndTime - childAnim.mAnimStartTime;
             }
@@ -230,12 +240,13 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
      */
     public void releaseNotInAnim() {
         long currTime = System.currentTimeMillis();
-        Iterator<Map.Entry<Integer, ChildAnim>> iterator = mAnimMap.entrySet().iterator();
-        Map.Entry<Integer, ChildAnim> next;
-        while (iterator.hasNext()) {
-            next = iterator.next();
-            if (next.getValue().mAnimEndTime < currTime) {
-                iterator.remove();
+        ChildAnim childAnim;
+        for (int i = 0; i < mAnims.size(); i++) {
+            childAnim = mAnims.get(i);
+            if (childAnim.mAnimEndTime < currTime) {
+                mAnims.remove(i);
+                mTagIds.remove(i);
+                i--;
             }
         }
     }
@@ -244,20 +255,32 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
      * 更新最终时长
      */
     private void updateFinalDuration() {
-        for (ChildAnim value : mAnimMap.values()) {
+        ChildAnim childAnim;
+        for (int i = 0; i < mAnims.size(); i++) {
+            childAnim = mAnims.get(i);
             if (mStartAnim == null) {
-                mStartAnim = value;
-            } else if (mStartAnim.mAnimStartTime > value.mAnimStartTime) {
-                mStartAnim = value;
+                mStartAnim = childAnim;
+            } else if (mStartAnim.mAnimStartTime > childAnim.mAnimStartTime) {
+                mStartAnim = childAnim;
             }
             if (mEndAnim == null) {
-                mEndAnim = value;
+                mEndAnim = childAnim;
             } else {
-                if (mEndAnim.mAnimEndTime < value.mAnimEndTime) {
-                    mEndAnim = value;
+                if (mEndAnim.mAnimEndTime < childAnim.mAnimEndTime) {
+                    mEndAnim = childAnim;
                 }
             }
         }
+    }
+
+    @Nullable
+    private ChildAnim getChildAnimByTagId(int tagId) {
+        for (int i = 0; i < mTagIds.size(); i++) {
+            if (mTagIds.get(i) == tagId) {
+                return mAnims.get(i);
+            }
+        }
+        return null;
     }
 
     private static class ChildAnim {

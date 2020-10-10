@@ -9,9 +9,7 @@ import com.yfw.kchartcore.index.IEntity;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @日期 : 2020/7/9
@@ -38,7 +36,8 @@ public abstract class IndexRange {
 
     private List<OnCalcValueListener> mOnCalcValueListeners;
 
-    private Map<String, Object> mExtendedData = new HashMap<>();
+    private List<String> mExtendedKeys = new ArrayList<>();
+    private List<Object> mExtendedValues = new ArrayList<>();
 
     public IndexRange() {
         this(0);
@@ -103,8 +102,8 @@ public abstract class IndexRange {
 
     protected void dispatchResetValue(boolean isEmptyData) {
         if (mOnCalcValueListeners != null) {
-            for (OnCalcValueListener listener : mOnCalcValueListeners) {
-                listener.onResetValue(isEmptyData);
+            for (int i = 0; i < mOnCalcValueListeners.size(); i++) {
+                mOnCalcValueListeners.get(i).onResetValue(isEmptyData);
             }
         }
     }
@@ -113,28 +112,43 @@ public abstract class IndexRange {
      * 添加需要扩展计算的数据
      */
     public void addExtendedCalcData(String key, Object obj) {
-        mExtendedData.put(key, obj);
+        mExtendedKeys.add(key);
+        mExtendedValues.add(obj);
+    }
+
+    /**
+     * 移除指定扩展计算数据
+     */
+    public void removeExtendedCalcData(String key) {
+        for (int i = 0; i < mExtendedKeys.size(); i++) {
+            if (mExtendedKeys.get(i).equals(key)) {
+                mExtendedKeys.remove(i);
+                mExtendedValues.remove(i);
+                return;
+            }
+        }
     }
 
     /**
      * 移除所有扩展计算数据
      */
     public void clearExtendedCalcData() {
-        mExtendedData.clear();
+        mExtendedKeys.clear();
+        mExtendedValues.clear();
     }
 
     /**
      * 计算扩展数据
      */
     public void calcExtendedData() {
-        for (Map.Entry<String, Object> entry : mExtendedData.entrySet()) {
+        for (int i = 0; i < mExtendedValues.size(); i++) {
             if (mSideMode == DOUBLE_SIDE) {
-                mMaxValue = calcExtendedMaxValue(mMaxValue, entry.getKey(), entry.getValue());
-                mMinValue = calcExtendedMinValue(mMinValue, entry.getKey(), entry.getValue());
+                mMaxValue = calcExtendedMaxValue(mMaxValue, mExtendedKeys.get(i), mExtendedValues.get(i));
+                mMinValue = calcExtendedMinValue(mMinValue, mExtendedKeys.get(i), mExtendedValues.get(i));
             } else if (mSideMode == UP_SIDE) {
-                mMaxValue = calcExtendedMaxValue(mMaxValue, entry.getKey(), entry.getValue());
+                mMaxValue = calcExtendedMaxValue(mMaxValue, mExtendedKeys.get(i), mExtendedValues.get(i));
             } else {
-                mMinValue = calcExtendedMinValue(mMinValue, entry.getKey(), entry.getValue());
+                mMinValue = calcExtendedMinValue(mMinValue, mExtendedKeys.get(i), mExtendedValues.get(i));
             }
         }
     }
@@ -192,8 +206,8 @@ public abstract class IndexRange {
 
     protected void dispatchCalcValueEnd(boolean isEmptyData) {
         if (mOnCalcValueListeners != null) {
-            for (OnCalcValueListener listener : mOnCalcValueListeners) {
-                listener.onCalcValueEnd(isEmptyData);
+            for (int i = 0; i < mOnCalcValueListeners.size(); i++) {
+                mOnCalcValueListeners.get(i).onCalcValueEnd(isEmptyData);
             }
         }
     }
@@ -295,12 +309,14 @@ public abstract class IndexRange {
     public interface OnCalcValueListener {
         /**
          * 重置数据
+         *
          * @param isEmptyData true:为空数据重置数据回调 false:为数据有变更，计算前的重置
          */
         void onResetValue(boolean isEmptyData);
 
         /**
          * 计算结束
+         *
          * @param isEmptyData true:为空数据计算结束回调 false:为数据有变更，计算前结束的回调
          */
         void onCalcValueEnd(boolean isEmptyData);

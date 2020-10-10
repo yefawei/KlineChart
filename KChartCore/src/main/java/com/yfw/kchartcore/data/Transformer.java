@@ -3,18 +3,18 @@ package com.yfw.kchartcore.data;
 import android.text.TextUtils;
 
 import androidx.annotation.FloatRange;
+import androidx.annotation.Nullable;
 
 import com.yfw.kchartcore.adapter.BaseKChartAdapter;
 import com.yfw.kchartcore.impl.IDataProvider;
-import com.yfw.kchartcore.layout.IMainCanvasPort;
 import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.index.range.IndexRangeContainer;
 import com.yfw.kchartcore.index.range.IndexRangeSet;
+import com.yfw.kchartcore.layout.IMainCanvasPort;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @日期 : 2020/7/9
@@ -31,9 +31,8 @@ public class Transformer {
     private int mStartIndex = -1;           // 当前内容的开始坐标
     private int mStopIndex = -1;            // 当前内容的结束坐标
 
-    private HashMap<String, Integer> mIndexCount = new HashMap<>();
-    private HashMap<String, IndexRange> mIndexMap = new HashMap<>();
-
+    private List<String> mTags;
+    private List<Range> mRanges = new ArrayList<>();
     private OnViewIndexListener mViewIndexListener;
 
     public Transformer(IDataProvider dataProvider) {
@@ -125,11 +124,11 @@ public class Transformer {
         mStartIndex = -1;
         mStopIndex = -1;
         if (mStartIndex != oldStartIndex || mStopIndex != oldStopIndex) {
-            for (IndexRange value : mIndexMap.values()) {
-                value.resetValue(true);
+            for (int i = 0; i < mRanges.size(); i++) {
+                mRanges.get(i).range.resetValue(true);
             }
-            for (IndexRange value : mIndexMap.values()) {
-                value.calcValueEnd(true);
+            for (int i = 0; i < mRanges.size(); i++) {
+                mRanges.get(i).range.calcValueEnd(true);
             }
             if (mViewIndexListener != null) {
                 mViewIndexListener.viewIndex(mStartIndex, mStopIndex);
@@ -223,30 +222,29 @@ public class Transformer {
      * 计算当前页面的最大最小值
      */
     private void calcMinMax(BaseKChartAdapter<?> adapter) {
-        for (IndexRange value : mIndexMap.values()) {
-            value.resetValue(false);
+        for (int i = 0; i < mRanges.size(); i++) {
+            mRanges.get(i).range.resetValue(false);
         }
-        Collection<IndexRange> values = mIndexMap.values();
-        for (IndexRange value : values) {
-            value.calcExtendedData();
+        for (int i = 0; i < mRanges.size(); i++) {
+            mRanges.get(i).range.calcExtendedData();
         }
         for (int i = mStartIndex; i <= mStopIndex; i++) {
             IEntity cur = adapter.getItem(i);
-            for (IndexRange value : values) {
-                value.calcMinMaxValue(i, cur);
+            for (int j = 0; j < mRanges.size(); j++) {
+                mRanges.get(j).range.calcMinMaxValue(i, cur);
             }
         }
-        for (IndexRange value : mIndexMap.values()) {
-            value.calcPaddingValue();
+        for (int i = 0; i < mRanges.size(); i++) {
+            mRanges.get(i).range.calcPaddingValue();
         }
-        for (IndexRange value : mIndexMap.values()) {
-            value.calcValueEnd(false);
+        for (int i = 0; i < mRanges.size(); i++) {
+            mRanges.get(i).range.calcValueEnd(false);
         }
     }
 
     /**
      * 添加相关指标计算类，如果{@link IndexRange#getIndexTag()}返回值一致，会被认为是同一类型的指标，
-     * 会在原有基础计数器+1，不会被添加进{@link #mIndexMap}计算容器中
+     * 会在原有基础计数器+1，不会被添加进{@link #mRanges}计算容器中
      */
     public void addIndexRange(IndexRange indexRange) {
         final IndexRange realIndex = getRealIndexRange(indexRange);
@@ -255,16 +253,18 @@ public class Transformer {
         if (realIndex instanceof IndexRangeSet) {
             ((IndexRangeSet) realIndex).setCanChangeIndex(false);
         }
-        Integer count = mIndexCount.get(realIndex.getIndexTag());
-        if (count == null) {
-            mIndexCount.put(realIndex.getIndexTag(), 1);
-            mIndexMap.put(realIndex.getIndexTag(), realIndex);
+        Range range = getRangeByTag(realIndex.getIndexTag());
+        if (range == null) {
+            range = new Range();
+            range.count = 1;
+            range.range = realIndex;
+            mRanges.add(range);
             return;
         }
-        if (mIndexMap.get(realIndex.getIndexTag()) != realIndex) {
+        if (range.range != realIndex) {
             throw new IllegalArgumentException("Inconsistent indexRange instances: " + realIndex.getIndexTag());
         }
-        mIndexCount.put(realIndex.getIndexTag(), count + 1);
+        range.count = range.count + 1;
     }
 
     /**
@@ -275,17 +275,26 @@ public class Transformer {
         final IndexRange realIndex = getRealIndexRange(indexRange);
         if (realIndex == null || TextUtils.isEmpty(realIndex.getIndexTag())) return;
 
-        Integer count = mIndexCount.get(realIndex.getIndexTag());
-        if (count == null) return;
-        if (count > 1) {
-            mIndexCount.put(realIndex.getIndexTag(), count - 1);
+        Range range = getRangeByTag(indexRange.getIndexTag());
+        if (range == null) return;
+        if (range.count > 1) {
+            range.count = range.count - 1;
             return;
         }
-        mIndexCount.remove(realIndex.getIndexTag());
-        IndexRange remove = mIndexMap.remove(realIndex.getIndexTag());
-        if (remove instanceof IndexRangeSet) {
-            ((IndexRangeSet) remove).setCanChangeIndex(true);
+        mRanges.remove(range);
+        if (range.range instanceof IndexRangeSet) {
+            ((IndexRangeSet) range.range).setCanChangeIndex(true);
         }
+    }
+
+    @Nullable
+    private Range getRangeByTag(String tag) {
+        for (int i = 0; i < mRanges.size(); i++) {
+            if (mRanges.get(i).range.getIndexTag().equals(tag)) {
+                return mRanges.get(i);
+            }
+        }
+        return null;
     }
 
     /**
@@ -302,8 +311,16 @@ public class Transformer {
     /**
      * 获取当前计算的所有指标tag
      */
-    public Set<String> getIndexTags() {
-        return mIndexCount.keySet();
+    public List<String> getIndexTags() {
+        if (mTags == null) {
+            mTags = new ArrayList<>();
+        } else {
+            mTags.clear();
+        }
+        for (int i = 0; i < mRanges.size(); i++) {
+            mTags.add(mRanges.get(i).range.getIndexTag());
+        }
+        return mTags;
     }
 
     public void setOnViewIndexListener(OnViewIndexListener listener) {
@@ -313,9 +330,16 @@ public class Transformer {
     public interface OnViewIndexListener {
         /**
          * 可视索引范围
+         *
          * @param startIndex item开始索引
-         * @param endIndex item结束索引
+         * @param endIndex   item结束索引
          */
         void viewIndex(int startIndex, int endIndex);
+    }
+
+
+    private static class Range {
+        int count;
+        IndexRange range;
     }
 }

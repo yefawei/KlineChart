@@ -12,8 +12,8 @@ public class AdapterDataObservable extends Observable<AdapterDataObserver> {
      * 通知更新所有数据
      */
     public void notifyChanged(int count) {
-        for (AdapterDataObserver observer : mObservers) {
-            observer.onChanged(count);
+        for (int i = 0; i < mObservers.size(); i++) {
+            mObservers.get(i).onChanged(count);
         }
     }
 
@@ -21,8 +21,8 @@ public class AdapterDataObservable extends Observable<AdapterDataObserver> {
      * 通知头部插入新数据
      */
     public void notifyFirstInserted(int itemCount) {
-        for (AdapterDataObserver observer : mObservers) {
-            observer.onFirstInserted(itemCount);
+        for (int i = 0; i < mObservers.size(); i++) {
+            mObservers.get(i).onFirstInserted(itemCount);
         }
     }
 
@@ -30,8 +30,8 @@ public class AdapterDataObservable extends Observable<AdapterDataObserver> {
      * 通知最后一个数据有更新
      */
     public void notifyLastUpdated(int index) {
-        for (AdapterDataObserver observer : mObservers) {
-            observer.onLastUpdated(index);
+        for (int i = 0; i < mObservers.size(); i++) {
+            mObservers.get(i).onLastUpdated(index);
         }
     }
 
@@ -39,8 +39,8 @@ public class AdapterDataObservable extends Observable<AdapterDataObserver> {
      * 通知尾部有插入新数据
      */
     public void notifyLastInserted(int itemCount) {
-        for (AdapterDataObserver observer : mObservers) {
-            observer.onLastInserted(itemCount);
+        for (int i = 0; i < mObservers.size(); i++) {
+            mObservers.get(i).onLastInserted(itemCount);
         }
     }
 }
