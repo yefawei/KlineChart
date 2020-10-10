@@ -67,6 +67,9 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
         return mStartAnim == null ? 0 : mStartAnim.mAnimStartTime;
     }
 
+    /**
+     * 指定id获取动画开始时间
+     */
     public final long getAnimStartTime(int tagId) {
         ChildAnim childAnim = mAnimMap.get(tagId);
         return childAnim == null ? 0 : childAnim.mAnimStartTime;
@@ -77,6 +80,9 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
         return mEndAnim == null ? 0 : mEndAnim.mAnimEndTime;
     }
 
+    /**
+     * 指定id获取动画结束时间
+     */
     public final long getAnimEndTime(int tagId) {
         ChildAnim childAnim = mAnimMap.get(tagId);
         return childAnim == null ? 0 : childAnim.mAnimEndTime;
@@ -87,6 +93,9 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
         return mEndAnim != null && mEndAnim.mAnimEndTime > System.currentTimeMillis();
     }
 
+    /**
+     * 指定id判断是否在动画时间内
+     */
     public final boolean inAnimTime(int tagId) {
         ChildAnim childAnim = mAnimMap.get(tagId);
         return childAnim != null && childAnim.mAnimEndTime > System.currentTimeMillis();
@@ -106,6 +115,9 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
         mInterpolator = i;
     }
 
+    /**
+     * 指定id设置插值器
+     */
     public void setInterpolator(int tagId, Interpolator i) {
         ChildAnim childAnim = mAnimMap.get(tagId);
         if (childAnim != null) {
@@ -118,6 +130,9 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
         return mInterpolator;
     }
 
+    /**
+     * 指定id获取插值器
+     */
     public Interpolator getInterpolator(int tagId) {
         ChildAnim childAnim = mAnimMap.get(tagId);
         return childAnim == null ? null : childAnim.mInterpolator;
@@ -136,6 +151,9 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
         return mEndAnim.mInterpolator.getInterpolation(Math.max(Math.min(fraction, 1.0f), 0.0f));
     }
 
+    /**
+     * 指定id获取动画进度
+     */
     public float getAnimProcess(int tagId) {
         if (!inAnimTime(tagId)) return 1.0f;
         ChildAnim childAnim = mAnimMap.get(tagId);
@@ -174,6 +192,9 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
         }
     }
 
+    /**
+     * 停止指定id的动画
+     */
     public void stopAnim(int tagId) {
         if (inAnimTime(tagId)) {
             ChildAnim childAnim = mAnimMap.get(tagId);
@@ -219,6 +240,9 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
         }
     }
 
+    /**
+     * 更新最终时长
+     */
     private void updateFinalDuration() {
         for (ChildAnim value : mAnimMap.values()) {
             if (mStartAnim == null) {
