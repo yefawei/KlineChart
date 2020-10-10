@@ -21,7 +21,6 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
 
     private Interpolator mInterpolator;
 
-    private List<Integer> mTagIds = new ArrayList<>();
     private List<ChildAnim> mAnims = new ArrayList<>();
     private ChildAnim mStartAnim;
     private ChildAnim mEndAnim;
@@ -186,7 +185,7 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
         ChildAnim childAnim = getChildAnimByTagId(tagId);
         if (childAnim == null) {
             childAnim = new ChildAnim();
-            mTagIds.add(tagId);
+            childAnim.mTagId = tagId;
             mAnims.add(childAnim);
         }
         childAnim.mAnimStartTime = System.currentTimeMillis();
@@ -245,7 +244,6 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
             childAnim = mAnims.get(i);
             if (childAnim.mAnimEndTime < currTime) {
                 mAnims.remove(i);
-                mTagIds.remove(i);
                 i--;
             }
         }
@@ -275,8 +273,8 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
 
     @Nullable
     private ChildAnim getChildAnimByTagId(int tagId) {
-        for (int i = 0; i < mTagIds.size(); i++) {
-            if (mTagIds.get(i) == tagId) {
+        for (int i = 0; i < mAnims.size(); i++) {
+            if (mAnims.get(i).mTagId == tagId) {
                 return mAnims.get(i);
             }
         }
@@ -284,6 +282,7 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
     }
 
     private static class ChildAnim {
+        int mTagId;
         long mAnimStartTime;
         long mDuration;
         long mAnimEndTime;
