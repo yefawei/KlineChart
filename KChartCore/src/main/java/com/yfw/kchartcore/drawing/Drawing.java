@@ -184,9 +184,7 @@ public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPo
     @Override
     public void preCalcDataValue(boolean emptyBounds) {
         if (!emptyBounds && mIndexRange != null) {
-            float maxValue = mIndexRange.getMaxValue();
-            float minValue = mIndexRange.getMinValue();
-            mScaleValueY = mHeight * 1.0f / (maxValue - minValue);
+            mScaleValueY = mHeight / (mIndexRange.getMaxValue() - mIndexRange.getMinValue());
         }
     }
 
@@ -200,6 +198,20 @@ public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPo
         } else {
             return mViewPort.bottom - (value - mIndexRange.getMinValue()) * mScaleValueY;
         }
+    }
+
+    /**
+     * 根据Y坐标获取当前数值
+     */
+    protected final float getValueByCoordinateY(float coordinateY) {
+        if (mIndexRange == null || mHeight == 0) return -1;
+        final float p;
+        if (mIndexRange.isReverse()) {
+             p = (coordinateY - mViewPort.top) / mHeight;
+        } else {
+             p = (mViewPort.bottom - coordinateY) / mHeight;
+        }
+        return p * (mIndexRange.getMaxValue() - mIndexRange.getMinValue()) + mIndexRange.getMinValue();
     }
 
     @Override
