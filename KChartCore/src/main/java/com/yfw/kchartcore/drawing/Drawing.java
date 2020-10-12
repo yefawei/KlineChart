@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.impl.IDataProvider;
 import com.yfw.kchartcore.index.range.IndexRange;
+import com.yfw.kchartcore.layout.CenterPoint;
 import com.yfw.kchartcore.layout.IDispatchSingleTapChild;
 import com.yfw.kchartcore.layout.IParentPortLayout;
 import com.yfw.kchartcore.layout.IViewPort;
@@ -25,6 +26,7 @@ public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPo
     private int mWidth;
     private int mHeight;
     protected Rect mViewPort = new Rect();
+    private CenterPoint mCenterPoint = new CenterPoint();
     private float mScaleValueY;         // Y轴缩放值
     private boolean mDrawInViewPort = true;
     private IParentPortLayout mDrawingPortLayout;
@@ -141,10 +143,17 @@ public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPo
     }
 
     @Override
+    public CenterPoint getCenter() {
+        return mCenterPoint;
+    }
+
+    @Override
     @CallSuper
     public void updateViewPort(int left, int top, int right, int bottom) {
         if (mDrawingPortLayout != null && mDrawingPortLayout.inUpdateChildLayout()) {
             mViewPort.set(left, top, right, bottom);
+            mCenterPoint.setCenterX(mViewPort.exactCenterX());
+            mCenterPoint.setCenterY(mViewPort.exactCenterY());
         } else {
             Log.w("Drawing", "Setting port is not allowed.");
         }

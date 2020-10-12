@@ -10,6 +10,7 @@ import androidx.annotation.IntDef;
 import com.yfw.kchartcore.adapter.BaseKChartAdapter;
 import com.yfw.kchartcore.drawing.Drawing;
 import com.yfw.kchartcore.impl.IDataProvider;
+import com.yfw.kchartcore.layout.CenterPoint;
 import com.yfw.kchartcore.layout.IDispatchSingleTapParent;
 import com.yfw.kchartcore.layout.IParentPortLayout;
 import com.yfw.kchartcore.layout.IViewPort;
@@ -31,6 +32,7 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     private int mWidth;
     private int mHeight;
     protected Rect mViewPort = new Rect();
+    private CenterPoint mCenterPoint = new CenterPoint();
     private boolean mInUpdateChildLayout;
     private IParentPortLayout mParentPortLayout;
 
@@ -416,6 +418,11 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     }
 
     @Override
+    public CenterPoint getCenter() {
+        return mCenterPoint;
+    }
+
+    @Override
     public int getLeft() {
         return mViewPort.left;
     }
@@ -439,6 +446,8 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     public void updateViewPort(int left, int top, int right, int bottom) {
         if (mParentPortLayout != null && mParentPortLayout.inUpdateChildLayout()) {
             mViewPort.set(left, top, right, bottom);
+            mCenterPoint.setCenterX(mViewPort.exactCenterX());
+            mCenterPoint.setCenterY(mViewPort.exactCenterY());
         } else {
             Log.w("RendererCanvas", "Setting port is not allowed.");
         }

@@ -37,6 +37,11 @@ public interface IViewPort {
     int getHeight();
 
     /**
+     * 获取视图中心点
+     */
+    CenterPoint getCenter();
+
+    /**
      * 更新视图可绘制区域
      */
     void updateViewPort(int left, int top, int right, int bottom);

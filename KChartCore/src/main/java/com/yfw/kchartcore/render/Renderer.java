@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import androidx.annotation.CallSuper;
 
 import com.yfw.kchartcore.impl.IDataProvider;
+import com.yfw.kchartcore.layout.CenterPoint;
 import com.yfw.kchartcore.layout.IDispatchSingleTapParent;
 import com.yfw.kchartcore.layout.IParentPortLayout;
 import com.yfw.kchartcore.layout.IViewPort;
@@ -19,6 +20,7 @@ public abstract class Renderer implements IRenderer, IParentPortLayout, IViewPor
     protected IDataProvider mDataProvider;
 
     protected Rect mViewPort = new Rect();
+    private CenterPoint mCenterPoint = new CenterPoint();
     private boolean mInUpdateChildLayout;
 
     public Renderer(IDataProvider dataProvider) {
@@ -65,10 +67,17 @@ public abstract class Renderer implements IRenderer, IParentPortLayout, IViewPor
         return mViewPort.height();
     }
 
+    @Override
+    public CenterPoint getCenter() {
+        return mCenterPoint;
+    }
+
     @CallSuper
     @Override
     public void updateViewPort(int left, int top, int right, int bottom) {
         mViewPort.set(left, top, right, bottom);
+        mCenterPoint.setCenterX(mViewPort.exactCenterX());
+        mCenterPoint.setCenterY(mViewPort.exactCenterY());
     }
 
     @Override
