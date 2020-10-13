@@ -175,13 +175,11 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.setWeight(1);
         layoutParams.setVerticalLinear(true, 2);
         mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
-        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
         layoutParams.setVerticalLinear(true, 2);
         mainRenderCanvas.addDrawing(new HighlightDrawing(candleIndexRange, layoutParams), true);
-        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_MAIN);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
@@ -214,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
         layoutParams.setWeight(1);
         layoutParams.setVerticalLinear(true, 2);
         mainRenderCanvas.addDrawing(new VolumeHighlightDrawing(volumeIndexRange, layoutParams), true);
-        viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
