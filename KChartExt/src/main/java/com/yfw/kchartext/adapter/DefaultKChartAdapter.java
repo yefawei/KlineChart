@@ -22,6 +22,9 @@ public class DefaultKChartAdapter extends BaseKChartAdapter<IEntity> {
     private long mStartTime;
     private long mEndTime;
 
+    /**
+     * @param listener 当前需要准备的指标数据
+     */
     public DefaultKChartAdapter(@Nullable OnPrepareIndexDataListener listener) {
         mListener = listener;
     }
