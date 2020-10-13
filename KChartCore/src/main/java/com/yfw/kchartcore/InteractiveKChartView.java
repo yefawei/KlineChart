@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * @日期 : 2020/6/30
- * @描述 :
+ * @描述 : 可交互K线
  */
 public class InteractiveKChartView extends ScrollAndScaleView implements AnimationManager.AnimationListener {
 

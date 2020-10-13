@@ -20,7 +20,7 @@ import com.yfw.kchartcore.impl.IDataProvider;
 
 /**
  * @日期 : 2020/6/30
- * @描述 :
+ * @描述 : 负责相关手势View
  */
 public abstract class ScrollAndScaleView extends View implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener,
         ScaleGestureDetectorCompat.OnScaleGestureListener, IDataProvider {
