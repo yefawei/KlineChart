@@ -592,6 +592,8 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
             invalidate();
         } else if (mPreviousDataLength == 0) {
             // 从无数据到有数据
+            mInRightMargin = false;
+            mInLeftMargin = false;
             if (isFullScreen()) {
                 setScroll(getMinScrollX());
             } else {
@@ -608,6 +610,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         } else {
             // 更新数据
             boolean fullScreen = isFullScreen();
+            if (!fullScreen) {
+                mInRightMargin = false;
+                mInLeftMargin = false;
+            }
             mTouchTapManager.updateClickTapInfo();
             if (!mPreviousIsFullScreen && fullScreen) {
                 // 非满屏 到 满屏

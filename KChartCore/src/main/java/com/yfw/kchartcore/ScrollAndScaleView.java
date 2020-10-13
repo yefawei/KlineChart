@@ -213,13 +213,13 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
             if (mScrollX != mPreviousScrollX) {
                 setScrollState(SCROLL_STATE_SETTLING);
                 onScrollChanged(mScrollX, 0, mPreviousScrollX, 0);
-                if (tag == 1) {
-                    onRightMargin();
-                } else if (tag == 2) {
-                    onLeftMargin();
-                }
             }
             postInvalidateOnAnimation();
+            if (tag == 1) {
+                onRightMargin();
+            } else if (tag == 2) {
+                onLeftMargin();
+            }
             return;
         }
         if (mScrollX != mPreviousScrollX) {
@@ -234,12 +234,12 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
                 setScrollState(SCROLL_STATE_DRAGGING);
             }
             onScrollChanged(mScrollX, 0, mPreviousScrollX, 0);
-            if (tag == 1) {
-                onRightMargin();
-            } else if (tag == 2) {
-                onLeftMargin();
-            }
             invalidate();
+        }
+        if (tag == 1) {
+            onRightMargin();
+        } else if (tag == 2) {
+            onLeftMargin();
         }
     }
 
