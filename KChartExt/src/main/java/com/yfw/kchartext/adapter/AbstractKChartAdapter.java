@@ -57,7 +57,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
         }
     }
 
-    public void addDatas(ArrayList<? extends IEntity> datas) {
+    public void addDatas(List<? extends IEntity> datas) {
         if (datas == null || datas.isEmpty()) return;
         if (mKlineInfos == null) {
             initAndAddMultiData(datas);
@@ -168,7 +168,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
         }
     }
 
-    private void addMultiData(ArrayList<? extends IEntity> datas) {
+    private void addMultiData(List<? extends IEntity> datas) {
         long startTime = datas.get(0).getDatatime();
         long endTime = datas.get(datas.size() - 1).getDatatime();
         if (endTime < mStartTime) {
