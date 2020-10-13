@@ -72,8 +72,8 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
     private void initAndAddSingleData(IEntity data) {
         mKlineInfos = new ArrayList<>();
         mKlineInfos.add(data);
-        mStartTime = data.getDatatime();
-        mEndTime = data.getDatatime();
+        mStartTime = data.getTimeStamp();
+        mEndTime = data.getTimeStamp();
         notifyDataSetChanged();
     }
 
@@ -83,16 +83,16 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
     private void initAndAddMultiData(IEntity... datas) {
         mKlineInfos = new ArrayList<>();
         Collections.addAll(mKlineInfos, datas);
-        mStartTime = datas[0].getDatatime();
-        mEndTime = datas[datas.length - 1].getDatatime();
+        mStartTime = datas[0].getTimeStamp();
+        mEndTime = datas[datas.length - 1].getTimeStamp();
         notifyDataSetChanged();
     }
 
     @SuppressWarnings("unchecked")
     private void initAndAddMultiData(List<? extends IEntity> datas) {
         mKlineInfos = (List<IEntity>) datas;
-        mStartTime = datas.get(0).getDatatime();
-        mEndTime = datas.get(datas.size() - 1).getDatatime();
+        mStartTime = datas.get(0).getTimeStamp();
+        mEndTime = datas.get(datas.size() - 1).getTimeStamp();
         notifyDataSetChanged();
     }
 
@@ -104,7 +104,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
      * 否则,不更新数据
      */
     private void addSingleData(IEntity data) {
-        long datatime = data.getDatatime();
+        long datatime = data.getTimeStamp();
         if (datatime < mStartTime) {
             mKlineInfos.add(0, data);
             mStartTime = datatime;
@@ -129,8 +129,8 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
      * 否者，传入的数据将不起作用
      */
     private void addMultiData(IEntity... datas) {
-        long startTime = datas[0].getDatatime();
-        long endTime = datas[datas.length - 1].getDatatime();
+        long startTime = datas[0].getTimeStamp();
+        long endTime = datas[datas.length - 1].getTimeStamp();
         if (endTime < mStartTime) {
             mKlineInfos.addAll(0, Arrays.asList(datas));
             mStartTime = startTime;
@@ -138,7 +138,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
         } else if (startTime < mStartTime && endTime <= mEndTime) {
             int endIndex = 0;
             for (int i = 0; i < datas.length; i++) {
-                if (datas[i].getDatatime() >= mStartTime) {
+                if (datas[i].getTimeStamp() >= mStartTime) {
                     break;
                 }
                 endIndex = i;
@@ -150,7 +150,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
         } else if (startTime >= mStartTime && endTime > mEndTime) {
             int startIndex = 0;
             for (int i = 0; i < datas.length; i++) {
-                if (datas[i].getDatatime() > mEndTime) {
+                if (datas[i].getTimeStamp() > mEndTime) {
                     startIndex = i;
                     break;
                 }
@@ -169,8 +169,8 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
     }
 
     private void addMultiData(List<? extends IEntity> datas) {
-        long startTime = datas.get(0).getDatatime();
-        long endTime = datas.get(datas.size() - 1).getDatatime();
+        long startTime = datas.get(0).getTimeStamp();
+        long endTime = datas.get(datas.size() - 1).getTimeStamp();
         if (endTime < mStartTime) {
             mKlineInfos.addAll(0, datas);
             mStartTime = startTime;
@@ -178,7 +178,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
         } else if (startTime < mStartTime && endTime <= mEndTime) {
             int endIndex = 0;
             for (int i = 0; i < datas.size(); i++) {
-                if (datas.get(i).getDatatime() >= mStartTime) {
+                if (datas.get(i).getTimeStamp() >= mStartTime) {
                     break;
                 }
                 endIndex = i;
@@ -190,7 +190,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
         } else if (startTime >= mStartTime && endTime > mEndTime) {
             int startIndex = 0;
             for (int i = 0; i < datas.size(); i++) {
-                if (datas.get(i).getDatatime() > mEndTime) {
+                if (datas.get(i).getTimeStamp() > mEndTime) {
                     startIndex = i;
                     break;
                 }

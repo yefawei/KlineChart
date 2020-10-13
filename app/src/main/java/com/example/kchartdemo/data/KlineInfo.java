@@ -59,7 +59,7 @@ public class KlineInfo implements IEntity, IVolume {
     }
 
     @Override
-    public long getDatatime() {
+    public long getTimeStamp() {
         return timestamp * 1000;
     }
 
@@ -75,7 +75,7 @@ public class KlineInfo implements IEntity, IVolume {
 
     public String getFormatTime() {
         if (TextUtils.isEmpty(formatTime)) {
-            formatTime = FormatTime.formatTime(getDatatime());
+            formatTime = FormatTime.formatTime(getTimeStamp());
         }
         return formatTime;
     }

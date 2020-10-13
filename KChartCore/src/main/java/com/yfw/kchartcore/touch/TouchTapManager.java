@@ -110,7 +110,7 @@ public class TouchTapManager {
         BaseKChartAdapter<?> adapter = mDataProvider.getAdapter();
         if (adapter == null) return;
         for (int i = 0; i < adapter.getCount(); i++) {
-            if (adapter.getItem(i).getDatatime() == options.getEntity().getDatatime()) {
+            if (adapter.getItem(i).getTimeStamp() == options.getEntity().getTimeStamp()) {
                 options.setIndex(i);
                 return;
             }
