@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private DragonKLineDataProvider mDataProvider;
     private InteractiveKChartView mKChart;
     private ScrollView mScrollView;
-    private DefaultKChartAdapter mAdapter;
+    private DefaultKChartAdapter<KlineInfo> mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         mainRenderCanvas.addDrawing(new VolumeHighlightDrawing(volumeIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
 
-        mAdapter = new DefaultKChartAdapter(new DefaultKChartAdapter.OnPrepareIndexDataListener() {
+        mAdapter = new DefaultKChartAdapter<>(new DefaultKChartAdapter.OnPrepareIndexDataListener() {
             @Override
             public void prepareIndexData(List<String> indexTags) {
                 Log.e("OnPrepareIndexData", indexTags.toString());

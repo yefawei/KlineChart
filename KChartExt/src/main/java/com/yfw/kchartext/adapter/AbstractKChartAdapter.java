@@ -4,17 +4,15 @@ import com.yfw.kchartcore.adapter.BaseKChartAdapter;
 import com.yfw.kchartcore.index.IEntity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * @日期 : 2020/8/21
  * @描述 : 内部已实现添加数据逻辑的适配器
  */
-public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
+public abstract class AbstractKChartAdapter<T extends IEntity> extends BaseKChartAdapter<T> {
 
-    private List<IEntity> mKlineInfos;
+    private List<T> mKlineInfos;
     private long mStartTime;
     private long mEndTime;
 
@@ -24,7 +22,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
     }
 
     @Override
-    public IEntity getItem(int position) {
+    public T getItem(int position) {
         return mKlineInfos.get(position);
     }
 
@@ -35,7 +33,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
         notifyDataSetChanged();
     }
 
-    public void addData(IEntity data) {
+    public void addData(T data) {
         if (data == null) return;
         if (mKlineInfos == null) {
             initAndAddSingleData(data);
@@ -44,20 +42,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
         }
     }
 
-    public void addDatas(IEntity... datas) {
-        if (datas.length == 0) return;
-        if (datas.length == 1) {
-            addData(datas[0]);
-            return;
-        }
-        if (mKlineInfos == null) {
-            initAndAddMultiData(datas);
-        } else {
-            addMultiData(datas);
-        }
-    }
-
-    public void addDatas(List<? extends IEntity> datas) {
+    public void addDatas(List<T> datas) {
         if (datas == null || datas.isEmpty()) return;
         if (mKlineInfos == null) {
             initAndAddMultiData(datas);
@@ -69,7 +54,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
     /**
      * 初始化列表并添加单个数据
      */
-    private void initAndAddSingleData(IEntity data) {
+    private void initAndAddSingleData(T data) {
         mKlineInfos = new ArrayList<>();
         mKlineInfos.add(data);
         mStartTime = data.getTimeStamp();
@@ -77,20 +62,9 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
         notifyDataSetChanged();
     }
 
-    /**
-     * 初始化列表并添加多个数据
-     */
-    private void initAndAddMultiData(IEntity... datas) {
-        mKlineInfos = new ArrayList<>();
-        Collections.addAll(mKlineInfos, datas);
-        mStartTime = datas[0].getTimeStamp();
-        mEndTime = datas[datas.length - 1].getTimeStamp();
-        notifyDataSetChanged();
-    }
-
     @SuppressWarnings("unchecked")
-    private void initAndAddMultiData(List<? extends IEntity> datas) {
-        mKlineInfos = (List<IEntity>) datas;
+    private void initAndAddMultiData(List<T> datas) {
+        mKlineInfos = datas;
         mStartTime = datas.get(0).getTimeStamp();
         mEndTime = datas.get(datas.size() - 1).getTimeStamp();
         notifyDataSetChanged();
@@ -103,7 +77,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
      * 数据时间大于开始时间，则添加到尾部
      * 否则,不更新数据
      */
-    private void addSingleData(IEntity data) {
+    private void addSingleData(T data) {
         long datatime = data.getTimeStamp();
         if (datatime < mStartTime) {
             mKlineInfos.add(0, data);
@@ -128,47 +102,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
      * 开始时间小于现有开始时间，结束时间大于现有结束时间，将重新更新数据（不推荐该方案，传数据时留意）
      * 否者，传入的数据将不起作用
      */
-    private void addMultiData(IEntity... datas) {
-        long startTime = datas[0].getTimeStamp();
-        long endTime = datas[datas.length - 1].getTimeStamp();
-        if (endTime < mStartTime) {
-            mKlineInfos.addAll(0, Arrays.asList(datas));
-            mStartTime = startTime;
-            notifyFirstInserted(datas.length);
-        } else if (startTime < mStartTime && endTime <= mEndTime) {
-            int endIndex = 0;
-            for (int i = 0; i < datas.length; i++) {
-                if (datas[i].getTimeStamp() >= mStartTime) {
-                    break;
-                }
-                endIndex = i;
-            }
-            IEntity[] newDatas = Arrays.copyOf(datas, endIndex + 1);
-            mKlineInfos.addAll(0, Arrays.asList(newDatas));
-            mStartTime = startTime;
-            notifyFirstInserted(newDatas.length);
-        } else if (startTime >= mStartTime && endTime > mEndTime) {
-            int startIndex = 0;
-            for (int i = 0; i < datas.length; i++) {
-                if (datas[i].getTimeStamp() > mEndTime) {
-                    startIndex = i;
-                    break;
-                }
-            }
-            IEntity[] newDatas = Arrays.copyOfRange(datas, startIndex, datas.length);
-            mKlineInfos.addAll(Arrays.asList(newDatas));
-            mEndTime = endTime;
-            notifyLastInserted(newDatas.length);
-        } else if (startTime > mEndTime) {
-            mKlineInfos.addAll(Arrays.asList(datas));
-            mEndTime = endTime;
-            notifyLastInserted(datas.length);
-        } else if (startTime < mStartTime && endTime > mEndTime) {
-            initAndAddMultiData(datas);
-        }
-    }
-
-    private void addMultiData(List<? extends IEntity> datas) {
+    private void addMultiData(List<T> datas) {
         long startTime = datas.get(0).getTimeStamp();
         long endTime = datas.get(datas.size() - 1).getTimeStamp();
         if (endTime < mStartTime) {
@@ -183,7 +117,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
                 }
                 endIndex = i;
             }
-            List<? extends IEntity> newDatas = datas.subList(0, endIndex + 1);
+            List<T> newDatas = datas.subList(0, endIndex + 1);
             mKlineInfos.addAll(0, newDatas);
             mStartTime = startTime;
             notifyFirstInserted(newDatas.size());
@@ -195,7 +129,7 @@ public abstract class AbstractKChartAdapter extends BaseKChartAdapter<IEntity> {
                     break;
                 }
             }
-            List<? extends IEntity> newDatas = datas.subList(startIndex, datas.size());
+            List<T> newDatas = datas.subList(startIndex, datas.size());
             mKlineInfos.addAll(newDatas);
             mEndTime = endTime;
             notifyLastInserted(newDatas.size());

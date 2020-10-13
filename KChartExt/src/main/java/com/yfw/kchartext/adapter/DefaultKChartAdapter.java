@@ -2,13 +2,15 @@ package com.yfw.kchartext.adapter;
 
 import androidx.annotation.Nullable;
 
+import com.yfw.kchartcore.index.IEntity;
+
 import java.util.List;
 
 /**
  * @日期 : 2020/8/21
  * @描述 : 默认K线适配器
  */
-public class DefaultKChartAdapter extends AbstractKChartAdapter {
+public class DefaultKChartAdapter<T extends IEntity> extends AbstractKChartAdapter<T> {
 
     private OnPrepareIndexDataListener mListener;
 
