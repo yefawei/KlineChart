@@ -10,7 +10,7 @@ import com.yfw.kchartcore.data.Transformer;
  */
 public final class ReverseIndexRange extends IndexRange implements IndexRangeContainer, IndexRange.OnCalcValueListener {
 
-    private IndexRange mIndexRange;
+    private final IndexRange mIndexRange;
 
     public ReverseIndexRange(IndexRange indexRange) {
         super();

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DefaultKChartAdapter<T extends IEntity> extends AbstractKChartAdapter<T> {
 
-    private OnPrepareIndexDataListener mListener;
+    private final OnPrepareIndexDataListener mListener;
 
     /**
      * @param listener 当前需要准备的指标数据

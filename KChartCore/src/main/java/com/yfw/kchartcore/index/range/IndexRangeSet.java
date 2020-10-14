@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public final class IndexRangeSet extends IndexRange {
 
-    private ArrayList<IndexRange> mIndexRanges = new ArrayList<>();
+    private final ArrayList<IndexRange> mIndexRanges = new ArrayList<>();
 
     private String mIndexTag = "Set";
     private boolean mCanChangeIndex = true;

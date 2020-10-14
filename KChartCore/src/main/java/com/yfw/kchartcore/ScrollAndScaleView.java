@@ -42,11 +42,11 @@ public abstract class ScrollAndScaleView extends View implements GestureDetector
     protected int mScrollX = 0;                 // 当前滚动值
     private int mPreviousScrollX = 0;           // 备份上一次滚动值
 
-    private GestureMoveActionCompat mGestureMoveActionCompat;
-    private GestureDetectorCompat mGestureDetectorCompat;
+    private final GestureMoveActionCompat mGestureMoveActionCompat;
+    private final GestureDetectorCompat mGestureDetectorCompat;
     private boolean mIsForceScroller;   // 强制滑动标记，为true则处于触碰状态都允许触发滚动动画
-    private OverScroller mScroller;
-    private ScaleGestureDetectorCompat mScaleGestureDetector;
+    private final OverScroller mScroller;
+    private final ScaleGestureDetectorCompat mScaleGestureDetector;
 
     public static final int SCROLL_STATE_IDLE = 0;      // 闲置
     public static final int SCROLL_STATE_DRAGGING = 1;  // 拖拽中

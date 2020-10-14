@@ -17,11 +17,11 @@ import com.yfw.kchartcore.index.IEntity;
  */
 public class TouchTapManager {
 
-    private IDataProvider mDataProvider;
+    private final IDataProvider mDataProvider;
 
-    private TapMarkerOption mSingleTapOption = new TapMarkerOption();    // 单次点击
-    private TapMarkerOption mDoubleTapOption = new TapMarkerOption();    // 双击
-    private TapMarkerOption mLongTapOption = new TapMarkerOption();      // 长按
+    private final TapMarkerOption mSingleTapOption = new TapMarkerOption();    // 单次点击
+    private final TapMarkerOption mDoubleTapOption = new TapMarkerOption();    // 双击
+    private final TapMarkerOption mLongTapOption = new TapMarkerOption();      // 长按
 
     private OnSingleSelectedChangeListener mOnSingleSelectedChangeListener;
     private OnDoubleSelectedChangeListener mOnDoubleSelectedChangeListener;

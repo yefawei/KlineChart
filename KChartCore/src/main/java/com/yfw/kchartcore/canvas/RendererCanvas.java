@@ -32,17 +32,17 @@ public class RendererCanvas implements IRendererCanvas, IParentPortLayout, IView
     private int mWidth;
     private int mHeight;
     protected Rect mViewPort = new Rect();
-    private CenterPoint mCenterPoint = new CenterPoint();
+    private final CenterPoint mCenterPoint = new CenterPoint();
     private boolean mInUpdateChildLayout;
     private IParentPortLayout mParentPortLayout;
 
     protected IDataProvider mDataProvider;
 
-    private ArrayList<Drawing<?>> mDrawings = new ArrayList<>();
-    private LinkedHashMap<Integer, List<Drawing<?>>> mHorizontalLinearGroup = new LinkedHashMap<>();
-    private LinkedHashMap<Integer, List<Drawing<?>>> mVerticalLinearGroup = new LinkedHashMap<>();
-    private HashMap<Integer, Integer> mStartXValueMap = new HashMap<>();
-    private HashMap<Integer, Integer> mStartYValueMap = new HashMap<>();
+    private final ArrayList<Drawing<?>> mDrawings = new ArrayList<>();
+    private final LinkedHashMap<Integer, List<Drawing<?>>> mHorizontalLinearGroup = new LinkedHashMap<>();
+    private final LinkedHashMap<Integer, List<Drawing<?>>> mVerticalLinearGroup = new LinkedHashMap<>();
+    private final HashMap<Integer, Integer> mStartXValueMap = new HashMap<>();
+    private final HashMap<Integer, Integer> mStartYValueMap = new HashMap<>();
 
     public RendererCanvas() {
     }

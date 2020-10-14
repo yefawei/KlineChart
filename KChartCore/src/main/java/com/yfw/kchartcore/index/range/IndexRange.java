@@ -26,9 +26,9 @@ public abstract class IndexRange {
     public @interface SideMode {
     }
 
-    private boolean mReverse;   // 是否反向，最小值在上，最大值在下
-    private int mSideMode;
-    private float mPaddingPercent;
+    private final boolean mReverse;   // 是否反向，最小值在上，最大值在下
+    private final int mSideMode;
+    private final float mPaddingPercent;
     private float mMaxValue = Float.MIN_VALUE;
     private float mMinValue = Float.MAX_VALUE;
     private int mMaxIndex; // 屏幕内最大值的索引
@@ -36,8 +36,8 @@ public abstract class IndexRange {
 
     private List<OnCalcValueListener> mOnCalcValueListeners;
 
-    private List<String> mExtendedKeys = new ArrayList<>();
-    private List<Object> mExtendedValues = new ArrayList<>();
+    private final List<String> mExtendedKeys = new ArrayList<>();
+    private final List<Object> mExtendedValues = new ArrayList<>();
 
     public IndexRange() {
         this(0);

@@ -26,7 +26,7 @@ public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPo
     private int mWidth;
     private int mHeight;
     protected Rect mViewPort = new Rect();
-    private CenterPoint mCenterPoint = new CenterPoint();
+    private final CenterPoint mCenterPoint = new CenterPoint();
     private float mScaleValueY;         // Y轴缩放值
     private boolean mDrawInViewPort = true;
     private IParentPortLayout mDrawingPortLayout;

@@ -62,7 +62,6 @@ public abstract class AbstractKChartAdapter<T extends IEntity> extends BaseKChar
         notifyDataSetChanged();
     }
 
-    @SuppressWarnings("unchecked")
     private void initAndAddMultiData(List<T> datas) {
         mKlineInfos = datas;
         mStartTime = datas.get(0).getTimeStamp();

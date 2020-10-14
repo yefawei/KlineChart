@@ -24,7 +24,7 @@ public class Transformer {
 
     private static final float[] sEmptyPointXBuffer = new float[]{};
 
-    private IDataProvider mDataProvider;
+    private final IDataProvider mDataProvider;
 
     private float mStartPointX;             // 起始绘制点的中心X坐标(已包含主画板左侧距离)
     private float[] mPointXBuffer = sEmptyPointXBuffer;
@@ -32,7 +32,7 @@ public class Transformer {
     private int mStopIndex = -1;            // 当前内容的结束坐标
 
     private List<String> mTags;
-    private List<Range> mRanges = new ArrayList<>();
+    private final List<Range> mRanges = new ArrayList<>();
     private OnViewIndexListener mViewIndexListener;
 
     public Transformer(IDataProvider dataProvider) {

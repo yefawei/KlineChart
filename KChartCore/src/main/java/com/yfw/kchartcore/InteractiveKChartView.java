@@ -43,10 +43,10 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
 
     private int mPointMode = POINT_FIXED_WIDTH_MODE;
     private int mPointModeValue = 6;        // 固定数量：值为数量值 固定点宽度：值为单点宽度
-    private PointWidthBuffer mPointWidthBuffer = new PointWidthBuffer();
-    private ScalePointWidthBuffer mScalePointWidthBuffer = new ScalePointWidthBuffer();
-    private MaxScrollXBuffer mMaxScrollXBuffer = new MaxScrollXBuffer();
-    private IsFullScreenBuffer mIsFullScreenBuffer = new IsFullScreenBuffer();
+    private final PointWidthBuffer mPointWidthBuffer = new PointWidthBuffer();
+    private final ScalePointWidthBuffer mScalePointWidthBuffer = new ScalePointWidthBuffer();
+    private final MaxScrollXBuffer mMaxScrollXBuffer = new MaxScrollXBuffer();
+    private final IsFullScreenBuffer mIsFullScreenBuffer = new IsFullScreenBuffer();
 
     private boolean mPreviousIsFullScreen;  // 备份上一次是否满屏
     private int mPreviousDataLength;        // 备份上一次数据长度
@@ -56,15 +56,15 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private IDataInsertedHandler mDataSizeChangeHandler;
 
     protected PaddingHelper mPaddingHelper;     // 边界辅助类
-    private Transformer mTransformer;
-    private AnimationManager mAnimationManager;
-    private TouchTapManager mTouchTapManager;
+    private final Transformer mTransformer;
+    private final AnimationManager mAnimationManager;
+    private final TouchTapManager mTouchTapManager;
 
     private boolean mCanUpdateLayout;
-    private Rect mViewPort = new Rect();    // 视图可绘制区域
+    private final Rect mViewPort = new Rect();    // 视图可绘制区域
     private boolean mIsRenderBackground = false;
     private BackgroundRenderer mBackgroundRenderer;
-    private MainRenderer mMainRenderer;
+    private final MainRenderer mMainRenderer;
     private boolean mIsRenderForeground = false;
     private ForegroundRenderer mForegroundRenderer;
 

@@ -21,7 +21,7 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
 
     private Interpolator mInterpolator;
 
-    private List<ChildAnim> mAnims = new ArrayList<>();
+    private final List<ChildAnim> mAnims = new ArrayList<>();
     private ChildAnim mStartAnim;
     private ChildAnim mEndAnim;
 

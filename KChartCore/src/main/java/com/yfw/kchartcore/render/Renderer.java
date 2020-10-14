@@ -20,7 +20,7 @@ public abstract class Renderer implements IRenderer, IParentPortLayout, IViewPor
     protected IDataProvider mDataProvider;
 
     protected Rect mViewPort = new Rect();
-    private CenterPoint mCenterPoint = new CenterPoint();
+    private final CenterPoint mCenterPoint = new CenterPoint();
     private boolean mInUpdateChildLayout;
 
     public Renderer(IDataProvider dataProvider) {

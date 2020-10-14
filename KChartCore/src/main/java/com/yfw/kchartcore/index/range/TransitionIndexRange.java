@@ -12,7 +12,7 @@ import com.yfw.kchartcore.data.Transformer;
  */
 public final class TransitionIndexRange extends IndexRange implements IndexRangeContainer, IndexRange.OnCalcValueListener {
 
-    private IndexRange mIndexRange;
+    private final IndexRange mIndexRange;
 
     private float mLastMaxValue = Float.NaN;
     private float mLastMinValue = Float.NaN;

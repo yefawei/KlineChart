@@ -10,8 +10,8 @@ import java.util.ArrayList;
  */
 public class AnimationManager {
 
-    private AnimationListener mListener;
-    private ChartAnimtion mChartAnimtion;
+    private final AnimationListener mListener;
+    private final ChartAnimtion mChartAnimtion;
     private boolean inAnim;
 
     public AnimationManager(@NonNull AnimationListener listener) {
@@ -65,9 +65,9 @@ public class AnimationManager {
      */
     public static class ChartAnimtion {
 
-        private ArrayList<Animation> mAnimations = new ArrayList<>();
+        private final ArrayList<Animation> mAnimations = new ArrayList<>();
 
-        private AnimationManager mManager;
+        private final AnimationManager mManager;
 
         public ChartAnimtion(AnimationManager manager) {
             mManager = manager;
