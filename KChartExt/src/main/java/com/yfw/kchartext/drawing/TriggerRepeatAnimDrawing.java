@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.drawing.AbstractAnimDrawing;
 import com.yfw.kchartcore.impl.IDataProvider;
+import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.layout.IParentPortLayout;
 
@@ -15,7 +16,7 @@ import com.yfw.kchartcore.layout.IParentPortLayout;
  * @日期 : 2020/7/10
  * @描述 : 主动触发重复动画的绘制
  */
-public abstract class TriggerRepeatAnimDrawing<T extends IndexRange> extends AbstractAnimDrawing<T> {
+public abstract class TriggerRepeatAnimDrawing<T extends IndexRange, S extends IEntity> extends AbstractAnimDrawing<T, S> {
 
     public final static int RESTART = 1;    // 重新开始
     public final static int REVERSE = 2;    // 逆转
@@ -47,7 +48,7 @@ public abstract class TriggerRepeatAnimDrawing<T extends IndexRange> extends Abs
     }
 
     @Override
-    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider) {
+    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<S> dataProvider) {
         super.attachedParentPortLayout(portLayout, dataProvider);
         if (inAnimTime() && !inAnimationManager() && !mPause) {
             mDataProvider.getChartAnimation().addAnim(this);

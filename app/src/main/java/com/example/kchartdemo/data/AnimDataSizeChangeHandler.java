@@ -8,15 +8,15 @@ import com.yfw.kchartcore.data.IDataInsertedHandler;
  * @日期 : 2020/8/24
  * @描述 :
  */
-public class AnimDataSizeChangeHandler implements IDataInsertedHandler {
+public class AnimDataSizeChangeHandler implements IDataInsertedHandler<KlineInfo> {
 
     @Override
-    public boolean onFullFirstInserted(InteractiveKChartView view, int itemCount, int currScroll, int finalScroll) {
+    public boolean onFullFirstInserted(InteractiveKChartView<KlineInfo> view, int itemCount, int currScroll, int finalScroll) {
         return false;
     }
 
     @Override
-    public boolean onFullLastInserted(InteractiveKChartView view, int itemCount, int currScroll, int finalScroll) {
+    public boolean onFullLastInserted(InteractiveKChartView<KlineInfo> view, int itemCount, int currScroll, int finalScroll) {
         if ((currScroll != view.getMinScrollX() && finalScroll != view.getMinScrollX()) || itemCount != 1) {
             int scrollRange = Math.round(view.getScalePointWidth() * itemCount);
             view.setScroll(currScroll + scrollRange);

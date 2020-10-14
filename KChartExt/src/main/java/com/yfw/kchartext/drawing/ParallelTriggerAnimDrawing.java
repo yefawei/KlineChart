@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.drawing.AbstractAnimDrawing;
 import com.yfw.kchartcore.impl.IDataProvider;
+import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.layout.IParentPortLayout;
 
@@ -17,7 +18,7 @@ import java.util.List;
  * @日期 : 2020/7/10
  * @描述 : 并行主动触发动画的绘制，允许多个动画同时计算
  */
-public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends AbstractAnimDrawing<T> {
+public abstract class ParallelTriggerAnimDrawing<T extends IndexRange, S extends IEntity> extends AbstractAnimDrawing<T, S> {
 
     private Interpolator mInterpolator;
 
@@ -41,7 +42,7 @@ public abstract class ParallelTriggerAnimDrawing<T extends IndexRange> extends A
     }
 
     @Override
-    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider) {
+    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<S> dataProvider) {
         super.attachedParentPortLayout(portLayout, dataProvider);
         if (inAnimTime() && !inAnimationManager()) {
             mDataProvider.getChartAnimation().addAnim(this);

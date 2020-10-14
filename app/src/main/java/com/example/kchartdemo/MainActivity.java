@@ -27,7 +27,6 @@ import com.yfw.kchartcore.ScrollAndScaleView;
 import com.yfw.kchartcore.canvas.MainRendererCanvas;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.data.Transformer;
-import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.index.range.CandleIndexRange;
 import com.yfw.kchartcore.index.range.TransitionIndexRange;
 import com.yfw.kchartcore.render.MainRenderer;
@@ -42,7 +41,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private DragonKLineDataProvider mDataProvider;
-    private InteractiveKChartView mKChart;
+    private InteractiveKChartView<KlineInfo> mKChart;
     private ScrollView mScrollView;
     private DefaultKChartAdapter<KlineInfo> mAdapter;
 
@@ -116,32 +115,32 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("OnMarginListener", "onLeftMargin");
             }
         });
-        mKChart.getTouchTapManager().setOnSingleSelectedChangeListener(new TouchTapManager.OnSingleSelectedChangeListener() {
+        mKChart.getTouchTapManager().setOnSingleSelectedChangeListener(new TouchTapManager.OnSingleSelectedChangeListener<KlineInfo>() {
             @Override
-            public void onSingleSelectedChanged(int index, IEntity entity) {
+            public void onSingleSelectedChanged(int index, KlineInfo entity) {
                 Log.e("TouchTapManager", "on single: " + index);
             }
         });
-        mKChart.getTouchTapManager().setOnDoubleSelectedChangeListener(new TouchTapManager.OnDoubleSelectedChangeListener() {
+        mKChart.getTouchTapManager().setOnDoubleSelectedChangeListener(new TouchTapManager.OnDoubleSelectedChangeListener<KlineInfo>() {
             @Override
-            public void onDoubleSelectedChanged(int index, IEntity entity) {
+            public void onDoubleSelectedChanged(int index, KlineInfo entity) {
                 Log.e("TouchTapManager", "on double: " + index);
             }
         });
-        mKChart.getTouchTapManager().setOnLongSelectedChangeListener(new TouchTapManager.OnLongSelectedChangeListener() {
+        mKChart.getTouchTapManager().setOnLongSelectedChangeListener(new TouchTapManager.OnLongSelectedChangeListener<KlineInfo>() {
             @Override
-            public void onLongleSelectedChanged(int index, IEntity entity) {
+            public void onLongleSelectedChanged(int index, KlineInfo entity) {
                 Log.e("TouchTapManager", "on long: " + index);
             }
         });
 
-        MainRenderer viewRender = mKChart.getMainRenderer();
+        MainRenderer<KlineInfo> viewRender = mKChart.getMainRenderer();
         CandleIndexRange candleIndexRange = new CandleIndexRange();
         VolumeIndexRange volumeIndexRange = new VolumeIndexRange();
 
 
         MainRenderer.CanvasLayoutParams canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 1, 3);
-        MainRendererCanvas mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
+        MainRendererCanvas<KlineInfo> mainRenderCanvas = new MainRendererCanvas<>(canvasLayoutParams);
         RendererCanvas.DrawingLayoutParams layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
         layoutParams.setVerticalLinear(true, 1);
@@ -196,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 //        mainRenderCanvas.addDrawing(new RepeatPointDrawing(layoutParams));
 
         canvasLayoutParams = new MainRenderer.CanvasLayoutParams(0, 0, 0, 1);
-        mainRenderCanvas = new MainRendererCanvas(canvasLayoutParams);
+        mainRenderCanvas = new MainRendererCanvas<>(canvasLayoutParams);
 
         layoutParams = new RendererCanvas.DrawingLayoutParams();
         layoutParams.setWeight(1);
@@ -327,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
     ClickDrawing mOneDrawing = new ClickDrawing("One", new ClickDrawing.OnClickListener() {
         @Override
         public void onClick() {
-            MainRenderer mainRenderer = mKChart.getMainRenderer();
+            MainRenderer<KlineInfo> mainRenderer = mKChart.getMainRenderer();
             mainRenderer.getRenderCanvas(MainRenderer.POSITION_MAIN).removeDrawing(mOneDrawing);
             mKChart.updateRenderPortLayout();
         }
@@ -336,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
     ClickDrawing mTwoDrawing = new ClickDrawing("Two", new ClickDrawing.OnClickListener() {
         @Override
         public void onClick() {
-            MainRenderer mainRenderer = mKChart.getMainRenderer();
+            MainRenderer<KlineInfo>mainRenderer = mKChart.getMainRenderer();
             mainRenderer.getRenderCanvas(MainRenderer.POSITION_MAIN).removeDrawing(mTwoDrawing);
             mKChart.updateRenderPortLayout();
         }
@@ -345,15 +344,15 @@ public class MainActivity extends AppCompatActivity {
     ClickDrawing mThreeDrawing = new ClickDrawing("Three", new ClickDrawing.OnClickListener() {
         @Override
         public void onClick() {
-            MainRenderer mainRenderer = mKChart.getMainRenderer();
+            MainRenderer<KlineInfo> mainRenderer = mKChart.getMainRenderer();
             mainRenderer.getRenderCanvas(MainRenderer.POSITION_MAIN).removeDrawing(mThreeDrawing);
             mKChart.updateRenderPortLayout();
         }
     });
 
     public void addClickTag(View view) {
-        MainRenderer mainRenderer = mKChart.getMainRenderer();
-        MainRendererCanvas renderCanvas = mainRenderer.getRenderCanvas(MainRenderer.POSITION_MAIN);
+        MainRenderer<KlineInfo> mainRenderer = mKChart.getMainRenderer();
+        MainRendererCanvas<KlineInfo> renderCanvas = mainRenderer.getRenderCanvas(MainRenderer.POSITION_MAIN);
         if (mOneDrawing.getLayoutParams() == null) {
             RendererCanvas.DrawingLayoutParams params = new RendererCanvas.DrawingLayoutParams();
             params.setWidth(100);

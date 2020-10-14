@@ -36,7 +36,7 @@ import java.util.List;
  * @日期 : 2020/6/30
  * @描述 : 可交互K线
  */
-public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView implements AnimationManager.AnimationListener {
+public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView<T> implements AnimationManager.AnimationListener {
 
     private static final int POINT_FIXED_WIDTH_MODE = 0;    // 固定点宽度，显示范围大显示数量多（默认）
     private static final int POINT_FIXED_SIZE_MODE = 1;     // 固定显示数量，显示范围大单点宽度大
@@ -53,20 +53,20 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
     private int mDataLength;                // 视图总长度
     private List<OnAdapterChangeListener<T>> mAdapterChangeListeners;
     private BaseKChartAdapter<T> mAdapter;     // 数据适配器
-    private IDataInsertedHandler mDataSizeChangeHandler;
+    private IDataInsertedHandler<T> mDataSizeChangeHandler;
 
-    protected PaddingHelper mPaddingHelper;     // 边界辅助类
-    private final Transformer mTransformer;
+    private final PaddingHelper mPaddingHelper;     // 边界辅助类
+    private final Transformer<T> mTransformer;
     private final AnimationManager mAnimationManager;
     private final TouchTapManager<T> mTouchTapManager;
 
     private boolean mCanUpdateLayout;
     private final Rect mViewPort = new Rect();    // 视图可绘制区域
     private boolean mIsRenderBackground = false;
-    private BackgroundRenderer mBackgroundRenderer;
-    private final MainRenderer mMainRenderer;
+    private BackgroundRenderer<T> mBackgroundRenderer;
+    private final MainRenderer<T> mMainRenderer;
     private boolean mIsRenderForeground = false;
-    private ForegroundRenderer mForegroundRenderer;
+    private ForegroundRenderer<T> mForegroundRenderer;
 
     private boolean mInRightPadding;
     private boolean mInLeftPadding;
@@ -86,9 +86,9 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
     public InteractiveKChartView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         limitBackgroundAndForeground(context, attrs, defStyleAttr);
-        mMainRenderer = new MainRenderer(this);
+        mMainRenderer = new MainRenderer<>(this);
         mPaddingHelper = new PaddingHelper();
-        mTransformer = new Transformer(this);
+        mTransformer = new Transformer<>(this);
         mAnimationManager = new AnimationManager(this);
         mTouchTapManager = new TouchTapManager<>(this);
     }
@@ -311,7 +311,7 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
     }
 
     @Override
-    public Transformer getTransformer() {
+    public Transformer<T> getTransformer() {
         return mTransformer;
     }
 
@@ -328,7 +328,7 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
     public void setRenderBackgroud(boolean render) {
         if (mIsRenderBackground == render) return;
         if (render && mBackgroundRenderer == null) {
-            mBackgroundRenderer = new BackgroundRenderer(this);
+            mBackgroundRenderer = new BackgroundRenderer<>(this);
         }
         mIsRenderBackground = render;
         if (render) {
@@ -337,21 +337,21 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
         }
     }
 
-    public BackgroundRenderer getBackgroundRenderer() {
+    public BackgroundRenderer<T> getBackgroundRenderer() {
         if (mBackgroundRenderer == null) {
-            mBackgroundRenderer = new BackgroundRenderer(this);
+            mBackgroundRenderer = new BackgroundRenderer<>(this);
         }
         return mBackgroundRenderer;
     }
 
-    public MainRenderer getMainRenderer() {
+    public MainRenderer<T> getMainRenderer() {
         return mMainRenderer;
     }
 
     public void setRenderForeground(boolean render) {
         if (mIsRenderForeground == render) return;
         if (render && mForegroundRenderer == null) {
-            mForegroundRenderer = new ForegroundRenderer(this);
+            mForegroundRenderer = new ForegroundRenderer<>(this);
         }
         mIsRenderForeground = render;
         if (render) {
@@ -360,9 +360,9 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
         }
     }
 
-    public ForegroundRenderer getForegroundRenderer() {
+    public ForegroundRenderer<T> getForegroundRenderer() {
         if (mForegroundRenderer == null) {
-            mForegroundRenderer = new ForegroundRenderer(this);
+            mForegroundRenderer = new ForegroundRenderer<>(this);
         }
         return mForegroundRenderer;
     }
@@ -539,7 +539,7 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
     /**
      * 数据数量变更时扩展操作类
      */
-    public void setDataSizeChangeHandler(@Nullable IDataInsertedHandler handler) {
+    public void setDataSizeChangeHandler(@Nullable IDataInsertedHandler<T> handler) {
         mDataSizeChangeHandler = handler;
     }
 
@@ -548,6 +548,7 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
         return mPaddingHelper;
     }
 
+    @Nullable
     @Override
     public BaseKChartAdapter<T> getAdapter() {
         return mAdapter;

@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.yfw.kchartcore.canvas.MainRendererCanvas;
 import com.yfw.kchartcore.impl.IDataProvider;
+import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.layout.IMainCanvasPort;
 
 import java.lang.annotation.Retention;
@@ -26,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
  * ┊   ┊      底       ┊   ┊
  * -------------------------
  */
-public class MainRenderer extends Renderer implements IMainCanvasPort {
+public class MainRenderer<T extends IEntity> extends Renderer<T> implements IMainCanvasPort {
 
     static final int LEFT_TOP_VERTICAL_FLAG = 0b00000001;       // 左上角以垂直为主
     static final int LEFT_BOTTOM_VERTICAL_FLAG = 0b00000010;    // 左下角以垂直为主
@@ -46,10 +47,10 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
     }
 
     private int mCornerRuleFlags = 0b00001111;
-    private MainRendererCanvas[] mHorizontalCanvas = new MainRendererCanvas[3]; // [0]:left [1]:main [2]:right
-    private MainRendererCanvas[] mVerticalCanvas = new MainRendererCanvas[3]; // [0]:top [1]:main [2]:bottom
+    private final MainRendererCanvas<T>[] mHorizontalCanvas = new MainRendererCanvas[3]; // [0]:left [1]:main [2]:right
+    private final MainRendererCanvas<T>[] mVerticalCanvas = new MainRendererCanvas[3]; // [0]:top [1]:main [2]:bottom
 
-    public MainRenderer(IDataProvider dataProvider) {
+    public MainRenderer(IDataProvider<T> dataProvider) {
         super(dataProvider);
     }
 
@@ -59,7 +60,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
         setInUpdateChildLayout(true);
         if (mViewPort.isEmpty()) {
-            for (MainRendererCanvas renderCanvas : mHorizontalCanvas) {
+            for (MainRendererCanvas<T> renderCanvas : mHorizontalCanvas) {
                 if (renderCanvas == null) continue;
                 renderCanvas.setWidth(0);
                 renderCanvas.setHeight(0);
@@ -103,7 +104,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
 
         int tempValue;
         // 计算出水平方向每个画板的宽度
-        for (MainRendererCanvas renderCanvas : mHorizontalCanvas) {
+        for (MainRendererCanvas<T> renderCanvas : mHorizontalCanvas) {
             if (renderCanvas == null) continue;
             CanvasLayoutParams layoutParams = renderCanvas.getLayoutParams();
             if (layoutParams.mWidth > 0) {
@@ -125,7 +126,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
         if (width > 0 && weightUnitWidth > 0) {
             int w = 0;
             // 说明按比例宽度没有填满视图
-            for (MainRendererCanvas horizontalCanva : mHorizontalCanvas) {
+            for (MainRendererCanvas<T> horizontalCanva : mHorizontalCanvas) {
                 if (horizontalCanva == null) continue;
                 CanvasLayoutParams layoutParams = horizontalCanva.getLayoutParams();
                 if (layoutParams.mWidth > 0) continue;
@@ -143,7 +144,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
         }
 
         // 计算出垂直方向每个画板的高度
-        for (MainRendererCanvas renderCanvas : mVerticalCanvas) {
+        for (MainRendererCanvas<T> renderCanvas : mVerticalCanvas) {
             if (renderCanvas == null) continue;
             CanvasLayoutParams layoutParams = renderCanvas.getLayoutParams();
             if (layoutParams.mHeight > 0) {
@@ -165,7 +166,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
         if (height > 0 && weightUnitHeight > 0) {
             int h = 0;
             // 说明按比例高度没有填满视图
-            for (MainRendererCanvas verticalCanva : mVerticalCanvas) {
+            for (MainRendererCanvas<T> verticalCanva : mVerticalCanvas) {
                 if (verticalCanva == null) continue;
                 CanvasLayoutParams layoutParams = verticalCanva.getLayoutParams();
                 if (layoutParams.mHeight > 0) continue;
@@ -291,7 +292,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
      */
     private int[] getHorizontalWeightAndWidth() {
         int[] i = new int[2];
-        for (MainRendererCanvas c : mHorizontalCanvas) {
+        for (MainRendererCanvas<T> c : mHorizontalCanvas) {
             if (c == null) continue;
             CanvasLayoutParams layoutParams = c.getLayoutParams();
             if (layoutParams.mWidth > 0) {
@@ -308,7 +309,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
      */
     private int[] getVerticalWeightAndHeight() {
         int[] i = new int[2];
-        for (MainRendererCanvas c : mVerticalCanvas) {
+        for (MainRendererCanvas<T> c : mVerticalCanvas) {
             if (c == null) continue;
             CanvasLayoutParams layoutParams = c.getLayoutParams();
             if (layoutParams.mHeight > 0) {
@@ -401,7 +402,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
         }
     }
 
-    public void render(Canvas canvas, MainRendererCanvas rendererCanvas) {
+    public void render(Canvas canvas, MainRendererCanvas<T> rendererCanvas) {
         if (!rendererCanvas.isValid()) return;
         canvas.save();
         rendererCanvas.render(canvas);
@@ -531,7 +532,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
     }
 
     @Nullable
-    public MainRendererCanvas getRenderCanvas(@Position int position) {
+    public MainRendererCanvas<T> getRenderCanvas(@Position int position) {
         if (position == POSITION_LEFT) {
             return mHorizontalCanvas[0];
         }
@@ -550,7 +551,7 @@ public class MainRenderer extends Renderer implements IMainCanvasPort {
         return null;
     }
 
-    public void addRenderCanvas(MainRendererCanvas canvas, @Position int position) {
+    public void addRenderCanvas(MainRendererCanvas<T> canvas, @Position int position) {
         if (canvas == null) {
             throw new NullPointerException("MainRendererCanvas cannot be null!");
         }

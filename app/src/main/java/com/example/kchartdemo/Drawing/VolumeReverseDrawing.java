@@ -6,18 +6,18 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 
+import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.data.Transformer;
 import com.yfw.kchartcore.drawing.Drawing;
 import com.yfw.kchartcore.index.range.ReverseIndexRange;
-import com.yfw.kchartext.index.IVolume;
 import com.yfw.kchartext.index.range.VolumeIndexRange;
 
 /**
  * @日期 : 2020/8/12
  * @描述 :
  */
-public class VolumeReverseDrawing extends Drawing<ReverseIndexRange> {
+public class VolumeReverseDrawing extends Drawing<ReverseIndexRange, KlineInfo> {
 
     private final Paint mPaint;
 
@@ -50,9 +50,9 @@ public class VolumeReverseDrawing extends Drawing<ReverseIndexRange> {
     public void drawData(Canvas canvas) {
         canvas.drawColor(Color.argb(48, 0, 255, 255));
         float width = mDataProvider.getScalePointWidth();
-        Transformer transformer = mDataProvider.getTransformer();
+        Transformer<KlineInfo> transformer = mDataProvider.getTransformer();
         for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
-            IVolume item = (IVolume) mDataProvider.getAdapter().getItem(i);
+            KlineInfo item = mDataProvider.getAdapter().getItem(i);
             float limit = transformer.getPointInScreenXByIndex(i);
 
             float y = getCoordinateY(item.getVolume());

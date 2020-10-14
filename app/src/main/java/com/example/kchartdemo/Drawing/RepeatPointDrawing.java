@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
+import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.impl.IDataProvider;
 import com.yfw.kchartcore.index.range.IndexRange;
@@ -16,7 +17,7 @@ import com.yfw.kchartext.drawing.RepeatAnimDrawing;
  * @日期 : 2020/9/27
  * @描述 : 自动触发重复点动画
  */
-public class RepeatPointDrawing extends RepeatAnimDrawing<IndexRange> {
+public class RepeatPointDrawing extends RepeatAnimDrawing<IndexRange, KlineInfo> {
 
     private final Paint mPaint;
 
@@ -29,7 +30,7 @@ public class RepeatPointDrawing extends RepeatAnimDrawing<IndexRange> {
     }
 
     @Override
-    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider) {
+    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<KlineInfo> dataProvider) {
         super.attachedParentPortLayout(portLayout, dataProvider);
         Log.e("RepeatPointDrawing", "attachedParentPortLayout");
     }

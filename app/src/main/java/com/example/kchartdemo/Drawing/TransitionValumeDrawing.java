@@ -9,6 +9,7 @@ import android.view.animation.DecelerateInterpolator;
 
 import androidx.annotation.Nullable;
 
+import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.data.Transformer;
 import com.yfw.kchartcore.index.range.IndexRange;
@@ -21,7 +22,7 @@ import com.yfw.kchartext.index.range.VolumeIndexRange;
  * @日期 : 2020/8/12
  * @描述 : 动画成交量
  */
-public class TransitionValumeDrawing extends TriggerAnimDrawing<TransitionIndexRange> implements IndexRange.OnCalcValueListener {
+public class TransitionValumeDrawing extends TriggerAnimDrawing<TransitionIndexRange, KlineInfo> implements IndexRange.OnCalcValueListener {
 
     private final Paint mPaint;
 
@@ -79,7 +80,7 @@ public class TransitionValumeDrawing extends TriggerAnimDrawing<TransitionIndexR
     public void drawData(Canvas canvas) {
         canvas.drawColor(Color.argb(48, 0, 255, 255));
         float width = mDataProvider.getScalePointWidth();
-        Transformer transformer = mDataProvider.getTransformer();
+        Transformer<KlineInfo> transformer = mDataProvider.getTransformer();
         for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
             IVolume item = (IVolume) mDataProvider.getAdapter().getItem(i);
             float limit = transformer.getPointInScreenXByIndex(i);

@@ -8,7 +8,6 @@ import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.data.Transformer;
 import com.yfw.kchartcore.drawing.Drawing;
-import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.index.range.CandleIndexRange;
 import com.yfw.kchartext.utils.FontCalculateUtils;
 
@@ -16,7 +15,7 @@ import com.yfw.kchartext.utils.FontCalculateUtils;
  * @日期 : 2020/7/14
  * @描述 : 蜡烛图
  */
-public class CandleDrawing extends Drawing<CandleIndexRange> {
+public class CandleDrawing extends Drawing<CandleIndexRange, KlineInfo> {
 
     private final Paint mPaint;
 
@@ -31,15 +30,15 @@ public class CandleDrawing extends Drawing<CandleIndexRange> {
     @Override
     public void drawData(Canvas canvas) {
         float width = mDataProvider.getScalePointWidth();
-        Transformer transformer = mDataProvider.getTransformer();
+        Transformer<KlineInfo> transformer = mDataProvider.getTransformer();
         for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
-            IEntity item = mDataProvider.getAdapter().getItem(i);
+            KlineInfo item = mDataProvider.getAdapter().getItem(i);
             float limit = transformer.getPointInScreenXByIndex(i);
             drawCandle(canvas, item, width, limit, i);
         }
     }
 
-    private void drawCandle(Canvas canvas, IEntity entity, float width, float center, int position) {
+    private void drawCandle(Canvas canvas, KlineInfo entity, float width, float center, int position) {
         if (entity.getOpenPrice() > entity.getClosePrice()) { // 跌
             mPaint.setColor(Color.RED);
         } else {

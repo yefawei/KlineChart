@@ -20,11 +20,11 @@ import java.util.List;
  * @日期 : 2020/7/9
  * @描述 : 坐标计算类
  */
-public class Transformer {
+public class Transformer<T extends IEntity> {
 
     private static final float[] sEmptyPointXBuffer = new float[]{};
 
-    private final IDataProvider mDataProvider;
+    private final IDataProvider<T> mDataProvider;
 
     private float mStartPointX;             // 起始绘制点的中心X坐标(已包含主画板左侧距离)
     private float[] mPointXBuffer = sEmptyPointXBuffer;
@@ -35,7 +35,7 @@ public class Transformer {
     private final List<Range> mRanges = new ArrayList<>();
     private OnViewIndexListener mViewIndexListener;
 
-    public Transformer(IDataProvider dataProvider) {
+    public Transformer(IDataProvider<T> dataProvider) {
         mDataProvider = dataProvider;
     }
 
@@ -221,7 +221,7 @@ public class Transformer {
     /**
      * 计算当前页面的最大最小值
      */
-    private void calcMinMax(BaseKChartAdapter<?> adapter) {
+    private void calcMinMax(BaseKChartAdapter<T> adapter) {
         for (int i = 0; i < mRanges.size(); i++) {
             mRanges.get(i).range.resetValue(false);
         }

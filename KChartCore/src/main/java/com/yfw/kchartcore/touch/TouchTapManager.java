@@ -17,7 +17,7 @@ import com.yfw.kchartcore.index.IEntity;
  */
 public class TouchTapManager<T extends IEntity> {
 
-    private final IDataProvider mDataProvider;
+    private final IDataProvider<T> mDataProvider;
 
     private final TapMarkerOption<T> mSingleTapOption = new TapMarkerOption<>();    // 单次点击
     private final TapMarkerOption<T> mDoubleTapOption = new TapMarkerOption<>();    // 双击
@@ -27,7 +27,7 @@ public class TouchTapManager<T extends IEntity> {
     private OnDoubleSelectedChangeListener<T> mOnDoubleSelectedChangeListener;
     private OnLongSelectedChangeListener<T> mOnLongSelectedChangeListener;
 
-    public TouchTapManager(IDataProvider dataProvider) {
+    public TouchTapManager(IDataProvider<T> dataProvider) {
         mDataProvider = dataProvider;
     }
 
@@ -107,7 +107,7 @@ public class TouchTapManager<T extends IEntity> {
      * 通过遍历的方式更新此时点击信息所在的索引
      */
     private void updateClickTapInfo(TapMarkerOption<T> options) {
-        BaseKChartAdapter<?> adapter = mDataProvider.getAdapter();
+        BaseKChartAdapter<T> adapter = mDataProvider.getAdapter();
         if (adapter == null) return;
         for (int i = 0; i < adapter.getCount(); i++) {
             if (adapter.getItem(i).getTimeStamp() == options.getEntity().getTimeStamp()) {

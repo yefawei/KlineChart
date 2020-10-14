@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import androidx.annotation.CallSuper;
 
 import com.yfw.kchartcore.impl.IDataProvider;
+import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.layout.CenterPoint;
 import com.yfw.kchartcore.layout.IDispatchSingleTapParent;
 import com.yfw.kchartcore.layout.IParentPortLayout;
@@ -15,15 +16,15 @@ import com.yfw.kchartcore.layout.IViewPort;
  * @日期 : 2020/7/1
  * @描述 : 渲染类
  */
-public abstract class Renderer implements IRenderer, IParentPortLayout, IViewPort, IDispatchSingleTapParent {
+public abstract class Renderer<T extends IEntity> implements IRenderer, IParentPortLayout, IViewPort, IDispatchSingleTapParent {
 
-    protected IDataProvider mDataProvider;
+    protected final IDataProvider<T> mDataProvider;
 
-    protected Rect mViewPort = new Rect();
+    protected final Rect mViewPort = new Rect();
     private final CenterPoint mCenterPoint = new CenterPoint();
     private boolean mInUpdateChildLayout;
 
-    public Renderer(IDataProvider dataProvider) {
+    public Renderer(IDataProvider<T> dataProvider) {
         mDataProvider = dataProvider;
     }
 

@@ -49,7 +49,7 @@ public interface IDataProvider<T extends IEntity> {
     PaddingHelper getPaddingHelper();
 
     @Nullable
-    BaseKChartAdapter<?> getAdapter();
+    BaseKChartAdapter<T> getAdapter();
 
     /**
      * 获取单点宽度
@@ -84,7 +84,7 @@ public interface IDataProvider<T extends IEntity> {
     /**
      * 获取坐标计算类
      */
-    Transformer getTransformer();
+    Transformer<T> getTransformer();
 
     /**
      * 获取动画管理者

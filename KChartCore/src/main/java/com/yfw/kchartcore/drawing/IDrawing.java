@@ -3,6 +3,7 @@ package com.yfw.kchartcore.drawing;
 import android.graphics.Canvas;
 
 import com.yfw.kchartcore.impl.IDataProvider;
+import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.layout.IParentPortLayout;
 
@@ -10,13 +11,13 @@ import com.yfw.kchartcore.layout.IParentPortLayout;
  * @日期 : 2020/7/1
  * @描述 :
  */
-public interface IDrawing {
+public interface IDrawing<T extends IEntity> {
 
     void setWidth(int width);
 
     void setHeight(int height);
 
-    void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider);
+    void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<T> dataProvider);
 
     void detachedParentPortLayout();
 

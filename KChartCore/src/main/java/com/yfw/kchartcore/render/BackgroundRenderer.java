@@ -4,17 +4,18 @@ import android.graphics.Canvas;
 
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.impl.IDataProvider;
+import com.yfw.kchartcore.index.IEntity;
 
 
 /**
  * @日期 : 2020/7/13
  * @描述 : 背景层
  */
-public class BackgroundRenderer extends Renderer {
+public class BackgroundRenderer<T extends IEntity> extends Renderer<T> {
 
-    private RendererCanvas mRenderCanvas;
+    private RendererCanvas<T> mRenderCanvas;
 
-    public BackgroundRenderer(IDataProvider dataProvider) {
+    public BackgroundRenderer(IDataProvider<T> dataProvider) {
         super(dataProvider);
     }
 
@@ -64,7 +65,7 @@ public class BackgroundRenderer extends Renderer {
                 "\n--------" + mRenderCanvas.toViewPortString() + "\n";
     }
 
-    public void setRenderCanvas(RendererCanvas canvas) {
+    public void setRenderCanvas(RendererCanvas<T> canvas) {
         if (mRenderCanvas != null) {
             mRenderCanvas.detachedParentPortLayout();
         }
@@ -74,7 +75,7 @@ public class BackgroundRenderer extends Renderer {
         mRenderCanvas = canvas;
     }
 
-    public RendererCanvas getRenderCanvas() {
+    public RendererCanvas<T> getRenderCanvas() {
         return mRenderCanvas;
     }
 }

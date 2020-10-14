@@ -25,7 +25,7 @@ import com.yfw.kchartext.utils.FontCalculateUtils;
  * @日期 : 2020/7/14
  * @描述 : 最大值最小值有变更、新添加、末尾值有变更都以动画的形式过渡蜡烛图
  */
-public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionIndexRange>
+public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionIndexRange, KlineInfo>
         implements IndexRange.OnCalcValueListener, InteractiveKChartView.OnAdapterChangeListener<KlineInfo> {
 
     private static final int mTransitionTagId = 1;      // 最大最小值过渡
@@ -91,8 +91,8 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
     @Override
     public void drawData(Canvas canvas) {
         float width = mDataProvider.getScalePointWidth();
-        Transformer transformer = mDataProvider.getTransformer();
-        IEntity item;
+        Transformer<KlineInfo> transformer = mDataProvider.getTransformer();
+        KlineInfo item;
         if (inAnim()) {
             if (inAnimTime(mLastInsertedTagId)) {
                 // 插入一条数据动画
@@ -135,7 +135,7 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
 
     }
 
-    private void drawCandle(Canvas canvas, IEntity entity, float width, float inScreenPosition, int positionId, boolean processLast) {
+    private void drawCandle(Canvas canvas, KlineInfo entity, float width, float inScreenPosition, int positionId, boolean processLast) {
         float closePrice = entity.getClosePrice();
         float process = getAnimProcess(mLastUpdateTagId);
         if (processLast) {
@@ -175,7 +175,7 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
         canvas.drawText(pos, inScreenPosition - v / 2, lowY + offset, mPaint);
     }
 
-    AdapterDataObserver mAdapterDataObserver = new AdapterDataObserver() {
+    private final AdapterDataObserver mAdapterDataObserver = new AdapterDataObserver() {
 
         @Override
         public void onChanged(int allCount) {

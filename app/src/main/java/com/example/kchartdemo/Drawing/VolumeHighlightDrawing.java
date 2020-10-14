@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
+import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.touch.TapMarkerOption;
 import com.yfw.kchartcore.touch.TouchTapManager;
@@ -14,7 +15,7 @@ import com.yfw.kchartext.index.range.VolumeIndexRange;
  * @日期 : 2020/8/31
  * @描述 : 成交量高亮
  */
-public class VolumeHighlightDrawing extends TriggerRepeatAnimDrawing<VolumeIndexRange> {
+public class VolumeHighlightDrawing extends TriggerRepeatAnimDrawing<VolumeIndexRange, KlineInfo> {
 
     private final Paint mPaint;
 
@@ -48,18 +49,18 @@ public class VolumeHighlightDrawing extends TriggerRepeatAnimDrawing<VolumeIndex
 
     @Override
     public void drawData(Canvas canvas) {
-        TouchTapManager touchTapManager = mDataProvider.getTouchTapManager();
-        TapMarkerOption singleTapMarker = touchTapManager.getSingleTapMarker();
+        TouchTapManager<KlineInfo> touchTapManager = mDataProvider.getTouchTapManager();
+        TapMarkerOption<KlineInfo> singleTapMarker = touchTapManager.getSingleTapMarker();
         if (singleTapMarker != null) {
             drawHighlight(canvas, singleTapMarker);
             return;
         }
-        TapMarkerOption longTapMarker = touchTapManager.getLongTapMarker();
+        TapMarkerOption<KlineInfo> longTapMarker = touchTapManager.getLongTapMarker();
         if (longTapMarker == null) return;
         drawFixHighlight(canvas, longTapMarker);
     }
 
-    private void drawHighlight(Canvas canvas, TapMarkerOption marker) {
+    private void drawHighlight(Canvas canvas, TapMarkerOption<KlineInfo> marker) {
         mPaint.setColor(0xBBFFFF00);
         float x = mDataProvider.getTransformer().getPointInScreenXByIndex(marker.getIndex());
         canvas.drawLine(x, mViewPort.top, x, mViewPort.bottom, mPaint);
@@ -73,7 +74,7 @@ public class VolumeHighlightDrawing extends TriggerRepeatAnimDrawing<VolumeIndex
         }
     }
 
-    private void drawFixHighlight(Canvas canvas, TapMarkerOption marker) {
+    private void drawFixHighlight(Canvas canvas, TapMarkerOption<KlineInfo> marker) {
         mPaint.setColor(0xBBFFFF00);
         float x = mDataProvider.getTransformer().getPointInScreenXByIndex(marker.getIndex());
         canvas.drawLine(x, mViewPort.top, x, mViewPort.bottom, mPaint);

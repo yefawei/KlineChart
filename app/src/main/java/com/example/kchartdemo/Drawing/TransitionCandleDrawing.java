@@ -19,7 +19,7 @@ import com.yfw.kchartext.utils.FontCalculateUtils;
  * @日期 : 2020/7/14
  * @描述 : 最大值最小值有变更以动画的形式过渡蜡烛图
  */
-public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexRange> implements IndexRange.OnCalcValueListener {
+public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexRange, KlineInfo> implements IndexRange.OnCalcValueListener {
 
     private final Paint mPaint;
 
@@ -62,7 +62,7 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
     @Override
     public void drawData(Canvas canvas) {
         float width = mDataProvider.getScalePointWidth();
-        Transformer transformer = mDataProvider.getTransformer();
+        Transformer<KlineInfo> transformer = mDataProvider.getTransformer();
         for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
             IEntity item = mDataProvider.getAdapter().getItem(i);
             float limit = transformer.getPointInScreenXByIndex(i);

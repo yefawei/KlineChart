@@ -1,13 +1,14 @@
 package com.yfw.kchartcore.canvas;
 
 
+import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.render.MainRenderer;
 
 /**
  * @日期 : 2020/8/6
  * @描述 : 主渲染器画板
  */
-public class MainRendererCanvas extends RendererCanvas{
+public class MainRendererCanvas<T extends IEntity> extends RendererCanvas<T>{
 
     private MainRenderer.CanvasLayoutParams mLayoutParams;
 

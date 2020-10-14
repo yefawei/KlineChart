@@ -7,13 +7,14 @@ import androidx.annotation.Nullable;
 
 import com.yfw.kchartcore.animation.Animation;
 import com.yfw.kchartcore.canvas.RendererCanvas;
+import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.index.range.IndexRange;
 
 /**
  * @日期 : 2020/9/27
  * @描述 : 抽象动画绘制类，方便子类的实现
  */
-public abstract class AbstractAnimDrawing<T extends IndexRange> extends Drawing<T> implements Animation {
+public abstract class AbstractAnimDrawing<T extends IndexRange, S extends IEntity> extends Drawing<T, S> implements Animation {
 
     boolean mInAnimationManager; // 是否被添加到动画管理者中
     boolean mInAnim;  // 是否在动画中

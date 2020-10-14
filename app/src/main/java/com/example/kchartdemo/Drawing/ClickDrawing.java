@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.TextPaint;
 
+import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.drawing.Drawing;
 import com.yfw.kchartcore.index.range.IndexRange;
 
@@ -13,11 +14,11 @@ import com.yfw.kchartcore.index.range.IndexRange;
  * @日期 : 2020/8/28
  * @描述 :
  */
-public class ClickDrawing extends Drawing<IndexRange> {
+public class ClickDrawing extends Drawing<IndexRange, KlineInfo> {
 
     private final TextPaint mPaint;
-    private String mTag;
-    private OnClickListener mListener;
+    private final String mTag;
+    private final OnClickListener mListener;
 
     public ClickDrawing(String tag, OnClickListener listener) {
         mTag = tag;

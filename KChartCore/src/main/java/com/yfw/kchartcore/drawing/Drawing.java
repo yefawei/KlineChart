@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.impl.IDataProvider;
+import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.layout.CenterPoint;
 import com.yfw.kchartcore.layout.IDispatchSingleTapChild;
@@ -19,19 +20,19 @@ import com.yfw.kchartcore.layout.IViewPort;
  * @日期 : 2020/7/10
  * @描述 : 普通绘制
  */
-public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPort, IDispatchSingleTapChild {
+public abstract class Drawing<T extends IndexRange, S extends IEntity> implements IDrawing<S>, IViewPort, IDispatchSingleTapChild {
 
     protected T mIndexRange;
     private RendererCanvas.DrawingLayoutParams mLayoutParams;
     private int mWidth;
     private int mHeight;
-    protected Rect mViewPort = new Rect();
+    protected final Rect mViewPort = new Rect();
     private final CenterPoint mCenterPoint = new CenterPoint();
     private float mScaleValueY;         // Y轴缩放值
     private boolean mDrawInViewPort = true;
     private IParentPortLayout mDrawingPortLayout;
 
-    protected IDataProvider mDataProvider;
+    protected IDataProvider<S> mDataProvider;
 
     public Drawing() {
     }
@@ -68,7 +69,7 @@ public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPo
 
     @CallSuper
     @Override
-    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider dataProvider) {
+    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<S> dataProvider) {
         mDrawingPortLayout = portLayout;
         mDataProvider = dataProvider;
         if (mIndexRange != null) {
@@ -245,10 +246,6 @@ public abstract class Drawing<T extends IndexRange> implements IDrawing, IViewPo
 
     @Override
     public void drawData(Canvas canvas) {
-
-    }
-
-    protected void release() {
 
     }
 }

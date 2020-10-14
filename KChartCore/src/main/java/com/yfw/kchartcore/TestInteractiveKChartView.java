@@ -8,11 +8,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.yfw.kchartcore.index.IEntity;
+
 /**
  * @日期 : 2020/6/30
  * @描述 : 测试可交互K线,会打印绘制所耗时间，通过Drawtime过滤日志
  */
-public class TestInteractiveKChartView extends InteractiveKChartView {
+public class TestInteractiveKChartView<T extends IEntity> extends InteractiveKChartView<T> {
     public TestInteractiveKChartView(@NonNull Context context) {
         this(context, null);
     }

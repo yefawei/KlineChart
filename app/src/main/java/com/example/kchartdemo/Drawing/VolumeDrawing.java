@@ -8,17 +8,17 @@ import android.graphics.Shader;
 
 import androidx.annotation.Nullable;
 
+import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.data.Transformer;
 import com.yfw.kchartcore.drawing.Drawing;
-import com.yfw.kchartext.index.IVolume;
 import com.yfw.kchartext.index.range.VolumeIndexRange;
 
 /**
  * @日期 : 2020/8/12
  * @描述 : 成交量
  */
-public class VolumeDrawing extends Drawing<VolumeIndexRange> {
+public class VolumeDrawing extends Drawing<VolumeIndexRange, KlineInfo> {
 
     private final Paint mPaint;
 
@@ -48,9 +48,9 @@ public class VolumeDrawing extends Drawing<VolumeIndexRange> {
     public void drawData(Canvas canvas) {
         canvas.drawColor(Color.argb(48, 0, 255, 255));
         float width = mDataProvider.getScalePointWidth();
-        Transformer transformer = mDataProvider.getTransformer();
+        Transformer<KlineInfo> transformer = mDataProvider.getTransformer();
         for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
-            IVolume item = (IVolume) mDataProvider.getAdapter().getItem(i);
+            KlineInfo item = mDataProvider.getAdapter().getItem(i);
             float limit = transformer.getPointInScreenXByIndex(i);
 
             float y = getCoordinateY(item.getVolume());

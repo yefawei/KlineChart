@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.drawing.AutoAnimDrawing;
+import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.index.range.IndexRange;
 
 
@@ -13,7 +14,7 @@ import com.yfw.kchartcore.index.range.IndexRange;
  * @日期 : 2020/9/25
  * @描述 : 重复动画的绘制,适合重复持续性动画
  */
-public abstract class RepeatAnimDrawing<T extends IndexRange> extends AutoAnimDrawing<T> {
+public abstract class RepeatAnimDrawing<T extends IndexRange, S extends IEntity> extends AutoAnimDrawing<T, S> {
 
     public final static int RESTART = 1;    // 重新开始
     public final static int REVERSE = 2;    // 逆转
