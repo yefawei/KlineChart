@@ -22,6 +22,7 @@ import com.yfw.kchartcore.data.IDataInsertedHandler;
 import com.yfw.kchartcore.data.Transformer;
 import com.yfw.kchartcore.drawing.IDrawing;
 import com.yfw.kchartcore.helper.PaddingHelper;
+import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.layout.IMainCanvasPort;
 import com.yfw.kchartcore.render.BackgroundRenderer;
 import com.yfw.kchartcore.render.ForegroundRenderer;
@@ -35,7 +36,7 @@ import java.util.List;
  * @日期 : 2020/6/30
  * @描述 : 可交互K线
  */
-public class InteractiveKChartView extends ScrollAndScaleView implements AnimationManager.AnimationListener {
+public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView implements AnimationManager.AnimationListener {
 
     private static final int POINT_FIXED_WIDTH_MODE = 0;    // 固定点宽度，显示范围大显示数量多（默认）
     private static final int POINT_FIXED_SIZE_MODE = 1;     // 固定显示数量，显示范围大单点宽度大
@@ -50,14 +51,14 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     private boolean mPreviousIsFullScreen;  // 备份上一次是否满屏
     private int mPreviousDataLength;        // 备份上一次数据长度
     private int mDataLength;                // 视图总长度
-    private List<OnAdapterChangeListener> mAdapterChangeListeners;
-    private BaseKChartAdapter<?> mAdapter;     // 数据适配器
+    private List<OnAdapterChangeListener<T>> mAdapterChangeListeners;
+    private BaseKChartAdapter<T> mAdapter;     // 数据适配器
     private IDataInsertedHandler mDataSizeChangeHandler;
 
     protected PaddingHelper mPaddingHelper;     // 边界辅助类
     private final Transformer mTransformer;
     private final AnimationManager mAnimationManager;
-    private final TouchTapManager mTouchTapManager;
+    private final TouchTapManager<T> mTouchTapManager;
 
     private boolean mCanUpdateLayout;
     private final Rect mViewPort = new Rect();    // 视图可绘制区域
@@ -89,7 +90,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mPaddingHelper = new PaddingHelper();
         mTransformer = new Transformer(this);
         mAnimationManager = new AnimationManager(this);
-        mTouchTapManager = new TouchTapManager(this);
+        mTouchTapManager = new TouchTapManager<>(this);
     }
 
     /**
@@ -425,7 +426,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     @Override
-    public TouchTapManager getTouchTapManager() {
+    public TouchTapManager<T> getTouchTapManager() {
         return mTouchTapManager;
     }
 
@@ -506,7 +507,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         }
     }
 
-    public void setAdapter(@Nullable BaseKChartAdapter<?> adapter) {
+    public void setAdapter(@Nullable BaseKChartAdapter<T> adapter) {
         if (mAdapter != null) {
             mAdapter.unregisterDataSetObserver(mDataObserver);
         }
@@ -548,7 +549,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
     }
 
     @Override
-    public BaseKChartAdapter<?> getAdapter() {
+    public BaseKChartAdapter<T> getAdapter() {
         return mAdapter;
     }
 
@@ -618,7 +619,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mMaxScrollXBuffer.mScaleX = 0;
     }
 
-    public void addOnAdapterChangeListener(OnAdapterChangeListener listener) {
+    public void addOnAdapterChangeListener(OnAdapterChangeListener<T> listener) {
         if (listener == null) return;
         if (mAdapterChangeListeners == null) {
             mAdapterChangeListeners = new ArrayList<>();
@@ -626,7 +627,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mAdapterChangeListeners.add(listener);
     }
 
-    public void removeOnAdapterChangeListener(OnAdapterChangeListener listener) {
+    public void removeOnAdapterChangeListener(OnAdapterChangeListener<T> listener) {
         if (listener == null || mAdapterChangeListeners == null) return;
         mAdapterChangeListeners.remove(listener);
     }
@@ -639,7 +640,7 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mOnMarginListener = listener;
     }
 
-    private AdapterDataObserver mDataObserver = new AdapterDataObserver() {
+    private final AdapterDataObserver mDataObserver = new AdapterDataObserver() {
 
         @Override
         public void onChanged(int allCount) {
@@ -695,11 +696,11 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         }
     };
 
-    public interface OnAdapterChangeListener {
+    public interface OnAdapterChangeListener<T extends IEntity> {
 
-        void onAttachAdapter(@Nullable BaseKChartAdapter<?> adapter);
+        void onAttachAdapter(@Nullable BaseKChartAdapter<T> adapter);
 
-        void onDetachAdapter(@Nullable BaseKChartAdapter<?> adapter);
+        void onDetachAdapter(@Nullable BaseKChartAdapter<T> adapter);
     }
 
     public interface OnPaddingListener {

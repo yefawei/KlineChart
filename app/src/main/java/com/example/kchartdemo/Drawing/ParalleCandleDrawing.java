@@ -26,7 +26,7 @@ import com.yfw.kchartext.utils.FontCalculateUtils;
  * @描述 : 最大值最小值有变更、新添加、末尾值有变更都以动画的形式过渡蜡烛图
  */
 public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionIndexRange>
-        implements IndexRange.OnCalcValueListener, InteractiveKChartView.OnAdapterChangeListener {
+        implements IndexRange.OnCalcValueListener, InteractiveKChartView.OnAdapterChangeListener<KlineInfo> {
 
     private static final int mTransitionTagId = 1;      // 最大最小值过渡
     private static final int mLastInsertedTagId = 2;    // 末尾有插入
@@ -51,13 +51,13 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
     }
 
     @Override
-    public void onAttachAdapter(@Nullable BaseKChartAdapter<?> adapter) {
+    public void onAttachAdapter(@Nullable BaseKChartAdapter<KlineInfo> adapter) {
         if (adapter == null) return;
         adapter.registerDataSetObserver(mAdapterDataObserver);
     }
 
     @Override
-    public void onDetachAdapter(@Nullable BaseKChartAdapter<?> adapter) {
+    public void onDetachAdapter(@Nullable BaseKChartAdapter<KlineInfo> adapter) {
         if (adapter == null) return;
         adapter.unregisterDataSetObserver(mAdapterDataObserver);
     }

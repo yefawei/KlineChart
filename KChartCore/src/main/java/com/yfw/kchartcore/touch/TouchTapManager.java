@@ -15,17 +15,17 @@ import com.yfw.kchartcore.index.IEntity;
  * 保存着【单次点击】【双击】【长按】的对应item信息
  * 注意，三者同一时刻只有一个有信息
  */
-public class TouchTapManager {
+public class TouchTapManager<T extends IEntity> {
 
     private final IDataProvider mDataProvider;
 
-    private final TapMarkerOption mSingleTapOption = new TapMarkerOption();    // 单次点击
-    private final TapMarkerOption mDoubleTapOption = new TapMarkerOption();    // 双击
-    private final TapMarkerOption mLongTapOption = new TapMarkerOption();      // 长按
+    private final TapMarkerOption<T> mSingleTapOption = new TapMarkerOption<>();    // 单次点击
+    private final TapMarkerOption<T> mDoubleTapOption = new TapMarkerOption<>();    // 双击
+    private final TapMarkerOption<T> mLongTapOption = new TapMarkerOption<>();      // 长按
 
-    private OnSingleSelectedChangeListener mOnSingleSelectedChangeListener;
-    private OnDoubleSelectedChangeListener mOnDoubleSelectedChangeListener;
-    private OnLongSelectedChangeListener mOnLongSelectedChangeListener;
+    private OnSingleSelectedChangeListener<T> mOnSingleSelectedChangeListener;
+    private OnDoubleSelectedChangeListener<T> mOnDoubleSelectedChangeListener;
+    private OnLongSelectedChangeListener<T> mOnLongSelectedChangeListener;
 
     public TouchTapManager(IDataProvider dataProvider) {
         mDataProvider = dataProvider;
@@ -34,7 +34,7 @@ public class TouchTapManager {
     /**
      * 设置单点信息
      */
-    public void setSingleTapInfo(float x, float y, int index, IEntity entity) {
+    public void setSingleTapInfo(float x, float y, int index, T entity) {
         mSingleTapOption.setX(x);
         mSingleTapOption.setY(y);
         mSingleTapOption.setIndex(index);
@@ -46,7 +46,7 @@ public class TouchTapManager {
     /**
      * 设置双击信息
      */
-    public void setDoubleTapInfo(float x, float y, int index, IEntity entity) {
+    public void setDoubleTapInfo(float x, float y, int index, T entity) {
         mDoubleTapOption.setX(x);
         mDoubleTapOption.setY(y);
         mDoubleTapOption.setIndex(index);
@@ -58,7 +58,7 @@ public class TouchTapManager {
     /**
      * 设置长按信息
      */
-    public void setLongTapInfo(float x, float y, int index, IEntity entity) {
+    public void setLongTapInfo(float x, float y, int index, T entity) {
         mLongTapOption.setX(x);
         mLongTapOption.setY(y);
         mLongTapOption.setIndex(index);
@@ -106,7 +106,7 @@ public class TouchTapManager {
     /**
      * 通过遍历的方式更新此时点击信息所在的索引
      */
-    private void updateClickTapInfo(TapMarkerOption options) {
+    private void updateClickTapInfo(TapMarkerOption<T> options) {
         BaseKChartAdapter<?> adapter = mDataProvider.getAdapter();
         if (adapter == null) return;
         for (int i = 0; i < adapter.getCount(); i++) {
@@ -149,7 +149,7 @@ public class TouchTapManager {
      * @return 如果没点击信息会返回空
      */
     @Nullable
-    public TapMarkerOption getSingleTapMarker() {
+    public TapMarkerOption<T> getSingleTapMarker() {
         if (mSingleTapOption.isClick()) {
             return mSingleTapOption;
         }
@@ -169,7 +169,7 @@ public class TouchTapManager {
      * @return 如果没点击信息会返回空
      */
     @Nullable
-    public TapMarkerOption getDoubleTapMarker() {
+    public TapMarkerOption<T> getDoubleTapMarker() {
         if (mDoubleTapOption.isClick()) {
             return mDoubleTapOption;
         }
@@ -189,7 +189,7 @@ public class TouchTapManager {
      * @return 如果没点击信息会返回空
      */
     @Nullable
-    public TapMarkerOption getLongTapMarker() {
+    public TapMarkerOption<T> getLongTapMarker() {
         if (mLongTapOption.isClick()) {
             return mLongTapOption;
         }
@@ -241,42 +241,42 @@ public class TouchTapManager {
     /**
      * 设置单次点击监听
      */
-    public void setOnSingleSelectedChangeListener(OnSingleSelectedChangeListener listener) {
+    public void setOnSingleSelectedChangeListener(OnSingleSelectedChangeListener<T> listener) {
         mOnSingleSelectedChangeListener = listener;
     }
 
     /**
      * 设置双击监听
      */
-    public void setOnDoubleSelectedChangeListener(OnDoubleSelectedChangeListener listener) {
+    public void setOnDoubleSelectedChangeListener(OnDoubleSelectedChangeListener<T> listener) {
         mOnDoubleSelectedChangeListener = listener;
     }
 
     /**
      * 设置长按监听
      */
-    public void setOnLongSelectedChangeListener(OnLongSelectedChangeListener listener) {
+    public void setOnLongSelectedChangeListener(OnLongSelectedChangeListener<T> listener) {
         mOnLongSelectedChangeListener = listener;
     }
 
-    public interface OnSingleSelectedChangeListener {
+    public interface OnSingleSelectedChangeListener<T> {
         /**
          * 在单次点击或处于点击状态且索引有变化会触发该回调
          */
-        void onSingleSelectedChanged(int index, IEntity entity);
+        void onSingleSelectedChanged(int index, T entity);
     }
 
-    public interface OnDoubleSelectedChangeListener {
+    public interface OnDoubleSelectedChangeListener<T> {
         /**
          * 在双击或处于双击状态且索引有变化会触发该回调
          */
-        void onDoubleSelectedChanged(int index, IEntity entity);
+        void onDoubleSelectedChanged(int index, T entity);
     }
 
-    public interface OnLongSelectedChangeListener {
+    public interface OnLongSelectedChangeListener<T> {
         /**
          * 在长按或处于长按状态且索引有变化会触发该回调
          */
-        void onLongleSelectedChanged(int index, IEntity entity);
+        void onLongleSelectedChanged(int index, T entity);
     }
 }

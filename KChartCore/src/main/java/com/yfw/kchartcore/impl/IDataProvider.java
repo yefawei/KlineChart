@@ -6,6 +6,7 @@ import com.yfw.kchartcore.adapter.BaseKChartAdapter;
 import com.yfw.kchartcore.animation.AnimationManager;
 import com.yfw.kchartcore.data.Transformer;
 import com.yfw.kchartcore.helper.PaddingHelper;
+import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.layout.IMainCanvasPort;
 import com.yfw.kchartcore.touch.TouchTapManager;
 
@@ -13,7 +14,7 @@ import com.yfw.kchartcore.touch.TouchTapManager;
  * @日期 : 2020/7/7
  * @描述 :
  */
-public interface IDataProvider {
+public interface IDataProvider<T extends IEntity> {
 
     /**
      * 是否处在触碰状态
@@ -78,7 +79,7 @@ public interface IDataProvider {
     /**
      * 获取触碰事件管理者
      */
-    TouchTapManager getTouchTapManager();
+    TouchTapManager<T> getTouchTapManager();
 
     /**
      * 获取坐标计算类

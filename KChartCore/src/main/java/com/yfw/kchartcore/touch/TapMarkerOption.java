@@ -7,12 +7,12 @@ import com.yfw.kchartcore.index.IEntity;
  * @日期 : 2020/8/31
  * @描述 : 触碰信息
  */
-public class TapMarkerOption {
+public class TapMarkerOption<T extends IEntity> {
 
     private float mX;           // 触碰时的X坐标
     private float mY;           // 触碰时的Y坐标
     private int mIndex;         // 索引，会根据当前数据量有所更新
-    private IEntity mEntity;    // 对应的触碰西信息
+    private T mEntity;    // 对应的触碰西信息
     private boolean mClick;     // 处于有效触碰信息状态
     private boolean mCanDispatch;   // 触碰信息是否可分发
 
@@ -47,11 +47,11 @@ public class TapMarkerOption {
         }
     }
 
-    public IEntity getEntity() {
+    public T getEntity() {
         return mEntity;
     }
 
-    public void setEntity(IEntity entity) {
+    public void setEntity(T entity) {
         this.mEntity = entity;
     }
 

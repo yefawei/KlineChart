@@ -16,14 +16,15 @@ import androidx.core.view.GestureDetectorCompat;
 import com.yfw.kchartcore.compat.GestureMoveActionCompat;
 import com.yfw.kchartcore.compat.ScaleGestureDetectorCompat;
 import com.yfw.kchartcore.impl.IDataProvider;
+import com.yfw.kchartcore.index.IEntity;
 
 
 /**
  * @日期 : 2020/6/30
  * @描述 : 负责相关手势View
  */
-public abstract class ScrollAndScaleView extends View implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener,
-        ScaleGestureDetectorCompat.OnScaleGestureListener, IDataProvider {
+public abstract class ScrollAndScaleView<T extends IEntity> extends View implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener,
+        ScaleGestureDetectorCompat.OnScaleGestureListener, IDataProvider<T> {
 
     private boolean mIsAttachedToWindow;
 
