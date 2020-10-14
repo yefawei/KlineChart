@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
@@ -287,11 +286,6 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mTouchTapManager.removeAllTapInfo();
     }
 
-    // for performance tracking
-    private boolean openDrawtime = false;
-    private long totalTime = 0;
-    private long drawCycles = 0;
-
     @Override
     protected void onDraw(Canvas canvas) {
         long startTime = System.nanoTime();
@@ -306,19 +300,6 @@ public class InteractiveKChartView extends ScrollAndScaleView implements Animati
         mMainRenderer.render(canvas);
         if (mIsRenderForeground) {
             mForegroundRenderer.render(canvas);
-        }
-        if (openDrawtime) {
-            long drawtime = System.nanoTime() - startTime;
-            totalTime += drawtime;
-            drawCycles++;
-            long average = totalTime / drawCycles;
-            if (drawtime > 10_000_000) {
-                Log.e("Drawtime", "Drawtime error: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
-            } else if (drawtime > 5_000_000) {
-                Log.w("Drawtime", "Drawtime warn: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
-            } else {
-                Log.i("Drawtime", "Drawtime: " + drawtime + " ms, average: " + average + " ms, cycles: " + drawCycles);
-            }
         }
         mAnimationManager.animCheck();
     }

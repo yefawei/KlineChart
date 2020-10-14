@@ -4,7 +4,7 @@ package com.yfw.kchartcore.index;
  * @日期 : 2020/7/9
  * @描述 : 蜡烛图接口
  */
-public interface ICandle {
+public interface ICandle extends Index {
 
     /**
      * 开盘价

@@ -86,7 +86,7 @@ public abstract class IndexRange {
     /**
      * 重置数据
      */
-    public void resetValue(boolean isEmptyData) {
+    public final void resetValue(boolean isEmptyData) {
         if (mSideMode == DOUBLE_SIDE) {
             mMaxValue = Float.MIN_VALUE;
             mMinValue = Float.MAX_VALUE;
@@ -100,7 +100,7 @@ public abstract class IndexRange {
         dispatchResetValue(isEmptyData);
     }
 
-    protected void dispatchResetValue(boolean isEmptyData) {
+    protected final void dispatchResetValue(boolean isEmptyData) {
         if (mOnCalcValueListeners != null) {
             for (int i = 0; i < mOnCalcValueListeners.size(); i++) {
                 mOnCalcValueListeners.get(i).onResetValue(isEmptyData);
@@ -111,7 +111,7 @@ public abstract class IndexRange {
     /**
      * 添加需要扩展计算的数据
      */
-    public void addExtendedCalcData(String key, Object obj) {
+    public final void addExtendedCalcData(String key, Object obj) {
         mExtendedKeys.add(key);
         mExtendedValues.add(obj);
     }
@@ -119,7 +119,7 @@ public abstract class IndexRange {
     /**
      * 移除指定扩展计算数据
      */
-    public void removeExtendedCalcData(String key) {
+    public final void removeExtendedCalcData(String key) {
         for (int i = 0; i < mExtendedKeys.size(); i++) {
             if (mExtendedKeys.get(i).equals(key)) {
                 mExtendedKeys.remove(i);
@@ -132,7 +132,7 @@ public abstract class IndexRange {
     /**
      * 移除所有扩展计算数据
      */
-    public void clearExtendedCalcData() {
+    public final void clearExtendedCalcData() {
         mExtendedKeys.clear();
         mExtendedValues.clear();
     }
@@ -140,7 +140,7 @@ public abstract class IndexRange {
     /**
      * 计算扩展数据
      */
-    public void calcExtendedData() {
+    public final void calcExtendedData() {
         for (int i = 0; i < mExtendedValues.size(); i++) {
             if (mSideMode == DOUBLE_SIDE) {
                 mMaxValue = calcExtendedMaxValue(mMaxValue, mExtendedKeys.get(i), mExtendedValues.get(i));
@@ -153,7 +153,7 @@ public abstract class IndexRange {
         }
     }
 
-    public void calcMinMaxValue(int index, IEntity entity) {
+    public final void calcMinMaxValue(int index, IEntity entity) {
         if (mSideMode == DOUBLE_SIDE) {
             float maxValue = calcMaxValue(index, mMaxValue, entity);
             float minValue = calcMinValue(index, mMinValue, entity);
@@ -183,7 +183,7 @@ public abstract class IndexRange {
     /**
      * 计算上下边界预留的空间
      */
-    public void calcPaddingValue() {
+    public final void calcPaddingValue() {
         if (mSideMode == DOUBLE_SIDE) {
             float paddingValue = Math.abs((mMaxValue - mMinValue) / (1.0f - 2 * mPaddingPercent) * mPaddingPercent);
             mMaxValue += paddingValue;
@@ -200,11 +200,11 @@ public abstract class IndexRange {
     /**
      * 计算结束
      */
-    public void calcValueEnd(boolean isEmptyData) {
+    public final void calcValueEnd(boolean isEmptyData) {
         dispatchCalcValueEnd(isEmptyData);
     }
 
-    protected void dispatchCalcValueEnd(boolean isEmptyData) {
+    protected final void dispatchCalcValueEnd(boolean isEmptyData) {
         if (mOnCalcValueListeners != null) {
             for (int i = 0; i < mOnCalcValueListeners.size(); i++) {
                 mOnCalcValueListeners.get(i).onCalcValueEnd(isEmptyData);
