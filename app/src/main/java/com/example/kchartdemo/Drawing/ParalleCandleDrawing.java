@@ -37,6 +37,8 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
     private float mLastItemClosePrice;
     private float mLastItemTargetPrice;
 
+    private boolean mNeedSkipTransition;
+
     public ParalleCandleDrawing(TransitionIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(indexRange, params);
         if (!(indexRange.getRealIndexRange() instanceof CandleIndexRange)) {
@@ -72,8 +74,13 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
     @Override
     public void onCalcValueEnd(boolean isEmptyData) {
         if (!mIndexRange.isInTransition() && mIndexRange.valueIsChange()) {
-            startAnim(mTransitionTagId, 400);
-            mIndexRange.startTransition();
+            if (mNeedSkipTransition) {
+                mNeedSkipTransition = false;
+                mIndexRange.skipChange();
+            } else {
+                startAnim(mTransitionTagId, 400);
+                mIndexRange.startTransition();
+            }
         }
         if (!inAnimTime(mLastUpdateTagId)) {
             mLastItemClosePrice = mLastItemTargetPrice;
@@ -84,7 +91,7 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
     public void updateAnimProcessTime(long time) {
         super.updateAnimProcessTime(time);
         if (mIndexRange.isInTransition()) {
-            mIndexRange.updateProcess(getAnimProcess());
+            mIndexRange.updateProcess(getAnimProcess(mTransitionTagId));
         }
     }
 
@@ -137,8 +144,8 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
 
     private void drawCandle(Canvas canvas, KlineInfo entity, float width, float inScreenPosition, int positionId, boolean processLast) {
         float closePrice = entity.getClosePrice();
-        float process = getAnimProcess(mLastUpdateTagId);
         if (processLast) {
+            float process = getAnimProcess(mLastUpdateTagId);
             closePrice = (mLastItemTargetPrice - mLastItemClosePrice) * process + mLastItemClosePrice;
         }
         if (entity.getOpenPrice() > closePrice) { // 跌
@@ -198,7 +205,10 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
 
         @Override
         public void onLastInserted(int insertedCount) {
-            if (insertedCount != 1) return;
+            if (insertedCount != 1) {
+                mNeedSkipTransition = true;
+                return;
+            }
             stopAnim(mLastUpdateTagId);
             startAnim(mLastInsertedTagId, 4000);
         }

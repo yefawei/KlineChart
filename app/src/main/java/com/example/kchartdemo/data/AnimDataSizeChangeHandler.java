@@ -17,9 +17,13 @@ public class AnimDataSizeChangeHandler implements IDataInsertedHandler<KlineInfo
 
     @Override
     public boolean onFullLastInserted(InteractiveKChartView<KlineInfo> view, int itemCount, int currScroll, int finalScroll) {
-        if ((currScroll != view.getMinScrollX() && finalScroll != view.getMinScrollX()) || itemCount != 1) {
-            int scrollRange = Math.round(view.getScalePointWidth() * itemCount);
-            view.setScroll(currScroll + scrollRange);
+        if (itemCount != 1 || (currScroll != view.getMinScrollX() && finalScroll != view.getMinScrollX())) {
+            if (itemCount == 1) {
+                int scrollRange = Math.round(view.getScalePointWidth() * itemCount);
+                view.setScroll(currScroll + scrollRange);
+            } else {
+                view.invalidate();
+            }
         } else {
             int scrollRange = Math.round(view.getScalePointWidth() * itemCount);
             view.setScrollThenAnimScroll(currScroll + scrollRange, finalScroll, 4000, true);
