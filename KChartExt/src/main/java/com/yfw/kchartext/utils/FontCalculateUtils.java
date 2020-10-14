@@ -8,7 +8,7 @@ import android.graphics.Paint;
  */
 public class FontCalculateUtils {
 
-    private static Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
+    private static final Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
 
     /**
      * 获取baseLine与centerY的偏移距离
