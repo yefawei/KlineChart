@@ -134,6 +134,18 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
     }
 
     /**
+     * 跳过此次变更
+     */
+    public void skipChange() {
+        if (Float.isNaN(mLastMaxValue) || Float.isNaN(mLastMinValue)) {
+            return;
+        }
+        stopTransition();
+        mLastMaxValue = mTargetMaxValue;
+        mLastMinValue = mTargetMinValue;
+    }
+
+    /**
      * 判断最大最小值是否有变化
      */
     public boolean valueIsChange() {
@@ -145,10 +157,15 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
 
     /**
      * 开始过渡
+     * @return true:成功 false:失败
      */
-    public void startTransition() {
+    public boolean startTransition() {
+        if (Float.isNaN(mLastMaxValue) || Float.isNaN(mLastMinValue)) {
+            return false;
+        }
         mInTransition = true;
         mFraction = 0;
+        return true;
     }
 
     /**
@@ -167,6 +184,7 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
      * 更新当前进度时间
      */
     public void updateProcess(@FloatRange(from = 0.0, to = 1.0) float fraction) {
+        if (!mInTransition) return;
         mFraction = fraction;
         if (fraction == 1.0f) {
             mLastMaxValue = mTargetMaxValue;
