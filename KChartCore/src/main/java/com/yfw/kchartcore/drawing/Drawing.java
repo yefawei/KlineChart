@@ -20,7 +20,7 @@ import com.yfw.kchartcore.layout.IViewPort;
  * @日期 : 2020/7/10
  * @描述 : 普通绘制
  */
-public abstract class Drawing<T extends IndexRange, S extends IEntity> implements IDrawing<S>, IViewPort, IDispatchSingleTapChild {
+public abstract class Drawing<T extends IndexRange, S extends IEntity> implements IDrawing<T, S>, IViewPort, IDispatchSingleTapChild {
 
     protected T mIndexRange;
     private RendererCanvas.DrawingLayoutParams mLayoutParams;
@@ -56,14 +56,14 @@ public abstract class Drawing<T extends IndexRange, S extends IEntity> implement
         mLayoutParams = params;
     }
 
-    public void setLayoutParams(RendererCanvas.DrawingLayoutParams params) {
+    public final void setLayoutParams(RendererCanvas.DrawingLayoutParams params) {
         if (params == null) {
             throw new NullPointerException("DrawingLayoutParams cannot be null!");
         }
         mLayoutParams = params;
     }
 
-    public RendererCanvas.DrawingLayoutParams getLayoutParams() {
+    public final RendererCanvas.DrawingLayoutParams getLayoutParams() {
         return mLayoutParams;
     }
 
@@ -91,7 +91,7 @@ public abstract class Drawing<T extends IndexRange, S extends IEntity> implement
     }
 
     @Override
-    public boolean isAttachedParentPortLayout() {
+    public final boolean isAttachedParentPortLayout() {
         return mDataProvider != null;
     }
 
@@ -187,7 +187,7 @@ public abstract class Drawing<T extends IndexRange, S extends IEntity> implement
     }
 
     @Override
-    public IndexRange getIndexRange() {
+    public T getIndexRange() {
         return mIndexRange;
     }
 

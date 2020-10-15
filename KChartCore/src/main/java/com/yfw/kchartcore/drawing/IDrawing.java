@@ -11,13 +11,13 @@ import com.yfw.kchartcore.layout.IParentPortLayout;
  * @日期 : 2020/7/1
  * @描述 :
  */
-public interface IDrawing<T extends IEntity> {
+public interface IDrawing<T extends IndexRange, S extends IEntity> {
 
     void setWidth(int width);
 
     void setHeight(int height);
 
-    void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<T> dataProvider);
+    void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<S> dataProvider);
 
     void detachedParentPortLayout();
 
@@ -41,7 +41,7 @@ public interface IDrawing<T extends IEntity> {
     /**
      * 获取指标范围计算类
      */
-    IndexRange getIndexRange();
+    T getIndexRange();
 
     /**
      * 更新数据值
