@@ -58,6 +58,11 @@ public interface IRendererCanvas<T extends IEntity> {
     void addDrawing(int index, Drawing<?, T> drawing, boolean isMainIndexDrawing);
 
     /**
+     * 替换指定索引绘制
+     */
+    void replaceDrawing(int index, Drawing<?, T> drawing);
+
+    /**
      * 根据索引移除绘制
      */
     void removeDrawing(int index);

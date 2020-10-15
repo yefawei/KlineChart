@@ -527,6 +527,19 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
     }
 
     @Override
+    public void replaceDrawing(int index, Drawing<?, T> drawing) {
+        if (drawing == null) return;
+
+        Drawing<?, T> old = mDrawings.set(index, drawing);
+        if (old != null && old.isAttachedParentPortLayout()) {
+            old.detachedParentPortLayout();
+        }
+        if (mParentPortLayout != null && !drawing.isAttachedParentPortLayout()) {
+            drawing.attachedParentPortLayout(this, mDataProvider);
+        }
+    }
+
+    @Override
     public void removeDrawing(int index) {
         Drawing<?, T> drawing = mDrawings.remove(index);
         if (drawing != null && drawing.isAttachedParentPortLayout()) {
