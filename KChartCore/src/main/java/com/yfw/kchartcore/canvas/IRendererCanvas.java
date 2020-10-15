@@ -26,7 +26,22 @@ public interface IRendererCanvas<T extends IEntity> {
      */
     boolean isValid();
 
+    /**
+     * 获取绘制数量
+     */
+    int drawingSize();
+
+    /**
+     * 获取绘制实体所在的索引
+     */
+    int drawingIndexOf(Drawing<?, T> drawing);
+
     void addDrawing(Drawing<?, T> drawing);
+
+    /**
+     * 将绘制添加到指定索引处
+     */
+    void addDrawing(int index, Drawing<?, T> drawing);
 
     /**
      * 添加绘制实体
@@ -35,6 +50,21 @@ public interface IRendererCanvas<T extends IEntity> {
      */
     void addDrawing(Drawing<?, T> drawing, boolean isMainIndexDrawing);
 
+    /**
+     * 将绘制添加到指定索引处
+     *
+     * @param isMainIndexDrawing 是否是主视图指标绘制实体，如果是，会移除相关属性以铺满水平方向
+     */
+    void addDrawing(int index, Drawing<?, T> drawing, boolean isMainIndexDrawing);
+
+    /**
+     * 根据索引移除绘制
+     */
+    void removeDrawing(int index);
+
+    /**
+     * 根据绘制自身移除
+     */
     void removeDrawing(Drawing<?, T> drawing);
 
     /**

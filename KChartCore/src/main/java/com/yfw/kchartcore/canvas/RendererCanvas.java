@@ -478,14 +478,33 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
         return !mViewPort.isEmpty();
     }
 
+    @Override
+    public int drawingSize() {
+        return mDrawings.size();
+    }
+
+    @Override
+    public int drawingIndexOf(Drawing<?, T> drawing) {
+        return mDrawings.indexOf(drawing);
+    }
 
     @Override
     public void addDrawing(Drawing<?, T> drawing) {
-        addDrawing(drawing, false);
+        addDrawing(mDrawings.size(), drawing, false);
+    }
+
+    @Override
+    public void addDrawing(int index, Drawing<?, T> drawing) {
+        addDrawing(index, drawing, false);
     }
 
     @Override
     public void addDrawing(Drawing<?, T> drawing, boolean isMainIndexDrawing) {
+        addDrawing(mDrawings.size(), drawing, isMainIndexDrawing);
+    }
+
+    @Override
+    public void addDrawing(int index, Drawing<?, T> drawing, boolean isMainIndexDrawing) {
         if (drawing == null) return;
 
         if (drawing.getLayoutParams() == null) {
@@ -502,8 +521,16 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
         }
 
         mDrawings.add(drawing);
-        if (mParentPortLayout != null) {
+        if (mParentPortLayout != null && !drawing.isAttachedParentPortLayout()) {
             drawing.attachedParentPortLayout(this, mDataProvider);
+        }
+    }
+
+    @Override
+    public void removeDrawing(int index) {
+        Drawing<?, T> drawing = mDrawings.remove(index);
+        if (drawing != null && drawing.isAttachedParentPortLayout()) {
+            drawing.detachedParentPortLayout();
         }
     }
 
@@ -512,7 +539,7 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
         if (drawing == null) return;
 
         mDrawings.remove(drawing);
-        if (mParentPortLayout != null) {
+        if (drawing.isAttachedParentPortLayout()) {
             drawing.detachedParentPortLayout();
         }
     }
