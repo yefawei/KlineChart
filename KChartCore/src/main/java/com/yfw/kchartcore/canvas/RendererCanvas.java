@@ -80,10 +80,11 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
         mHorizontalLinearGroup.clear();
         mVerticalLinearGroup.clear();
         Drawing<?, T> drawing;
+        // 将所有线性布局分组
         for (int i = 0; i < mDrawings.size(); i++) {
             drawing = mDrawings.get(i);
             params = drawing.getLayoutParams();
-            if (params.mIsHorizontalLinear) {
+            if (params.mAttachDrawing == null && params.mIsHorizontalLinear) {
                 drawings = mHorizontalLinearGroup.get(params.mHorizontalLinearGroupId);
                 if (drawings == null) {
                     mStartXValueMap.put(params.mHorizontalLinearGroupId, getLeft());
@@ -94,7 +95,7 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
                     drawings.add(drawing);
                 }
             }
-            if (params.mIsVerticalLinear) {
+            if (params.mAttachDrawing == null && params.mIsVerticalLinear) {
                 drawings = mVerticalLinearGroup.get(params.mVerticalLinearGroupId);
                 if (drawings == null) {
                     mStartYValueMap.put(params.mVerticalLinearGroupId, getTop());
@@ -109,19 +110,24 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
 
         // 确认所有布局的宽高
         for (Map.Entry<Integer, List<Drawing<?, T>>> entry : mHorizontalLinearGroup.entrySet()) {
+            // 水平线性布局
             calcHorizontalLinearDrawingsWidth(entry.getValue());
         }
         for (Map.Entry<Integer, List<Drawing<?, T>>> entry : mVerticalLinearGroup.entrySet()) {
+            // 垂直线性布局
             calcVerticalLinearDrawingsHeight(entry.getValue());
         }
+        // 非线性布局
         calcNotLinearDrawingsWidthAndHeight(mDrawings);
 
         int x;
         int y;
-        // 最终确认布局
+        // 最终确认布局【附着Drawing除外】
         for (int i = 0; i < mDrawings.size(); i++) {
             drawing = mDrawings.get(i);
             params = drawing.getLayoutParams();
+            if (params.mAttachDrawing != null) continue;
+
             if (params.mIsHorizontalLinear) {
                 x = mStartXValueMap.get(params.mHorizontalLinearGroupId);
                 mStartXValueMap.put(params.mHorizontalLinearGroupId, x + drawing.getWidth());
@@ -143,6 +149,11 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
                 y = getTop();
             }
             drawing.updateViewPort(x, y, x + drawing.getWidth(), y + drawing.getHeight());
+        }
+
+        // 计算附着Drawing的布局
+        for (int i = 0; i < mDrawings.size(); i++) {
+            calcAttachDrawingLayout(mDrawings.get(i));
         }
 
         setInUpdateChildLayout(false);
@@ -293,6 +304,8 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
         for (int i = 0; i < drawings.size(); i++) {
             drawing = drawings.get(i);
             params = drawing.getLayoutParams();
+            if (params.mAttachDrawing != null) continue;
+
             if (!params.mIsHorizontalLinear) {
                 if (params.mWidth > 0) {
                     tempValue = params.mWidth;
@@ -324,6 +337,23 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
         }
     }
 
+    /**
+     * 计算附着Drawing的布局
+     */
+    private void calcAttachDrawingLayout(Drawing<?, T> drawing) {
+        DrawingLayoutParams layoutParams = drawing.getLayoutParams();
+        if (layoutParams.mAttachDrawing == null) return;
+        // 依赖中的依赖
+        calcAttachDrawingLayout(layoutParams.mAttachDrawing);
+
+        drawing.setWidth(layoutParams.mAttachDrawing.getWidth());
+        drawing.setHeight(layoutParams.mAttachDrawing.getHeight());
+        drawing.updateViewPort(
+                layoutParams.mAttachDrawing.getLeft(),
+                layoutParams.mAttachDrawing.getTop(),
+                layoutParams.mAttachDrawing.getRight(),
+                layoutParams.mAttachDrawing.getBottom());
+    }
 
     /**
      * @param hDrawings 所有水平线性布局
@@ -641,14 +671,16 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
 
         }
 
-        // 优先级：【固定宽度/固定高度】>【百分比】>【自适应】
+        // 优先级：【附着Drawing】>【固定宽度/固定高度】>【百分比】>【自适应】
+        private Drawing mAttachDrawing; // 附着于某个Drawing，宽高与该Drawing一致
+
         private int mWidth;             // 固定宽度
         private int mHeight;            // 固定高度
         private float mHorizontalPercent;       // 水平百分比
         private float mVerticalPercent;         // 垂直百分比
         private int mWeight;            // 自适应 注意：如果非垂直布局和非水平布局将会铺满
 
-        // 优先级: 【水平布局/垂直布局】>【相对父布局】
+        // 优先级: 【附着Drawing】>【水平布局/垂直布局】>【相对父布局】
         private int mHorizontalLinearGroupId;   // 水平布局组id
         private boolean mIsHorizontalLinear;    // 是否是水平布局
         private int mVerticalLinearGroupId;     // 垂直布局组id
@@ -761,6 +793,14 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
 
         public void setVerticalPosition(@VerticalPosition int verticalPosition) {
             mVerticalPosition = verticalPosition;
+        }
+
+        public Drawing getAttachDrawing() {
+            return mAttachDrawing;
+        }
+
+        public void setAttachDrawing(Drawing drawing) {
+            mAttachDrawing = drawing;
         }
     }
 }
