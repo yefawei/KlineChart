@@ -324,7 +324,7 @@ public abstract class ScrollAndScaleView<T extends IEntity> extends View impleme
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
-        if (mDoubleEnable) return false;
+        if (!mDoubleEnable) return false;
         onDoubleTap(e.getX(), e.getY());
         invalidate();
         if (mDoubleClickListener != null) {
