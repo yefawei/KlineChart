@@ -42,7 +42,7 @@ public interface IDrawing<T extends IEntity> {
      * 获取指标计算类组id
      *
      * 同一组id要求{@link IndexRange#isReverse()} 与 {@link IndexRange#getSideMode()}一致，
-     * 并且最终计算最大值最小值会保持一致
+     * 并且最终计算最大值最小值同id会保持一致
      * @return 如果没有组返回{@link IndexRange#NO_GROUP}
      */
     int getIndexRangeGroupId();

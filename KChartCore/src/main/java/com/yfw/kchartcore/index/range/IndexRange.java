@@ -200,6 +200,14 @@ public abstract class IndexRange {
     }
 
     /**
+     * 自定义最大最小值
+     */
+    public final void customMaxMinValue(float maxValue, float minValue) {
+        mMaxValue = maxValue;
+        mMinValue = minValue;
+    }
+
+    /**
      * 计算结束
      */
     public final void calcValueEnd(boolean isEmptyData) {

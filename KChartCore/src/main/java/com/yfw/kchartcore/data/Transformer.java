@@ -237,8 +237,34 @@ public class Transformer<T extends IEntity> {
         for (int i = 0; i < mRanges.size(); i++) {
             mRanges.get(i).range.calcPaddingValue();
         }
+        for (int i = 0; i < mGroups.size(); i++) {
+            synchronizationGroupValue(mGroups.get(i));
+        }
+
         for (int i = 0; i < mRanges.size(); i++) {
             mRanges.get(i).range.calcValueEnd(false);
+        }
+    }
+
+    /**
+     * 同步组的最大最小值
+     */
+    private void synchronizationGroupValue(RangeGroup rangeGroup) {
+        float maxValue = Float.MIN_VALUE;
+        float minValue = Float.MAX_VALUE;
+        Range range;
+        for (int i = 0; i < rangeGroup.ranges.size(); i++) {
+            range = rangeGroup.ranges.get(i);
+            if (maxValue < range.range.getMaxValue()) {
+                maxValue = range.range.getMaxValue();
+            }
+            if (minValue > range.range.getMinIndex()) {
+                minValue = range.range.getMinValue();
+            }
+        }
+        for (int i = 0; i < rangeGroup.ranges.size(); i++) {
+            range = rangeGroup.ranges.get(i);
+            range.range.customMaxMinValue(maxValue, minValue);
         }
     }
 
