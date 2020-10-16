@@ -252,6 +252,7 @@ public class Transformer<T extends IEntity> {
 
         if (realIndex instanceof IndexRangeSet) {
             ((IndexRangeSet) realIndex).setCanChangeIndex(false);
+            ((IndexRangeSet) realIndex).generateTag();
         }
         Range range = getRangeByTag(realIndex.getIndexTag());
         if (range == null) {

@@ -80,7 +80,6 @@ public final class IndexRangeSet extends IndexRange {
             throw new IllegalArgumentException("SideMode is inconsistent!");
         }
         mIndexRanges.add(indexRange);
-        generateTag();
     }
 
     public void removeIndex(IndexRange indexRange) {
@@ -88,10 +87,9 @@ public final class IndexRangeSet extends IndexRange {
             throw new IllegalStateException("Indicator removal is not allowed at this time!");
         }
         mIndexRanges.remove(indexRange);
-        generateTag();
     }
 
-    private void generateTag() {
+    public void generateTag() {
         if (mIndexRanges.size() == 0) {
             mIndexTag = "";
             return;
