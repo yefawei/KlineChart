@@ -30,7 +30,7 @@ public class Transformer<T extends IEntity> {
     private int mStartIndex = -1;           // 当前内容的开始坐标
     private int mStopIndex = -1;            // 当前内容的结束坐标
 
-    private List<String> mTags;
+    private ArrayList<String> mTags;
     private final List<Range> mRanges = new ArrayList<>();
     private final List<RangeGroup> mGroups = new ArrayList<>();
     private OnViewIndexListener mViewIndexListener;
@@ -414,7 +414,7 @@ public class Transformer<T extends IEntity> {
         for (int i = 0; i < mRanges.size(); i++) {
             mTags.add(mRanges.get(i).range.getIndexTag());
         }
-        return mTags;
+        return (List<String>) mTags.clone();
     }
 
     public void setOnViewIndexListener(OnViewIndexListener listener) {
