@@ -25,7 +25,7 @@ import com.yfw.kchartext.utils.FontCalculateUtils;
  * @日期 : 2020/7/14
  * @描述 : 最大值最小值有变更、新添加、末尾值有变更都以动画的形式过渡蜡烛图
  */
-public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionIndexRange, KlineInfo>
+public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<KlineInfo>
         implements IndexRange.OnCalcValueListener, InteractiveKChartView.OnAdapterChangeListener<KlineInfo> {
 
     private static final int mTransitionTagId = 1;      // 最大最小值过渡
@@ -39,8 +39,11 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
 
     private boolean mNeedSkipTransition;
 
+    private final TransitionIndexRange mIndexRange;
+
     public ParalleCandleDrawing(TransitionIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
-        super(indexRange, params);
+        super(params);
+        mIndexRange = indexRange;
         if (!(indexRange.getRealIndexRange() instanceof CandleIndexRange)) {
             throw new IllegalArgumentException("RealIndexRange is not CandleIndexRange!");
         }
@@ -50,6 +53,11 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(3);
         mPaint.setTextSize(18);
+    }
+
+    @Override
+    public IndexRange getIndexRange() {
+        return mIndexRange;
     }
 
     @Override
@@ -171,7 +179,7 @@ public class ParalleCandleDrawing extends ParallelTriggerAnimDrawing<TransitionI
         }
         canvas.drawLine(inScreenPosition, lowY, inScreenPosition, heighY, mPaint);
 
-        String format = ((KlineInfo) entity).getFormatTime();
+        String format = entity.getFormatTime();
         mPaint.setColor(Color.WHITE);
         float v = mPaint.measureText(format);
         canvas.drawText(format, inScreenPosition - v / 2, heighY, mPaint);

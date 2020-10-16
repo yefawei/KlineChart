@@ -9,22 +9,31 @@ import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.data.Transformer;
 import com.yfw.kchartcore.drawing.Drawing;
 import com.yfw.kchartcore.index.range.CandleIndexRange;
+import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartext.utils.FontCalculateUtils;
 
 /**
  * @日期 : 2020/7/14
  * @描述 : 蜡烛图
  */
-public class CandleDrawing extends Drawing<CandleIndexRange, KlineInfo> {
+public class CandleDrawing extends Drawing<KlineInfo> {
 
     private final Paint mPaint;
 
+    private final CandleIndexRange mIndexRange;
+
     public CandleDrawing(CandleIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
-        super(indexRange, params);
+        super(params);
+        mIndexRange = indexRange;
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(3);
         mPaint.setTextSize(18);
+    }
+
+    @Override
+    public IndexRange getIndexRange() {
+        return mIndexRange;
     }
 
     @Override
@@ -61,7 +70,7 @@ public class CandleDrawing extends Drawing<CandleIndexRange, KlineInfo> {
         }
         canvas.drawLine(center, lowY, center, heighY, mPaint);
 
-        String format = ((KlineInfo)entity).getFormatTime();
+        String format = entity.getFormatTime();
         mPaint.setColor(Color.WHITE);
         float v = mPaint.measureText(format);
         canvas.drawText(format, center - v / 2, heighY, mPaint);

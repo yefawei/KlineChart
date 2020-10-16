@@ -9,7 +9,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.impl.IDataProvider;
-import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.layout.IParentPortLayout;
 import com.yfw.kchartext.drawing.RepeatAnimDrawing;
 import com.yfw.kchartext.drawing.TriggerRepeatAnimDrawing;
@@ -19,7 +18,7 @@ import com.yfw.kchartext.utils.FontCalculateUtils;
  * @日期 : 2020/9/25
  * @描述 : 手动触发重复点动画
  */
-public class TriggerRepeatPointDrawing extends TriggerRepeatAnimDrawing<IndexRange, KlineInfo> {
+public class TriggerRepeatPointDrawing extends TriggerRepeatAnimDrawing<KlineInfo> {
 
     private boolean isOpen;
     private final Paint mPaint;
@@ -82,10 +81,10 @@ public class TriggerRepeatPointDrawing extends TriggerRepeatAnimDrawing<IndexRan
         drawData(canvas);
     }
 
-    private String open = "开";
-    private String close = "关";
-    private String resume = "恢复";
-    private String stop = "暂停";
+    private final String open = "开";
+    private final String close = "关";
+    private final String resume = "恢复";
+    private final String stop = "暂停";
 
     @Override
     public void drawData(Canvas canvas) {

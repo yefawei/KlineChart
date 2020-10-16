@@ -7,14 +7,13 @@ import android.text.TextPaint;
 
 import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.drawing.Drawing;
-import com.yfw.kchartcore.index.range.IndexRange;
 
 
 /**
  * @日期 : 2020/8/28
  * @描述 :
  */
-public class ClickDrawing extends Drawing<IndexRange, KlineInfo> {
+public class ClickDrawing extends Drawing<KlineInfo> {
 
     private final TextPaint mPaint;
     private final String mTag;

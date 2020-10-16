@@ -6,13 +6,12 @@ import android.graphics.Color;
 import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.drawing.Drawing;
-import com.yfw.kchartcore.index.range.IndexRange;
 
 /**
  * @日期 : 2020/8/27
  * @描述 :
  */
-public class RightPaddingDrawing extends Drawing<IndexRange, KlineInfo> {
+public class RightPaddingDrawing extends Drawing<KlineInfo> {
 
     public RightPaddingDrawing(RendererCanvas.DrawingLayoutParams params) {
         super(params);

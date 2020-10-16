@@ -12,20 +12,29 @@ import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.data.Transformer;
 import com.yfw.kchartcore.drawing.Drawing;
+import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartext.index.range.VolumeIndexRange;
 
 /**
  * @日期 : 2020/8/12
  * @描述 : 成交量
  */
-public class VolumeDrawing extends Drawing<VolumeIndexRange, KlineInfo> {
+public class VolumeDrawing extends Drawing<KlineInfo> {
 
     private final Paint mPaint;
 
+    private final VolumeIndexRange mIndexRange;
+
     public VolumeDrawing(@Nullable VolumeIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
-        super(indexRange, params);
+        super(params);
+        mIndexRange = indexRange;
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
+    }
+
+    @Override
+    public IndexRange getIndexRange() {
+        return mIndexRange;
     }
 
     @Override

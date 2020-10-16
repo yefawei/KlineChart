@@ -10,6 +10,7 @@ import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.data.Transformer;
 import com.yfw.kchartcore.drawing.Drawing;
+import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.index.range.ReverseIndexRange;
 import com.yfw.kchartext.index.range.VolumeIndexRange;
 
@@ -17,17 +18,24 @@ import com.yfw.kchartext.index.range.VolumeIndexRange;
  * @日期 : 2020/8/12
  * @描述 :
  */
-public class VolumeReverseDrawing extends Drawing<ReverseIndexRange, KlineInfo> {
+public class VolumeReverseDrawing extends Drawing<KlineInfo> {
 
     private final Paint mPaint;
+    private final ReverseIndexRange mIndexRange;
 
     public VolumeReverseDrawing(ReverseIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
-        super(indexRange, params);
+        super(params);
+        mIndexRange = indexRange;
         if (!(indexRange.getRealIndexRange() instanceof VolumeIndexRange)) {
             throw new IllegalArgumentException("ReverseIndexRange is not VolumeIndexRange.");
         }
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
+    }
+
+    @Override
+    public IndexRange getIndexRange() {
+        return mIndexRange;
     }
 
     @Override

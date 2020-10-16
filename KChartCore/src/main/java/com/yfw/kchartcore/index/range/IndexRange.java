@@ -17,6 +17,8 @@ import java.util.List;
  */
 public abstract class IndexRange {
 
+    public static final int NO_GROUP = -1;  // 指标计算类没有组标记
+
     public static final int DOUBLE_SIDE = 0;    // 含最大值最小值
     public static final int UP_SIDE = 1;        // 只含最大值
     public static final int DOWN_SIDE = 2;      // 只含最小值
@@ -301,8 +303,8 @@ public abstract class IndexRange {
 
     /**
      * 获取tag标记，区分不同的指标
-     * 方便{@link Transformer#addIndexRange(IndexRange)}和{@link Transformer#removeIndexRange(IndexRange)}的使用
-     * 返回空或者null将不会被{@link Transformer#addIndexRange(IndexRange)}所添加
+     * 方便{@link Transformer#addIndexRange(int, IndexRange)}和{@link Transformer#removeIndexRange(int, IndexRange)}的使用
+     * 返回空或者null将不会被{@link Transformer#addIndexRange(int, IndexRange)}所添加
      */
     public abstract String getIndexTag();
 

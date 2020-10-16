@@ -6,6 +6,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.example.kchartdemo.data.KlineInfo;
 import com.yfw.kchartcore.canvas.RendererCanvas;
+import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.touch.TapMarkerOption;
 import com.yfw.kchartcore.touch.TouchTapManager;
 import com.yfw.kchartext.drawing.TriggerRepeatAnimDrawing;
@@ -15,16 +16,22 @@ import com.yfw.kchartext.index.range.VolumeIndexRange;
  * @日期 : 2020/8/31
  * @描述 : 成交量高亮
  */
-public class VolumeHighlightDrawing extends TriggerRepeatAnimDrawing<VolumeIndexRange, KlineInfo> {
+public class VolumeHighlightDrawing extends TriggerRepeatAnimDrawing<KlineInfo> {
 
     private final Paint mPaint;
-
+    private final VolumeIndexRange mIndexRange;
     public VolumeHighlightDrawing(VolumeIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
-        super(indexRange, params);
+        super(params);
+        mIndexRange = indexRange;
         setInterpolator(new AccelerateDecelerateInterpolator());
         setRepeatMode(TriggerRepeatAnimDrawing.REVERSE);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStrokeWidth(6);
+    }
+
+    @Override
+    public IndexRange getIndexRange() {
+        return mIndexRange;
     }
 
     @Override

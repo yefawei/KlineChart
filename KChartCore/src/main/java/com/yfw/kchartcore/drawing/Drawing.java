@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.util.Log;
 
 import androidx.annotation.CallSuper;
-import androidx.annotation.Nullable;
 
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.impl.IDataProvider;
@@ -20,9 +19,8 @@ import com.yfw.kchartcore.layout.IViewPort;
  * @日期 : 2020/7/10
  * @描述 : 普通绘制
  */
-public abstract class Drawing<T extends IndexRange, S extends IEntity> implements IDrawing<T, S>, IViewPort, IDispatchSingleTapChild {
+public abstract class Drawing<T extends IEntity> implements IDrawing<T>, IViewPort, IDispatchSingleTapChild {
 
-    protected T mIndexRange;
     private RendererCanvas.DrawingLayoutParams mLayoutParams;
     private int mWidth;
     private int mHeight;
@@ -32,24 +30,12 @@ public abstract class Drawing<T extends IndexRange, S extends IEntity> implement
     private boolean mDrawInViewPort = true;
     private IParentPortLayout mDrawingPortLayout;
 
-    protected IDataProvider<S> mDataProvider;
+    protected IDataProvider<T> mDataProvider;
 
     public Drawing() {
     }
 
     public Drawing(RendererCanvas.DrawingLayoutParams params) {
-        if (params == null) {
-            throw new NullPointerException("DrawingLayoutParams cannot be null!");
-        }
-        mLayoutParams = params;
-    }
-
-    public Drawing(@Nullable T indexRange) {
-        mIndexRange = indexRange;
-    }
-
-    public Drawing(@Nullable T indexRange, RendererCanvas.DrawingLayoutParams params) {
-        mIndexRange = indexRange;
         if (params == null) {
             throw new NullPointerException("DrawingLayoutParams cannot be null!");
         }
@@ -69,19 +55,21 @@ public abstract class Drawing<T extends IndexRange, S extends IEntity> implement
 
     @CallSuper
     @Override
-    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<S> dataProvider) {
+    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<T> dataProvider) {
         mDrawingPortLayout = portLayout;
         mDataProvider = dataProvider;
-        if (mIndexRange != null) {
-            mDataProvider.getTransformer().addIndexRange(mIndexRange);
+        IndexRange indexRange = getIndexRange();
+        if (indexRange != null) {
+            mDataProvider.getTransformer().addIndexRange(getIndexRangeGroupId(), indexRange);
         }
     }
 
     @CallSuper
     @Override
     public void detachedParentPortLayout() {
-        if (mIndexRange != null) {
-            mDataProvider.getTransformer().removeIndexRange(mIndexRange);
+        IndexRange indexRange = getIndexRange();
+        if (indexRange != null) {
+            mDataProvider.getTransformer().removeIndexRange(getIndexRangeGroupId(), indexRange);
         }
         mDrawingPortLayout = null;
         mDataProvider = null;
@@ -187,14 +175,20 @@ public abstract class Drawing<T extends IndexRange, S extends IEntity> implement
     }
 
     @Override
-    public T getIndexRange() {
-        return mIndexRange;
+    public int getIndexRangeGroupId() {
+        return IndexRange.NO_GROUP;
+    }
+
+    @Override
+    public IndexRange getIndexRange() {
+        return null;
     }
 
     @Override
     public void preCalcDataValue(boolean emptyBounds) {
-        if (!emptyBounds && mIndexRange != null) {
-            mScaleValueY = mHeight / (mIndexRange.getMaxValue() - mIndexRange.getMinValue());
+        IndexRange indexRange = getIndexRange();
+        if (!emptyBounds && indexRange != null) {
+            mScaleValueY = mHeight / (indexRange.getMaxValue() - indexRange.getMinValue());
         }
     }
 
@@ -202,11 +196,12 @@ public abstract class Drawing<T extends IndexRange, S extends IEntity> implement
      * 根据数值获取当前所在Y坐标
      */
     protected final float getCoordinateY(float value) {
-        if (mIndexRange == null) return -1;
-        if (mIndexRange.isReverse()) {
-            return mViewPort.top + (value - mIndexRange.getMinValue()) * mScaleValueY;
+        IndexRange indexRange = getIndexRange();
+        if (indexRange == null) return -1;
+        if (indexRange.isReverse()) {
+            return mViewPort.top + (value - indexRange.getMinValue()) * mScaleValueY;
         } else {
-            return mViewPort.bottom - (value - mIndexRange.getMinValue()) * mScaleValueY;
+            return mViewPort.bottom - (value - indexRange.getMinValue()) * mScaleValueY;
         }
     }
 
@@ -214,14 +209,15 @@ public abstract class Drawing<T extends IndexRange, S extends IEntity> implement
      * 根据Y坐标获取当前数值
      */
     protected final float getValueByCoordinateY(float coordinateY) {
-        if (mIndexRange == null || mHeight == 0) return -1;
+        IndexRange indexRange = getIndexRange();
+        if (indexRange == null || mHeight == 0) return -1;
         final float p;
-        if (mIndexRange.isReverse()) {
-             p = (coordinateY - mViewPort.top) / mHeight;
+        if (indexRange.isReverse()) {
+            p = (coordinateY - mViewPort.top) / mHeight;
         } else {
-             p = (mViewPort.bottom - coordinateY) / mHeight;
+            p = (mViewPort.bottom - coordinateY) / mHeight;
         }
-        return p * (mIndexRange.getMaxValue() - mIndexRange.getMinValue()) + mIndexRange.getMinValue();
+        return p * (indexRange.getMaxValue() - indexRange.getMinValue()) + indexRange.getMinValue();
     }
 
     @Override

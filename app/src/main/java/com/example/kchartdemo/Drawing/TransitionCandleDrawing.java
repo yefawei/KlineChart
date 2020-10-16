@@ -19,12 +19,14 @@ import com.yfw.kchartext.utils.FontCalculateUtils;
  * @日期 : 2020/7/14
  * @描述 : 最大值最小值有变更以动画的形式过渡蜡烛图
  */
-public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexRange, KlineInfo> implements IndexRange.OnCalcValueListener {
+public class TransitionCandleDrawing extends TriggerAnimDrawing<KlineInfo> implements IndexRange.OnCalcValueListener {
 
     private final Paint mPaint;
+    private final TransitionIndexRange mIndexRange;
 
     public TransitionCandleDrawing(TransitionIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
-        super(indexRange, params);
+        super(params);
+        mIndexRange = indexRange;
         if (!(indexRange.getRealIndexRange() instanceof CandleIndexRange)) {
             throw new IllegalArgumentException("RealIndexRange is not CandleIndexRange!");
         }
@@ -34,6 +36,11 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<TransitionIndexR
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setStrokeWidth(3);
         mPaint.setTextSize(18);
+    }
+
+    @Override
+    public IndexRange getIndexRange() {
+        return mIndexRange;
     }
 
     @Override

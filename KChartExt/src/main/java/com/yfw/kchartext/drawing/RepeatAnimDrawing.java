@@ -2,19 +2,16 @@ package com.yfw.kchartext.drawing;
 
 import android.view.animation.Interpolator;
 
-import androidx.annotation.Nullable;
-
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.drawing.AutoAnimDrawing;
 import com.yfw.kchartcore.index.IEntity;
-import com.yfw.kchartcore.index.range.IndexRange;
 
 
 /**
  * @日期 : 2020/9/25
  * @描述 : 重复动画的绘制,适合重复持续性动画
  */
-public abstract class RepeatAnimDrawing<T extends IndexRange, S extends IEntity> extends AutoAnimDrawing<T, S> {
+public abstract class RepeatAnimDrawing<T extends IEntity> extends AutoAnimDrawing<T> {
 
     public final static int RESTART = 1;    // 重新开始
     public final static int REVERSE = 2;    // 逆转
@@ -32,14 +29,6 @@ public abstract class RepeatAnimDrawing<T extends IndexRange, S extends IEntity>
 
     public RepeatAnimDrawing(RendererCanvas.DrawingLayoutParams params) {
         super(params);
-    }
-
-    public RepeatAnimDrawing(@Nullable T indexRange) {
-        super(indexRange);
-    }
-
-    public RepeatAnimDrawing(@Nullable T indexRange, RendererCanvas.DrawingLayoutParams params) {
-        super(indexRange, params);
     }
 
     @Override

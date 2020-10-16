@@ -2,20 +2,17 @@ package com.yfw.kchartext.drawing;
 
 import android.view.animation.Interpolator;
 
-import androidx.annotation.Nullable;
-
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.drawing.AbstractAnimDrawing;
 import com.yfw.kchartcore.impl.IDataProvider;
 import com.yfw.kchartcore.index.IEntity;
-import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.layout.IParentPortLayout;
 
 /**
  * @日期 : 2020/7/10
  * @描述 : 主动触发动画的绘制
  */
-public abstract class TriggerAnimDrawing<T extends IndexRange, S extends IEntity> extends AbstractAnimDrawing<T, S> {
+public abstract class TriggerAnimDrawing<T extends IEntity> extends AbstractAnimDrawing<T> {
 
     private long mAnimStartTime;
     private long mDuration;
@@ -30,16 +27,8 @@ public abstract class TriggerAnimDrawing<T extends IndexRange, S extends IEntity
         super(params);
     }
 
-    public TriggerAnimDrawing(@Nullable T indexRange) {
-        super(indexRange);
-    }
-
-    public TriggerAnimDrawing(@Nullable T indexRange, RendererCanvas.DrawingLayoutParams params) {
-        super(indexRange, params);
-    }
-
     @Override
-    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<S> dataProvider) {
+    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<T> dataProvider) {
         super.attachedParentPortLayout(portLayout, dataProvider);
         if (inAnimTime() && !inAnimationManager()) {
             mDataProvider.getChartAnimation().addAnim(this);

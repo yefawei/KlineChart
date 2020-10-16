@@ -11,13 +11,13 @@ import com.yfw.kchartcore.layout.IParentPortLayout;
  * @日期 : 2020/7/1
  * @描述 :
  */
-public interface IDrawing<T extends IndexRange, S extends IEntity> {
+public interface IDrawing<T extends IEntity> {
 
     void setWidth(int width);
 
     void setHeight(int height);
 
-    void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<S> dataProvider);
+    void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<T> dataProvider);
 
     void detachedParentPortLayout();
 
@@ -39,9 +39,18 @@ public interface IDrawing<T extends IndexRange, S extends IEntity> {
     void setDrawInViewPort(boolean in);
 
     /**
+     * 获取指标计算类组id
+     *
+     * 同一组id要求{@link IndexRange#isReverse()} 与 {@link IndexRange#getSideMode()}一致，
+     * 并且最终计算最大值最小值会保持一致
+     * @return 如果没有组返回{@link IndexRange#NO_GROUP}
+     */
+    int getIndexRangeGroupId();
+
+    /**
      * 获取指标范围计算类
      */
-    T getIndexRange();
+    IndexRange getIndexRange();
 
     /**
      * 更新数据值

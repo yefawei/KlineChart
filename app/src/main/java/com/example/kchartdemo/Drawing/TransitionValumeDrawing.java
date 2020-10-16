@@ -22,12 +22,14 @@ import com.yfw.kchartext.index.range.VolumeIndexRange;
  * @日期 : 2020/8/12
  * @描述 : 动画成交量
  */
-public class TransitionValumeDrawing extends TriggerAnimDrawing<TransitionIndexRange, KlineInfo> implements IndexRange.OnCalcValueListener {
+public class TransitionValumeDrawing extends TriggerAnimDrawing<KlineInfo> implements IndexRange.OnCalcValueListener {
 
     private final Paint mPaint;
+    private final TransitionIndexRange mIndexRange;
 
     public TransitionValumeDrawing(@Nullable TransitionIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
-        super(indexRange, params);
+        super(params);
+        mIndexRange = indexRange;
         if (!(indexRange.getRealIndexRange() instanceof VolumeIndexRange)) {
             throw new IllegalArgumentException("RealIndexRange is not VolumeIndexRange!");
         }
@@ -35,6 +37,11 @@ public class TransitionValumeDrawing extends TriggerAnimDrawing<TransitionIndexR
         setInterpolator(new DecelerateInterpolator());
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.FILL);
+    }
+
+    @Override
+    public IndexRange getIndexRange() {
+        return mIndexRange;
     }
 
     @Override
@@ -82,7 +89,7 @@ public class TransitionValumeDrawing extends TriggerAnimDrawing<TransitionIndexR
         float width = mDataProvider.getScalePointWidth();
         Transformer<KlineInfo> transformer = mDataProvider.getTransformer();
         for (int i = transformer.getStartIndex(); i <= transformer.getStopIndex(); i++) {
-            IVolume item = (IVolume) mDataProvider.getAdapter().getItem(i);
+            IVolume item = mDataProvider.getAdapter().getItem(i);
             float limit = transformer.getPointInScreenXByIndex(i);
 
             float y = getCoordinateY(item.getVolume());

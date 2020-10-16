@@ -10,7 +10,6 @@ import com.yfw.kchartcore.impl.IDataProvider;
 import com.yfw.kchartcore.index.IEntity;
 import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.index.range.IndexRangeContainer;
-import com.yfw.kchartcore.index.range.IndexRangeSet;
 import com.yfw.kchartcore.layout.IMainCanvasPort;
 
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ public class Transformer<T extends IEntity> {
 
     private List<String> mTags;
     private final List<Range> mRanges = new ArrayList<>();
+    private final List<RangeGroup> mGroups = new ArrayList<>();
     private OnViewIndexListener mViewIndexListener;
 
     public Transformer(IDataProvider<T> dataProvider) {
@@ -244,17 +244,16 @@ public class Transformer<T extends IEntity> {
 
     /**
      * 添加相关指标计算类，如果{@link IndexRange#getIndexTag()}返回值一致，会被认为是同一类型的指标，
-     * 会在原有基础计数器+1，不会被添加进{@link #mRanges}计算容器中
+     * 会在原有基础计数器+1，不会被添加进{@link #mRanges}计算容器中，防止重复计算浪费资源
+     *
+     * @param groupId 同一组id要求{@link IndexRange#isReverse()} 与 {@link IndexRange#getSideMode()}一致
      */
-    public void addIndexRange(IndexRange indexRange) {
+    public void addIndexRange(int groupId, IndexRange indexRange) {
         final IndexRange realIndex = getRealIndexRange(indexRange);
         if (realIndex == null || TextUtils.isEmpty(realIndex.getIndexTag())) return;
 
-        if (realIndex instanceof IndexRangeSet) {
-            ((IndexRangeSet) realIndex).setCanChangeIndex(false);
-            ((IndexRangeSet) realIndex).generateTag();
-        }
-        Range range = getRangeByTag(realIndex.getIndexTag());
+        Range range = getRangeByTag(mRanges, realIndex.getIndexTag());
+        addGroup(groupId, indexRange);
         if (range == null) {
             range = new Range();
             range.count = 1;
@@ -265,34 +264,102 @@ public class Transformer<T extends IEntity> {
         if (range.range != realIndex) {
             throw new IllegalArgumentException("Inconsistent indexRange instances: " + realIndex.getIndexTag());
         }
-        range.count = range.count + 1;
+        range.count += 1;
+    }
+
+    private void addGroup(int groupId, IndexRange indexRange) {
+        if (groupId == IndexRange.NO_GROUP) {
+            return;
+        }
+        RangeGroup group = null;
+        for (int i = 0; i < mGroups.size(); i++) {
+            RangeGroup rangeGroup = mGroups.get(i);
+            if (rangeGroup.groudId == groupId) {
+                group = rangeGroup;
+                break;
+            }
+        }
+        if (group == null) {
+            group = new RangeGroup();
+            group.groudId = groupId;
+
+            Range range = new Range();
+            range.count = 1;
+            range.range = indexRange;
+            group.ranges.add(range);
+
+            mGroups.add(group);
+            return;
+        }
+        Range inRange = group.ranges.get(0);
+        if (inRange.range.isReverse() != indexRange.isReverse()) {
+            throw new IllegalArgumentException("Reverse is inconsistent!");
+        }
+        if (inRange.range.getSideMode() != indexRange.getSideMode()) {
+            throw new IllegalArgumentException("SideMode is inconsistent!");
+        }
+        Range range = getRangeByTag(group.ranges, indexRange.getIndexTag());
+        if (range == null) {
+            range = new Range();
+            range.count = 1;
+            range.range = indexRange;
+            group.ranges.add(range);
+            return;
+        }
+        range.count += 1;
     }
 
     /**
      * 移除指标计算类，如果{@link IndexRange#getIndexTag()}返回值一致，会被认为是同一类型的指标，
-     * 会在原有基础计数器-1，如果
+     * 会在原有基础计数器-1
      */
-    public void removeIndexRange(IndexRange indexRange) {
+    public void removeIndexRange(int groupId, IndexRange indexRange) {
         final IndexRange realIndex = getRealIndexRange(indexRange);
         if (realIndex == null || TextUtils.isEmpty(realIndex.getIndexTag())) return;
 
-        Range range = getRangeByTag(indexRange.getIndexTag());
+        Range range = getRangeByTag(mRanges, realIndex.getIndexTag());
         if (range == null) return;
+        if (range.range != realIndex) {
+            throw new IllegalArgumentException("Inconsistent indexRange instances: " + realIndex.getIndexTag());
+        }
+        removeGroup(groupId, indexRange);
         if (range.count > 1) {
-            range.count = range.count - 1;
+            range.count -= 1;
             return;
         }
         mRanges.remove(range);
-        if (range.range instanceof IndexRangeSet) {
-            ((IndexRangeSet) range.range).setCanChangeIndex(true);
+    }
+
+    private void removeGroup(int groupId, IndexRange indexRange) {
+        if (groupId == IndexRange.NO_GROUP) {
+            return;
+        }
+        RangeGroup group = null;
+        for (int i = 0; i < mGroups.size(); i++) {
+            RangeGroup rangeGroup = mGroups.get(i);
+            if (rangeGroup.groudId == groupId) {
+                group = rangeGroup;
+                break;
+            }
+        }
+        if (group == null) return;
+        Range range = getRangeByTag(group.ranges, indexRange.getIndexTag());
+        if (range == null) return;
+        if (range.count > 1) {
+            range.count -= 1;
+            return;
+        }
+        group.ranges.remove(range);
+        if (group.ranges.isEmpty()) {
+            mGroups.remove(group);
         }
     }
 
     @Nullable
-    private Range getRangeByTag(String tag) {
-        for (int i = 0; i < mRanges.size(); i++) {
-            if (mRanges.get(i).range.getIndexTag().equals(tag)) {
-                return mRanges.get(i);
+    private Range getRangeByTag(List<Range> ranges, String tag) {
+        for (int i = 0; i < ranges.size(); i++) {
+            if (ranges.get(i).range.getIndexTag().equals(tag)) {
+                return ranges.get(i);
             }
         }
         return null;
@@ -338,9 +405,15 @@ public class Transformer<T extends IEntity> {
         void viewIndex(int startIndex, int endIndex);
     }
 
+    private static class RangeGroup {
+        int groudId;
+        List<Range> ranges = new ArrayList<>();
+    }
 
     private static class Range {
         int count;
         IndexRange range;
     }
+
+
 }

@@ -3,20 +3,18 @@ package com.yfw.kchartext.drawing;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.CallSuper;
-import androidx.annotation.Nullable;
 
 import com.yfw.kchartcore.canvas.RendererCanvas;
 import com.yfw.kchartcore.drawing.AbstractAnimDrawing;
 import com.yfw.kchartcore.impl.IDataProvider;
 import com.yfw.kchartcore.index.IEntity;
-import com.yfw.kchartcore.index.range.IndexRange;
 import com.yfw.kchartcore.layout.IParentPortLayout;
 
 /**
  * @日期 : 2020/7/10
  * @描述 : 主动触发重复动画的绘制
  */
-public abstract class TriggerRepeatAnimDrawing<T extends IndexRange, S extends IEntity> extends AbstractAnimDrawing<T, S> {
+public abstract class TriggerRepeatAnimDrawing<T extends IEntity> extends AbstractAnimDrawing<T> {
 
     public final static int RESTART = 1;    // 重新开始
     public final static int REVERSE = 2;    // 逆转
@@ -39,16 +37,9 @@ public abstract class TriggerRepeatAnimDrawing<T extends IndexRange, S extends I
         super(params);
     }
 
-    public TriggerRepeatAnimDrawing(@Nullable T indexRange) {
-        super(indexRange);
-    }
-
-    public TriggerRepeatAnimDrawing(@Nullable T indexRange, RendererCanvas.DrawingLayoutParams params) {
-        super(indexRange, params);
-    }
 
     @Override
-    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<S> dataProvider) {
+    public void attachedParentPortLayout(IParentPortLayout portLayout, IDataProvider<T> dataProvider) {
         super.attachedParentPortLayout(portLayout, dataProvider);
         if (inAnimTime() && !inAnimationManager() && !mPause) {
             mDataProvider.getChartAnimation().addAnim(this);
