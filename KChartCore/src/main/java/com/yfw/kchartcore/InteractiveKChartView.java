@@ -577,7 +577,7 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
             // 从无数据到有数据
             mInRightMargin = false;
             mInLeftMargin = false;
-            if (isFullScreen()) {
+            if (isFullScreen() && getMinScrollX() != mScrollX) {
                 setScroll(getMinScrollX());
             } else {
                 invalidate();
