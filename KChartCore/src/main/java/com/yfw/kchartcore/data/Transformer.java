@@ -279,7 +279,7 @@ public class Transformer<T extends IEntity> {
         if (realIndex == null || TextUtils.isEmpty(realIndex.getIndexTag())) return;
 
         Range range = getRangeByTag(mRanges, realIndex.getIndexTag());
-        addGroup(groupId, indexRange);
+        addGroup(groupId, realIndex);
         if (range == null) {
             range = new Range();
             range.count = 1;
@@ -348,7 +348,7 @@ public class Transformer<T extends IEntity> {
         if (range.range != realIndex) {
             throw new IllegalArgumentException("Inconsistent indexRange instances: " + realIndex.getIndexTag());
         }
-        removeGroup(groupId, indexRange);
+        removeGroup(groupId, realIndex);
         if (range.count > 1) {
             range.count -= 1;
             return;
