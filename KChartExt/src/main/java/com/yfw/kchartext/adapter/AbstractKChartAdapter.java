@@ -27,10 +27,13 @@ public abstract class AbstractKChartAdapter<T extends IEntity> extends BaseKChar
     }
 
     public void clear() {
+        int oldCount = getCount();
         mKlineInfos = null;
         mStartTime = -1;
         mEndTime = -1;
-        notifyDataSetChanged();
+        if (oldCount > 0) {
+            notifyDataSetChanged();
+        }
     }
 
     public void addData(T data) {
