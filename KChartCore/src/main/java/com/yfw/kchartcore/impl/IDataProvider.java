@@ -39,7 +39,7 @@ public interface IDataProvider<T extends IEntity> {
     /**
      * 获取当前滚动值
      */
-    float getScroll();
+    int getScroll();
 
     /**
      * 获取当前缩放值

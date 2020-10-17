@@ -103,11 +103,7 @@ public abstract class ScrollAndScaleView<T extends IEntity> extends View impleme
             getParent().requestDisallowInterceptTouchEvent(true);
         } else if (mScrollEnable) {
             boolean onHorizontalMove = mGestureMoveActionCompat.onTouchEvent(event);
-            if (onHorizontalMove && event.getActionMasked() == MotionEvent.ACTION_MOVE) {
-                getParent().requestDisallowInterceptTouchEvent(true);
-            } else {
-                getParent().requestDisallowInterceptTouchEvent(false);
-            }
+            getParent().requestDisallowInterceptTouchEvent(onHorizontalMove && event.getActionMasked() == MotionEvent.ACTION_MOVE);
         }
         return super.dispatchTouchEvent(event);
     }
@@ -633,7 +629,7 @@ public abstract class ScrollAndScaleView<T extends IEntity> extends View impleme
      * 获取当前滚动值
      */
     @Override
-    public float getScroll() {
+    public int getScroll() {
         return mScrollX;
     }
 
