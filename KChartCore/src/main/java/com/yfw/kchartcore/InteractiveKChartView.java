@@ -554,9 +554,13 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
         return mAdapter;
     }
 
-    private void prepareIndexData() {
+    public void prepareIndexData() {
+        prepareIndexData(mTransformer.getIndexTags());
+    }
+
+    public void prepareIndexData(List<String> indexTags) {
         if (mAdapter.getCount() > 0) {
-            mAdapter.prepareIndexData(mTransformer.getIndexTags());
+            mAdapter.prepareIndexData(indexTags);
         }
     }
 
