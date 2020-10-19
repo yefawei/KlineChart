@@ -289,7 +289,6 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
 
     @Override
     protected void onDraw(Canvas canvas) {
-        long startTime = System.nanoTime();
         if (!mMainRenderer.mainCanvasIsValid()) {
             return;
         }
