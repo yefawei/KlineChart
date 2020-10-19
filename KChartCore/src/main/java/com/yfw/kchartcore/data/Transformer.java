@@ -228,15 +228,22 @@ public class Transformer<T extends IEntity> {
         for (int i = 0; i < mRanges.size(); i++) {
             mRanges.get(i).range.calcExtendedData();
         }
+        // 计算最大最小值
         for (int i = mStartIndex; i <= mStopIndex; i++) {
             IEntity cur = adapter.getItem(i);
             for (int j = 0; j < mRanges.size(); j++) {
                 mRanges.get(j).range.calcMinMaxValue(i, cur);
             }
         }
+        // 计算阈值
         for (int i = 0; i < mRanges.size(); i++) {
             mRanges.get(i).range.calcPaddingValue();
         }
+        // 纠正最大最小值相同问题
+        for (int i = 0; i < mRanges.size(); i++) {
+            mRanges.get(i).range.correctedValueConsistency();
+        }
+        // 同步组最大最小值
         for (int i = 0; i < mGroups.size(); i++) {
             synchronizationGroupValue(mGroups.get(i));
         }

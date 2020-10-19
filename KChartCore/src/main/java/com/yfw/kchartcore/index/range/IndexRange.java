@@ -200,6 +200,15 @@ public abstract class IndexRange {
     }
 
     /**
+     * 纠正值一致性问题
+     */
+    public final void correctedValueConsistency() {
+        if (mMaxValue == mMinValue) {
+            handleValueConsistency();
+        }
+    }
+
+    /**
      * 自定义最大最小值
      */
     public final void customMaxMinValue(float maxValue, float minValue) {
@@ -219,6 +228,22 @@ public abstract class IndexRange {
             for (int i = 0; i < mOnCalcValueListeners.size(); i++) {
                 mOnCalcValueListeners.get(i).onCalcValueEnd(isEmptyData);
             }
+        }
+    }
+
+    /**
+     * 处理值一致性问题
+     */
+    public void handleValueConsistency() {
+        if (mMaxValue == 0) {
+            mMaxValue = 100.0f;
+            mMinValue = -100.0f;
+        } else if (mMaxValue > 0) {
+            mMaxValue = mMaxValue * 2.0f;
+            mMinValue = 0;
+        } else {
+            mMaxValue = 0;
+            mMinValue = mMinValue * 2.0f;
         }
     }
 
