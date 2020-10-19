@@ -140,7 +140,7 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
         } else {
             mTransformer.calcBounds();
         }
-
+        mAnimationManager.animUpdate();
         if (mIsRenderBackground) {
             mBackgroundRenderer.preCalcDataValue(mTransformer.isEmptyBounds());
         }
@@ -294,7 +294,6 @@ public class InteractiveKChartView<T extends IEntity> extends ScrollAndScaleView
             return;
         }
         canvas.clipRect(mViewPort);
-        mAnimationManager.animUpdate();
         if (mIsRenderBackground) {
             mBackgroundRenderer.render(canvas);
         }
