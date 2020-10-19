@@ -322,11 +322,11 @@ public class MainRenderer<T extends IEntity> extends Renderer<T> implements IMai
     }
 
     private void updateDrawingPortLayout() {
-        if (mHorizontalCanvas[0] != null) {
-            mHorizontalCanvas[0].updateChildLayout();
-        }
         if (mHorizontalCanvas[1] != null) {
             mHorizontalCanvas[1].updateChildLayout();
+        }
+        if (mHorizontalCanvas[0] != null) {
+            mHorizontalCanvas[0].updateChildLayout();
         }
         if (mHorizontalCanvas[2] != null) {
             mHorizontalCanvas[2].updateChildLayout();
