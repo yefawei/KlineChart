@@ -9,6 +9,28 @@ import com.yfw.kchartcore.data.Transformer;
  * @日期 : 2020/9/27
  * @描述 : 最大最小值过渡计算辅助类类
  * 注意：该类不会被{@link Transformer}所计算
+ *
+ * <pre><code>
+ * // 将原生指标计算类传入TransitionIndexRange
+ * TransitionIndexRange transition = new TransitionIndexRange(indexRange);
+ *
+ * // ......
+ * // 在合适的时机判断是否在动画中，判断数值是否产生变更，都符合条件开启动画
+ * if (transition.isInTransition() && transition.valueIsChange()) {
+ *      transition.startTransition();
+ * }
+ *
+ * // ......
+ * // 在合适的时机传入动画进度
+ * if (transition.isInTransition()) {
+ * 	    transition.updateProcess(process)
+ * }
+ *
+ * // ......
+ * // 获取值，该值已经是过渡值了
+ * float maxValue = transition.getMaxValue()
+ * float minValue = transition.getMinValue()
+ * </code></pre>
  */
 public final class TransitionIndexRange extends IndexRange implements IndexRangeContainer, IndexRange.OnCalcValueListener {
 
@@ -176,6 +198,9 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
         mFraction = 1.0f;
     }
 
+    /**
+     * @return turn:处于过渡中
+     */
     public boolean isInTransition() {
         return mInTransition;
     }
