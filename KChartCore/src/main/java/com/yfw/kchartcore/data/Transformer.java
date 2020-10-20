@@ -265,7 +265,7 @@ public class Transformer<T extends IEntity> {
             if (maxValue < range.range.getMaxValue()) {
                 maxValue = range.range.getMaxValue();
             }
-            if (minValue > range.range.getMinIndex()) {
+            if (minValue > range.range.getMinValue()) {
                 minValue = range.range.getMinValue();
             }
         }
