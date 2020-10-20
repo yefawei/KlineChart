@@ -11,23 +11,33 @@ public interface ICandle extends Index {
      */
     float getOpenPrice();
 
+    void setOpenPrice(float openPrice);
+
     /**
      * 最高价
      */
-    float getHighPrice();
+    float getHightPrice();
+
+    void setHightPrice(float hightPrice);
 
     /**
      * 最低价
      */
     float getLowPrice();
 
+    void setLowPrice(float lowPrice);
+
     /**
      * 收盘价
      */
     float getClosePrice();
 
+    void setClosePrice(float closePrice);
+
     /**
      * 时间戳
      */
     long getTimeStamp();
+
+    void setTimeStamp(long timeStamp);
 }

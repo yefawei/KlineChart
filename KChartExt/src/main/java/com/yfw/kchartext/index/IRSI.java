@@ -13,13 +13,19 @@ public interface IRSI extends Index {
      */
     float getRSI7();
 
+    void setRSI7(float rsi7);
+
     /**
      * 14日RSI
      */
     float getRSI14();
 
+    void setRSI14(float rsi14);
+
     /**
      * 28日RSI
      */
     float getRSI28();
+
+    void setRSI28(float rsi28);
 }

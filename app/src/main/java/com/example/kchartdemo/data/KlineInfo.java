@@ -44,8 +44,18 @@ public class KlineInfo implements IEntity, IVolume {
     }
 
     @Override
-    public float getHighPrice() {
+    public void setOpenPrice(float openPrice) {
+        open_price = openPrice;
+    }
+
+    @Override
+    public float getHightPrice() {
         return max_price;
+    }
+
+    @Override
+    public void setHightPrice(float hightPrice) {
+        max_price = hightPrice;
     }
 
     @Override
@@ -54,8 +64,18 @@ public class KlineInfo implements IEntity, IVolume {
     }
 
     @Override
+    public void setLowPrice(float lowPrice) {
+        min_price = lowPrice;
+    }
+
+    @Override
     public float getClosePrice() {
         return close_price;
+    }
+
+    @Override
+    public void setClosePrice(float closePrice) {
+        close_price = closePrice;
     }
 
     @Override
@@ -64,13 +84,28 @@ public class KlineInfo implements IEntity, IVolume {
     }
 
     @Override
+    public void setTimeStamp(long timeStamp) {
+        this.timestamp = timeStamp;
+    }
+
+    @Override
     public float getVolume() {
         return volume;
     }
 
     @Override
+    public void setVolume(float volume) {
+        this.volume = volume;
+    }
+
+    @Override
     public float getAmount() {
         return amount;
+    }
+
+    @Override
+    public void setAmount(float amount) {
+        this.amount = amount;
     }
 
     public String getFormatTime() {

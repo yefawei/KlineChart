@@ -13,8 +13,12 @@ public interface IMA extends Index {
      */
     float getMA7();
 
+    void setMA7(float ma7);
+
     /**
      * 30日MA
      */
     float getMA30();
+
+    void setMA30(float ma30);
 }
