@@ -9,11 +9,11 @@ import com.yfw.kchartcore.index.Index;
 public interface IMA extends Index {
 
     /**
-     * 7日MA
+     * 10日MA
      */
-    float getMA7();
+    float getMA10();
 
-    void setMA7(float ma7);
+    void setMA10(float ma10);
 
     /**
      * 30日MA
@@ -21,4 +21,11 @@ public interface IMA extends Index {
     float getMA30();
 
     void setMA30(float ma30);
+
+    /**
+     * 100日MA
+     */
+    float getMA100();
+
+    void setMA100(float ma100);
 }

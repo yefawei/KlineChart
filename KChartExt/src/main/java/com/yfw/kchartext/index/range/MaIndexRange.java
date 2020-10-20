@@ -23,10 +23,10 @@ public class MaIndexRange extends IndexRange {
     protected float calcMaxValue(int index, float curMaxValue, IEntity entity) {
         IMA ma = (IMA) entity;
         if (index > 28) {
-            return Math.max(curMaxValue, Math.max(ma.getMA7(), ma.getMA30()));
+            return Math.max(curMaxValue, Math.max(ma.getMA10(), ma.getMA30()));
         }
         if (index > 5) {
-            return Math.max(curMaxValue, ma.getMA7());
+            return Math.max(curMaxValue, ma.getMA10());
         }
         return curMaxValue;
     }
@@ -35,10 +35,10 @@ public class MaIndexRange extends IndexRange {
     protected float calcMinValue(int index, float curMinValue, IEntity entity) {
         IMA ma = (IMA) entity;
         if (index > 28) {
-            return Math.min(curMinValue, Math.min(ma.getMA7(), ma.getMA30()));
+            return Math.min(curMinValue, Math.min(ma.getMA10(), ma.getMA30()));
         }
         if (index > 5) {
-            return Math.min(curMinValue, ma.getMA7());
+            return Math.min(curMinValue, ma.getMA10());
         }
         return curMinValue;
     }

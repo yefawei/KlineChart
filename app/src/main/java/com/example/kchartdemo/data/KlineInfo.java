@@ -42,8 +42,9 @@ public class KlineInfo implements IEntity, IVolume, IMA, IMACD, IKDJ, IRSI {
 
     public String formatTime;
 
-    public float ma7;       // MA7
+    public float ma10;      // MA7
     public float ma30;      // MA30
+    public float ma100;     // MA100
     public float k;         // KDJ k值
     public float d;         // KDJ d值
     public float j;         // KDJ j值
@@ -125,13 +126,13 @@ public class KlineInfo implements IEntity, IVolume, IMA, IMACD, IKDJ, IRSI {
     }
 
     @Override
-    public float getMA7() {
-        return ma7;
+    public float getMA10() {
+        return ma10;
     }
 
     @Override
-    public void setMA7(float ma7) {
-        this.ma7 = ma7;
+    public void setMA10(float ma10) {
+        this.ma10 = ma10;
     }
 
     @Override
@@ -142,6 +143,16 @@ public class KlineInfo implements IEntity, IVolume, IMA, IMACD, IKDJ, IRSI {
     @Override
     public void setMA30(float ma30) {
         this.ma30 = ma30;
+    }
+
+    @Override
+    public float getMA100() {
+        return ma100;
+    }
+
+    @Override
+    public void setMA100(float ma100) {
+        this.ma100 = ma100;
     }
 
     @Override

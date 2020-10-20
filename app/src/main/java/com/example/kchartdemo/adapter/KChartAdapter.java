@@ -34,8 +34,9 @@ public class KChartAdapter extends AbstractKChartAdapter<KlineInfo> {
     }
 
     private void calculateMA() {
-        float ma7 = 0;
+        float ma10 = 0;
         float ma30 = 0;
+        float ma100 = 0;
         KlineInfo info;
         float closePrice;
         for (int i = 0; i < mKlineInfos.size(); i++) {
@@ -43,19 +44,26 @@ public class KChartAdapter extends AbstractKChartAdapter<KlineInfo> {
 
             closePrice = info.getClosePrice();
 
-            ma7 += closePrice;
+            ma10 += closePrice;
             ma30 += closePrice;
-            if (i >= 7) {
-                ma7 -= mKlineInfos.get(i - 7).getClosePrice();
-                info.setMA7(ma7 / 7);
+            ma100 += closePrice;
+            if (i >= 10) {
+                ma10 -= mKlineInfos.get(i - 10).getClosePrice();
+                info.setMA10(ma10 / 10);
             } else {
-                info.setMA7(ma7 / (i + 1));
+                info.setMA10(ma10 / (i + 1));
             }
             if (i >= 30) {
                 ma30 -= mKlineInfos.get(i - 30).getClosePrice();
                 info.setMA30(ma30 / 30);
             } else {
                 info.setMA30(ma30 / (i + 1));
+            }
+            if (i >= 100) {
+                ma100 -= mKlineInfos.get(i - 100).getClosePrice();
+                info.setMA100(ma100 / 100);
+            } else {
+                info.setMA100(ma100 / (i + 1));
             }
         }
     }
