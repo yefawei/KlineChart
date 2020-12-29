@@ -20,8 +20,9 @@ public class AnimationManager {
     }
 
     private void postAnim() {
-        if (inAnim) return;
-        animCheck();
+        if (!inAnim && !mChartAnimtion.mAnimations.isEmpty()) {
+            mListener.onAnimation();
+        }
     }
 
     /**
