@@ -105,6 +105,9 @@ public final class TransitionIndexRange extends IndexRange implements IndexRange
 
     @Override
     public IndexRange getRealIndexRange() {
+        if (mIndexRange instanceof IndexRangeContainer) {
+            return ((IndexRangeContainer) mIndexRange).getRealIndexRange();
+        }
         return mIndexRange;
     }
 

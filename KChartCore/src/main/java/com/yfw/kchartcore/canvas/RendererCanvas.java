@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -592,6 +593,16 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
         mDrawings.remove(drawing);
         if (drawing.isAttachedParentPortLayout()) {
             drawing.detachedParentPortLayout();
+        }
+    }
+
+    @Override
+    public void removeDrawingByTag(String tag) {
+        Iterator<Drawing<T>> iterator = mDrawings.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getTag().endsWith(tag)) {
+                iterator.remove();
+            }
         }
     }
 

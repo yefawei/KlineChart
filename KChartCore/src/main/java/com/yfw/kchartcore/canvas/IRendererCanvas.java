@@ -78,6 +78,11 @@ public interface IRendererCanvas<T extends IEntity> {
     void removeDrawing(Drawing<T> drawing);
 
     /**
+     * 根据tag移除绘制
+     */
+    void removeDrawingByTag(String tag);
+
+    /**
      * 更新数据值
      *
      * @param emptyBounds true:无边界信息

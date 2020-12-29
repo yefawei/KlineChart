@@ -21,7 +21,7 @@ import com.yfw.kchartcore.layout.IViewPort;
  */
 public abstract class Drawing<T extends IEntity> implements IDrawing<T>, IViewPort, IDispatchSingleTapChild {
 
-    String mTag = "";
+    private String mTag = "";
 
     private RendererCanvas.DrawingLayoutParams mLayoutParams;
     private int mWidth;
@@ -87,12 +87,12 @@ public abstract class Drawing<T extends IEntity> implements IDrawing<T>, IViewPo
 
     @Override
     public void setTag(String tag) {
-        mTag = tag;
+        mTag = tag == null ? "" : tag;
     }
 
     @Override
     public String getTag() {
-        return mTag == null ? "" : mTag;
+        return mTag;
     }
 
     @Override
