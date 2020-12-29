@@ -83,7 +83,7 @@ public class TransitionCandleDrawing extends TriggerAnimDrawing<KlineInfo> imple
         } else {
             mPaint.setColor(Color.GREEN);
         }
-        float heighY = getCoordinateY(entity.getHighPrice());
+        float heighY = getCoordinateY(entity.getHightPrice());
         float lowY = getCoordinateY(entity.getLowPrice());
         float openY = getCoordinateY(entity.getOpenPrice());
         if (entity.getOpenPrice() == entity.getClosePrice()) {

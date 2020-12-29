@@ -12,7 +12,7 @@ import java.util.List;
  */
 public abstract class AbstractKChartAdapter<T extends IEntity> extends BaseKChartAdapter<T> {
 
-    private List<T> mKlineInfos;
+    protected List<T> mKlineInfos;
     private long mStartTime;
     private long mEndTime;
 

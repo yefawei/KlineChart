@@ -20,7 +20,7 @@ public class CandleIndexRange extends IndexRange {
 
     @Override
     protected float calcMaxValue(int index, float curMaxValue, IEntity entity) {
-        return Math.max(curMaxValue, entity.getHighPrice());
+        return Math.max(curMaxValue, entity.getHightPrice());
     }
 
     @Override

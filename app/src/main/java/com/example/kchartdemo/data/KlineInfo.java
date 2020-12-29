@@ -4,6 +4,10 @@ package com.example.kchartdemo.data;
 import android.text.TextUtils;
 
 import com.yfw.kchartcore.index.IEntity;
+import com.yfw.kchartext.index.IKDJ;
+import com.yfw.kchartext.index.IMA;
+import com.yfw.kchartext.index.IMACD;
+import com.yfw.kchartext.index.IRSI;
 import com.yfw.kchartext.index.IVolume;
 
 import java.text.SimpleDateFormat;
@@ -14,7 +18,7 @@ import java.util.Locale;
  * @日期 : 2020/8/5
  * @描述 :
  */
-public class KlineInfo implements IEntity, IVolume {
+public class KlineInfo implements IEntity, IVolume, IMA, IMACD, IKDJ, IRSI {
 
     /**
      * timestamp : 1511712000
@@ -38,14 +42,37 @@ public class KlineInfo implements IEntity, IVolume {
 
     public String formatTime;
 
+    public float ma10;      // MA7
+    public float ma30;      // MA30
+    public float ma100;     // MA100
+    public float k;         // KDJ k值
+    public float d;         // KDJ d值
+    public float j;         // KDJ j值
+    public float dif;       // MACD 离差值EMA12-EMA26
+    public float dea;       // MACD 9日移动平均值DEA9
+    public float macd;      // MACD 平滑移动均线
+    public float rsi7;      // 7日RSI
+    public float rsi14;     // 14日RSI
+    public float rsi28;     // 28日RSI
+
     @Override
     public float getOpenPrice() {
         return open_price;
     }
 
     @Override
-    public float getHighPrice() {
+    public void setOpenPrice(float openPrice) {
+        open_price = openPrice;
+    }
+
+    @Override
+    public float getHightPrice() {
         return max_price;
+    }
+
+    @Override
+    public void setHightPrice(float hightPrice) {
+        max_price = hightPrice;
     }
 
     @Override
@@ -54,13 +81,28 @@ public class KlineInfo implements IEntity, IVolume {
     }
 
     @Override
+    public void setLowPrice(float lowPrice) {
+        min_price = lowPrice;
+    }
+
+    @Override
     public float getClosePrice() {
         return close_price;
     }
 
     @Override
+    public void setClosePrice(float closePrice) {
+        close_price = closePrice;
+    }
+
+    @Override
     public long getTimeStamp() {
-        return timestamp * 1000;
+        return timestamp;
+    }
+
+    @Override
+    public void setTimeStamp(long timeStamp) {
+        this.timestamp = timeStamp;
     }
 
     @Override
@@ -69,8 +111,138 @@ public class KlineInfo implements IEntity, IVolume {
     }
 
     @Override
+    public void setVolume(float volume) {
+        this.volume = volume;
+    }
+
+    @Override
     public float getAmount() {
         return amount;
+    }
+
+    @Override
+    public void setAmount(float amount) {
+        this.amount = amount;
+    }
+
+    @Override
+    public float getMA10() {
+        return ma10;
+    }
+
+    @Override
+    public void setMA10(float ma10) {
+        this.ma10 = ma10;
+    }
+
+    @Override
+    public float getMA30() {
+        return ma30;
+    }
+
+    @Override
+    public void setMA30(float ma30) {
+        this.ma30 = ma30;
+    }
+
+    @Override
+    public float getMA100() {
+        return ma100;
+    }
+
+    @Override
+    public void setMA100(float ma100) {
+        this.ma100 = ma100;
+    }
+
+    @Override
+    public float getK() {
+        return k;
+    }
+
+    @Override
+    public void setK(float k) {
+        this.k = k;
+    }
+
+    @Override
+    public float getD() {
+        return d;
+    }
+
+    @Override
+    public void setD(float d) {
+        this.d = d;
+    }
+
+    @Override
+    public float getJ() {
+        return j;
+    }
+
+    @Override
+    public void setJ(float j) {
+        this.j = j;
+    }
+
+    @Override
+    public float getDIF() {
+        return dif;
+    }
+
+    @Override
+    public void setDIF(float dif) {
+        this.dif = dif;
+    }
+
+    @Override
+    public float getDEA() {
+        return dea;
+    }
+
+    @Override
+    public void setDEA(float dea) {
+        this.dea = dea;
+    }
+
+    @Override
+    public float getMACD() {
+        return macd;
+    }
+
+    @Override
+    public void setMACD(float macd) {
+        this.macd = macd;
+    }
+
+    @Override
+    public float getRSI7() {
+        return rsi7;
+    }
+
+    @Override
+    public void setRSI7(float rsi7) {
+        this.rsi7 = rsi7;
+    }
+
+    @Override
+    public float getRSI14() {
+        return rsi14;
+    }
+
+    @Override
+    public void setRSI14(float rsi14) {
+        this.rsi14 = rsi14;
+    }
+
+    @Override
+    public float getRSI28() {
+        return rsi28;
+    }
+
+    @Override
+    public void setRSI28(float rsi28) {
+        this.rsi28 = rsi28;
     }
 
     public String getFormatTime() {

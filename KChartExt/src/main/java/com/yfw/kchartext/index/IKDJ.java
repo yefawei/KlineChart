@@ -13,13 +13,19 @@ public interface IKDJ extends Index {
      */
     float getK();
 
+    void setK(float k);
+
     /**
      * KDJ d值
      */
     float getD();
 
+    void setD(float d);
+
     /**
      * KDJ j值
      */
     float getJ();
+
+    void setJ(float j);
 }

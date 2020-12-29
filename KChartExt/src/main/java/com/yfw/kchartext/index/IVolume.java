@@ -13,8 +13,12 @@ public interface IVolume extends Index {
      */
     float getVolume();
 
+    void setVolume(float volume);
+
     /**
      * 成交额
      */
     float getAmount();
+
+    void setAmount(float amount);
 }

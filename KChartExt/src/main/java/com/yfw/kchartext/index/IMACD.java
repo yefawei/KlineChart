@@ -13,13 +13,19 @@ public interface IMACD extends Index {
      */
     float getDIF();
 
+    void setDIF(float dif);
+
     /**
      * MACD 9日移动平均值DEA9
      */
     float getDEA();
 
+    void setDEA(float dea);
+
     /**
      * MACD 平滑移动均线
      */
     float getMACD();
+
+    void setMACD(float macd);
 }

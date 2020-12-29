@@ -11,7 +11,7 @@ import com.yfw.kchartext.index.IMA;
 public class MaIndexRange extends IndexRange {
 
     public MaIndexRange() {
-        super( 0.1f);
+        super(0.1f);
     }
 
     @Override
@@ -22,11 +22,14 @@ public class MaIndexRange extends IndexRange {
     @Override
     protected float calcMaxValue(int index, float curMaxValue, IEntity entity) {
         IMA ma = (IMA) entity;
-        if (index > 28) {
-            return Math.max(curMaxValue, Math.max(ma.getMA7(), ma.getMA30()));
+        if (index > 98) {
+            return Math.max(curMaxValue, Math.max(ma.getMA10(), Math.max(ma.getMA30(), ma.getMA100())));
         }
-        if (index > 5) {
-            return Math.max(curMaxValue, ma.getMA7());
+        if (index > 28) {
+            return Math.max(curMaxValue, Math.max(ma.getMA10(), ma.getMA30()));
+        }
+        if (index > 8) {
+            return Math.max(curMaxValue, ma.getMA10());
         }
         return curMaxValue;
     }
@@ -34,11 +37,14 @@ public class MaIndexRange extends IndexRange {
     @Override
     protected float calcMinValue(int index, float curMinValue, IEntity entity) {
         IMA ma = (IMA) entity;
-        if (index > 28) {
-            return Math.min(curMinValue, Math.min(ma.getMA7(), ma.getMA30()));
+        if (index > 98) {
+            return Math.min(curMinValue, Math.min(ma.getMA10(), Math.min(ma.getMA30(), ma.getMA100())));
         }
-        if (index > 5) {
-            return Math.min(curMinValue, ma.getMA7());
+        if (index > 28) {
+            return Math.min(curMinValue, Math.min(ma.getMA10(), ma.getMA30()));
+        }
+        if (index > 8) {
+            return Math.min(curMinValue, ma.getMA10());
         }
         return curMinValue;
     }

@@ -18,6 +18,7 @@ import com.example.kchartdemo.Drawing.TransitionCandleDrawing;
 import com.example.kchartdemo.Drawing.TransitionValumeDrawing;
 import com.example.kchartdemo.Drawing.VolumeDrawing;
 import com.example.kchartdemo.Drawing.VolumeHighlightDrawing;
+import com.example.kchartdemo.adapter.KChartAdapter;
 import com.example.kchartdemo.data.AnimDataSizeChangeHandler;
 import com.example.kchartdemo.data.DragonKLineDataProvider;
 import com.example.kchartdemo.data.KlineInfo;
@@ -31,11 +32,9 @@ import com.yfw.kchartcore.index.range.CandleIndexRange;
 import com.yfw.kchartcore.index.range.TransitionIndexRange;
 import com.yfw.kchartcore.render.MainRenderer;
 import com.yfw.kchartcore.touch.TouchTapManager;
-import com.yfw.kchartext.adapter.DefaultKChartAdapter;
 import com.yfw.kchartext.index.range.VolumeIndexRange;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private DragonKLineDataProvider mDataProvider;
     private InteractiveKChartView<KlineInfo> mKChart;
     private ScrollView mScrollView;
-    private DefaultKChartAdapter<KlineInfo> mAdapter;
+    private KChartAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,12 +217,7 @@ public class MainActivity extends AppCompatActivity {
         mainRenderCanvas.addDrawing(new VolumeHighlightDrawing(volumeIndexRange, layoutParams), true);
         viewRender.addRenderCanvas(mainRenderCanvas, MainRenderer.POSITION_BOTTOM);
 
-        mAdapter = new DefaultKChartAdapter<>(new DefaultKChartAdapter.OnPrepareIndexDataListener() {
-            @Override
-            public void prepareIndexData(List<String> indexTags) {
-                Log.e("OnPrepareIndexData", indexTags.toString());
-            }
-        });
+        mAdapter = new KChartAdapter();
         mKChart.setAdapter(mAdapter);
     }
 
