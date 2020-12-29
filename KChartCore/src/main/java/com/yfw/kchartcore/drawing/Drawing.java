@@ -21,6 +21,8 @@ import com.yfw.kchartcore.layout.IViewPort;
  */
 public abstract class Drawing<T extends IEntity> implements IDrawing<T>, IViewPort, IDispatchSingleTapChild {
 
+    String mTag = "";
+
     private RendererCanvas.DrawingLayoutParams mLayoutParams;
     private int mWidth;
     private int mHeight;
@@ -81,6 +83,16 @@ public abstract class Drawing<T extends IEntity> implements IDrawing<T>, IViewPo
     @Override
     public final boolean isAttachedParentPortLayout() {
         return mDataProvider != null;
+    }
+
+    @Override
+    public void setTag(String tag) {
+        mTag = tag;
+    }
+
+    @Override
+    public String getTag() {
+        return mTag == null ? "" : mTag;
     }
 
     @Override

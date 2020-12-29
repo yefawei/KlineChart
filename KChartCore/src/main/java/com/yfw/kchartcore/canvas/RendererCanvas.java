@@ -519,6 +519,14 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
     }
 
     @Override
+    public int drawingIndexTag(String tag) {
+        for (int i = 0; i < mDrawings.size(); i++) {
+            if (mDrawings.get(i).getTag().equals(tag)) return i;
+        }
+        return -1;
+    }
+
+    @Override
     public void addDrawing(Drawing<T> drawing) {
         addDrawing(mDrawings.size(), drawing, false);
     }
@@ -550,7 +558,7 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
             }
         }
 
-        mDrawings.add(drawing);
+        mDrawings.add(index, drawing);
         if (mParentPortLayout != null && !drawing.isAttachedParentPortLayout()) {
             drawing.attachedParentPortLayout(this, mDataProvider);
         }

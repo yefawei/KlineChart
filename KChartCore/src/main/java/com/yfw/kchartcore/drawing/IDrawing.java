@@ -13,6 +13,10 @@ import com.yfw.kchartcore.layout.IParentPortLayout;
  */
 public interface IDrawing<T extends IEntity> {
 
+    void setTag(String tag);
+
+    String getTag();
+
     void setWidth(int width);
 
     void setHeight(int height);

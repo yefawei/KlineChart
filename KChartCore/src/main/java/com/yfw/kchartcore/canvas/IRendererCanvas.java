@@ -36,6 +36,11 @@ public interface IRendererCanvas<T extends IEntity> {
      */
     int drawingIndexOf(Drawing<T> drawing);
 
+    /**
+     * 通过tag获取实体所在的索引
+     */
+    int drawingIndexTag(String tag);
+
     void addDrawing(Drawing<T> drawing);
 
     /**
