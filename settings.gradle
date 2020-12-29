@@ -1,4 +1,4 @@
 include ':KChartExt'
 include ':KChartCore'
 include ':app'
-rootProject.name = "KchartDemo"
+rootProject.name = "KlineChart"
