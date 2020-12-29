@@ -566,6 +566,22 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
     }
 
     @Override
+    public Drawing<T> getDrawing(int index) {
+        return mDrawings.get(index);
+    }
+
+    @Override
+    public Drawing<T> getDrawingByTag(String tag) {
+        Iterator<Drawing<T>> iterator = mDrawings.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getTag().endsWith(tag)) {
+                return iterator.next();
+            }
+        }
+        return null;
+    }
+
+    @Override
     public void replaceDrawing(int index, Drawing<T> drawing) {
         if (drawing == null) return;
 
@@ -600,8 +616,12 @@ public class RendererCanvas<T extends IEntity> implements IRendererCanvas<T>, IP
     public void removeDrawingByTag(String tag) {
         Iterator<Drawing<T>> iterator = mDrawings.iterator();
         while (iterator.hasNext()) {
-            if (iterator.next().getTag().endsWith(tag)) {
+            Drawing<T> next = iterator.next();
+            if (next.getTag().endsWith(tag)) {
                 iterator.remove();
+                if (next.isAttachedParentPortLayout()) {
+                    next.detachedParentPortLayout();
+                }
             }
         }
     }

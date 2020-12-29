@@ -57,6 +57,11 @@ public final class ReverseIndexRange extends IndexRange implements IndexRangeCon
     }
 
     @Override
+    public IndexRange getIndexRange() {
+        return mIndexRange;
+    }
+
+    @Override
     public IndexRange getRealIndexRange() {
         if (mIndexRange instanceof IndexRangeContainer) {
             return ((IndexRangeContainer) mIndexRange).getRealIndexRange();

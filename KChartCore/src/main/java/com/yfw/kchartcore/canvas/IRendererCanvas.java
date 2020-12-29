@@ -63,6 +63,16 @@ public interface IRendererCanvas<T extends IEntity> {
     void addDrawing(int index, Drawing<T> drawing, boolean isMainIndexDrawing);
 
     /**
+     * 通过索引获取Drawing
+     */
+    Drawing<T> getDrawing(int index);
+
+    /**
+     * 通过tag获取Drawing
+     */
+    Drawing<T> getDrawingByTag(String tag);
+
+    /**
      * 替换指定索引绘制
      */
     void replaceDrawing(int index, Drawing<T> drawing);

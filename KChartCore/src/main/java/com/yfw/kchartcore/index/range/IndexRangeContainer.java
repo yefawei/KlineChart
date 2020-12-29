@@ -12,6 +12,11 @@ import com.yfw.kchartcore.data.Transformer;
 public interface IndexRangeContainer {
 
     /**
+     * 获取包裹的指标计算类
+     */
+     IndexRange getIndexRange();
+
+    /**
      * 获取真正的指标计算类
      */
     IndexRange getRealIndexRange();
