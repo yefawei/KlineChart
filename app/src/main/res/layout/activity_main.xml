@@ -6,192 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <View
+    <Button
+        android:id="@+id/gotokchart1"
         android:layout_width="0dp"
-        android:layout_height="500dp"
-        android:background="@drawable/texture"
+        android:layout_height="wrap_content"
+        android:onClick="gotokchart1"
+        android:layout_marginTop="48dp"
+        android:text="K线测试页1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.yfw.kchartcore.InteractiveKChartView
-        android:id="@+id/k_chart"
+    <Button
+        android:id="@+id/gotokchart2"
         android:layout_width="0dp"
-        android:layout_height="500dp"
+        android:layout_height="wrap_content"
+        android:onClick="gotokchart2"
+        android:text="K线测试页2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <ScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:overScrollMode="never"
-        android:scrollbars="none"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/k_chart">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/pre_10"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="pre10"
-                android:text="pre10"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/center_add"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/center_add"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="centerAdd"
-                android:text="centerAdd"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toRightOf="@+id/pre_10"
-                app:layout_constraintRight_toLeftOf="@+id/add10"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/add10"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="add10"
-                android:text="add10"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toRightOf="@+id/center_add"
-                app:layout_constraintRight_toLeftOf="@+id/add100"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/add100"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="add100"
-                android:text="add100"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toRightOf="@+id/add10"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/line"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="line"
-                android:text="line"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/candle"
-                app:layout_constraintTop_toBottomOf="@+id/center_add" />
-
-            <Button
-                android:id="@+id/candle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="candle"
-                android:text="candle"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toRightOf="@+id/line"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/center_add" />
-
-            <Button
-                android:id="@+id/clear_data"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="clearData"
-                android:text="clearData"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/reset"
-                app:layout_constraintTop_toBottomOf="@+id/candle" />
-
-            <Button
-                android:id="@+id/reset"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="reset"
-                android:text="reset"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toRightOf="@+id/clear_data"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/candle" />
-
-            <Button
-                android:id="@+id/btn_update_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="updateLayout"
-                android:text="update layout"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/reset" />
-
-            <Button
-                android:id="@+id/btn_show_view_port"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="toViewPort"
-                android:text="view port"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_update_layout" />
-
-            <Button
-                android:id="@+id/toLeft"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="toLeft"
-                android:text="toLeft"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/toCenter"
-                app:layout_constraintTop_toBottomOf="@+id/btn_show_view_port" />
-
-            <Button
-                android:id="@+id/toCenter"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="toCenter"
-                android:text="toCenter"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toRightOf="@+id/toLeft"
-                app:layout_constraintRight_toLeftOf="@+id/toRight"
-                app:layout_constraintTop_toBottomOf="@+id/btn_show_view_port" />
-
-            <Button
-                android:id="@+id/add_click_tag"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="addClickTag"
-                android:text="addClickTag"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toCenter" />
-
-            <Button
-                android:id="@+id/toRight"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:onClick="toRight"
-                android:text="toRight"
-                android:textAllCaps="false"
-                app:layout_constraintLeft_toRightOf="@+id/toCenter"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_show_view_port" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/gotokchart1"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
-

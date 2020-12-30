@@ -19,9 +19,9 @@ import com.yfw.kchartext.drawing.TriggerRepeatAnimDrawing;
 public class HighlightDrawing extends TriggerRepeatAnimDrawing<KlineInfo> {
 
     private final Paint mPaint;
-    private final CandleIndexRange mIndexRange;
+    private final IndexRange mIndexRange;
 
-    public HighlightDrawing(CandleIndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
+    public HighlightDrawing(IndexRange indexRange, RendererCanvas.DrawingLayoutParams params) {
         super(params);
         mIndexRange = indexRange;
         setInterpolator(new AccelerateDecelerateInterpolator());
